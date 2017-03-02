@@ -53,8 +53,7 @@ public class ProgramSelectFragment extends Fragment
 
     public static Fragment newInstance(ProgramCallback pc, String composer) {
         sProgramCallback = pc;
-        if(composer == null) mCurrentComposer = "Cirone, Anthony";
-        else mCurrentComposer = composer;
+        mCurrentComposer = composer;
         return new ProgramSelectFragment();
     }
 
@@ -76,7 +75,13 @@ public class ProgramSelectFragment extends Fragment
         mAdapter = new WorksListAdapter(this.getContext(), mTitlesList, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        composerSelected();
+        getActivity().setTitle("Select a piece by...");
+
+        if(mCurrentComposer == null) {
+            selectComposer();
+        } else {
+            composerSelected();
+        }
 
         return view;
     }
@@ -87,7 +92,7 @@ public class ProgramSelectFragment extends Fragment
         sProgramCallback = null;
     }
 
-    @OnClick(R.id.select_composer_button)
+    @OnClick( { R.id.select_composer_button, R.id.other_pieces_label } )
     public void selectComposer() {
 //        mCurrentPiece = null;
         Fragment fragment = SelectComposerFragment.newInstance(this);

@@ -20,7 +20,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import tech.michaeloverman.android.mscount.Metronome;
+import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
@@ -79,10 +79,11 @@ public class PreprogrammedMetronomeFragment extends Fragment
             mCurrentTempo = savedInstanceState.getInt(CURRENT_TEMPO_KEY);
 //            mCurrentPiece = savedInstanceState.getString(CURRENT_PIECE_KEY);
             mCurrentComposer = savedInstanceState.getString(CURRENT_COMPOSER_KEY);
+            Log.d(TAG, "savedInstanceState retrieved: composer: " + mCurrentComposer);
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             mCurrentTempo = prefs.getInt(CURRENT_TEMPO_KEY, 120);
-            mCurrentComposer = prefs.getString(CURRENT_COMPOSER_KEY, "Overman, Michael");
+            mCurrentComposer = prefs.getString(CURRENT_COMPOSER_KEY, null);
         }
 
         mMetronome = new Metronome(getActivity(), this);
@@ -115,12 +116,6 @@ public class PreprogrammedMetronomeFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.programmed_fragment, container, false);
         ButterKnife.bind(this, view);
-
-//        composerSelected(mCurrentComposer);
-
-//        mAdapter = new WorksListAdapter(this.getActivity(), mPiecesList, this);
-//        mPiecesRecyclerView.setAdapter(mAdapter);
-//        mPiecesRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
         mTempoDownButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -183,9 +178,8 @@ public class PreprogrammedMetronomeFragment extends Fragment
         mTVCurrentTempo.setText(Integer.toString(mCurrentTempo));
     }
 
-    @OnClick( { R.id.current_program_label, R.id.current_program_title } )
+    @OnClick( { R.id.current_composer_name, R.id.current_program_title } )
     public void selectNewProgram() {
-        mCurrentPiece = null;
         Fragment fragment = ProgramSelectFragment.newInstance(this, mCurrentComposer);
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         trans.replace(R.id.fragment_container, fragment);

@@ -20,32 +20,24 @@
         app:layout_constraintLeft_toRightOf="@+id/current_tempo_setting"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <TextView
-        android:text="Current Program:"
-        android:id="@+id/current_program_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/generic_8dp_margin"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/generic_8dp_margin"
-        android:layout_marginStart="@dimen/generic_8dp_margin"/>
+
     <TextView
         android:id="@+id/current_composer_name"
-        android:text="...filler name..."
+        android:text="                  "
+        android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/generic_8dp_margin"
+        android:paddingTop="@dimen/generic_8dp_margin"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/current_program_label"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
     <TextView
         android:id="@+id/current_program_title"
         android:text="select a program..."
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/generic_8dp_margin"
-        app:layout_constraintTop_toBottomOf="@+id/current_program_label"
+        app:layout_constraintTop_toBottomOf="@+id/current_composer_name"
         android:layout_marginLeft="@dimen/generic_8dp_margin"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

@@ -368,6 +368,108 @@ public class HardData {
             2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3
     };
 
+    public static int[] delecluse4beats = {
+
+    };
+    public static int[] delecluse4downbeats = {
+            4,2,4,2,2,2,3,4,3,4,
+            4,2,3,4,4,3,4,4,
+            2,3,3,3,3,2,2,2,4,
+            2,4,2,3,2,2,3,3,3,
+            2,3,3,3
+    };
+    public static int[] delecluse5beats = {
+            3,2,3,2,3,2,2,3,3,2,
+            3,2,3,2,3,2,3,2,3,2,
+            3,2,2,3,2,3,3,2,3,2,
+            3,2,3,2,3,2,3,2,
+            3,2,3,2,2,3,2,3,2,3,
+            3,2,3,2,3,2,2,3,3,2,
+            3,2,2,3,3,2,2,3,2,3,2,3,2,3,
+            3,2,3,2,3,2,3,2,2,3,3,2,3,2,3,2,
+            3,2,3,2,3,2,3,2,3,2,
+            3,2,3,2,2,3,3,2,3,2,3,2,
+            3,2,3,2,2,3,2,3,3,2,2,3
+    };
+    public static int[] delecluse5downbeats = {
+            2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,2
+    };
+    public static int[] delecluse8beats = {
+
+    };
+    public static int[] delecluse8downbeats = {
+            3,3,3,3,3,3,5,5,3,5,
+            5,3,3,5,5,5,5,5,
+            5,5,3,5,5,5,5,3,5,
+            3,5,5,5,3,5,5,5,
+            5,5,5,3,3,4,3,3,2,2,5,
+            3,5,5,5,5,5,5,5,5,
+            4,3,3,3,3,3,3,3,3,3,3
+    };
+    public static int[] delecluse10beats = {
+            2,2,2,3,3,3,3,3,3,2,2,2,3,2,2,2,
+            2,3,2,2,2,2,3,2,2,2,3,2,2,
+            2,2,2,2,2,3,2,2,2,3,
+            2,2,2,2,2,3,2,2,2,3,3,2,
+            2,2,2,2,2,2,2,3,3,3,2,
+            3,2,2,2,2,3,2,2,3,2,
+            3,2,2,2,3,2,2,2,2,3,
+            2,2,3,2,3,2,2,2,3,3,3,3,
+            3,3,2,2,3,2,2,2,2,3,2,2,3,
+            2,2,2,3,2,2,2,3,3,2,
+            3,3,2,2,2,2,3,2,2,2,
+            3,2,2,2,3,3,3,3,2,2,2
+    };
+    public static int[] delecluse10downbeats = {
+            3,2,2,2,2,2,3,
+            2,3,2,3,1,2,
+            2,3,1,2,2,
+            3,2,1,2,2,2,
+            2,2,3,2,2,
+            1,3,2,2,1,1,
+            2,2,2,2,2,
+            2,2,1,3,2,2,
+            2,2,2,3,1,3,
+            3,1,2,2,2,
+            2,3,2,3,
+            2,2,1,1,1,1,1,2
+    };
+    public static int[] delecluse12beats = {
+            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,3,2,3,3,3,3,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,3,2,3,2,
+            2,3,2,2,3,2,2,3,2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,
+            2,3,2,2,3,3,3,3,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,3,3,
+            2,2,2,2,2,2,2,2,2,2,3,3,3,2,3,3,2,2,2,2,2,
+            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2
+    };
+    public static int[] delecluse12downbeats = {
+            7,7,5,3,2,
+            7,7,5,3,
+            2,3,3,3,3,7,
+            5,2,2,1,1,3,3,
+            3,3,3,3,3,1,1,2,2,
+            7,7,5,4,
+            3,3,5,3,3,1,2,1,
+            2,3,2,1,3,7,
+            3,7,5,5,2,
+            2,3,1,1,2,3,5,3,3,
+            7,7,5,1,2,1,
+            7,3,1,1,2,1,1,5,
+            5,7,7,1,3
+    };
+
     public static String[] composers = {
 //            "Cirone, Anthony",
 //            "Cirone, Anthony",
@@ -380,13 +482,17 @@ public class HardData {
 //            "Peters, Mitchell",
 //            "Peters, Mitchell",
 //            "Peters, Mitchell",
-//            "Peters, Mitchell",
-
+////            "Peters, Mitchell",
+//            "Delecluse, Jacques",
+//            "Delecluse, Jacques",
+//            "Delecluse, Jacques",
+//            "Delecluse, Jacques",
+//            "Delecluse, Jacques",
     };
     public static String[] titles = {
 //            "Portraits in Rhythm 39",
 //            "Portraits in Rhythm 26",
-            "Portraits in Rhythm 16",
+//            "Portraits in Rhythm 16",
 //            "Portraits in Rhythm 34",
 //            "Portraits in Rhythm 40",
 //            "Portraits in Rhythm 45",
@@ -397,6 +503,11 @@ public class HardData {
 //            "Intermediate SD Studies 32",
 //            "Advanced SD Studies 3",
 //            "Advanced SD Studies 7",
+//            "Douze Etude 4",
+//            "Douze Etude 5",
+//            "Douze Etude 8",
+//            "Douze Etude 10",
+//            "Douze Etude 12",
 
     };
     public static int[][] lotsObeats = {
@@ -413,6 +524,11 @@ public class HardData {
 //            petersInt32Beats,
 //            petersAdv3beats,
 //            petersAdv7beats,
+//            delecluse4beats,
+//            delecluse5beats,
+//            delecluse8beats,
+//            delecluse10beats,
+//            delecluse12beats,
 
     };
     public static int[][] lotsOdownBeats = {
@@ -429,6 +545,11 @@ public class HardData {
 //            petersInt32Downbeats,
 //            petersAdv3Downbeats,
 //            petersAdv7Downbeats,
+//            delecluse4downbeats,
+//            delecluse5downbeats,
+//            delecluse8downbeats,
+//            delecluse10downbeats,
+//            delecluse12downbeats,
 
     };
     public static int[] subdivisions = {
@@ -440,6 +561,11 @@ public class HardData {
 //            3,
 //            2,
 //            4,
+//            2,
+//            2,
+//            2,
+//            2,
+//            2,
 
     };
     public static int[] countoffsubdivisions = {
@@ -451,6 +577,11 @@ public class HardData {
 //            3,
 //            2,
 //            2,
+//            2,
+//            2,
+//            2,
+//            2,
+//            1
 
     };
 }

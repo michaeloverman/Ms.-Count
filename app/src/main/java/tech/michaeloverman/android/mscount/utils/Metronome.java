@@ -1,4 +1,4 @@
-package tech.michaeloverman.android.mscount;
+package tech.michaeloverman.android.mscount.utils;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;

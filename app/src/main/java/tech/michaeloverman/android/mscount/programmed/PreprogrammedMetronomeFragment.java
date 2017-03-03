@@ -193,7 +193,7 @@ public class PreprogrammedMetronomeFragment extends Fragment
             Log.d(TAG, "metronomeStop() " + mCurrentComposer);
             mMetronome.stop();
             mMetronomeRunning = false;
-            mStartStopButton.setText("Start");
+            mStartStopButton.setText(getString(R.string.start));
             mCurrentMeasureNumber.setText("--");
         } else {
             Log.d(TAG, "metronomeStart() " + mCurrentPiece.getTitle());
@@ -202,7 +202,7 @@ public class PreprogrammedMetronomeFragment extends Fragment
                 return;
             }
             mMetronomeRunning = true;
-            mStartStopButton.setText("Stop");
+            mStartStopButton.setText(getString(R.string.stop));
             mMetronome.play(mCurrentPiece, mCurrentTempo);
         }
     }

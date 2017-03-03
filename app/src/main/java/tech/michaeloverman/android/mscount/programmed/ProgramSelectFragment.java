@@ -77,7 +77,7 @@ public class ProgramSelectFragment extends Fragment
         mAdapter = new WorksListAdapter(this.getContext(), mTitlesList, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        getActivity().setTitle("Select a piece by...");
+        getActivity().setTitle(getString(R.string.select_piece_by));
 
         if(mCurrentComposer == null) {
             selectComposer();
@@ -141,7 +141,7 @@ public class ProgramSelectFragment extends Fragment
                             list.add(new TitleKeyObject(snap.getKey(), snap.getValue().toString()));
                         }
                         mAdapter.setTitles(list);
-                        mWorksListTitle.setText(getString(R.string.work_titles_label, mCurrentComposer));
+                        mWorksListTitle.setText(mCurrentComposer);
                         progressSpinner(false);
 //                        onClick(list.get(0).getKey());
                     }

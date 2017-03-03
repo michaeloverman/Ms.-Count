@@ -79,7 +79,7 @@ public class SelectComposerFragment extends Fragment {
         View view = inflater.inflate(R.layout.select_composer_layout, container, false);
         ButterKnife.bind(this, view);
 
-        getActivity().setTitle("Select a composer:");
+        getActivity().setTitle(getString(R.string.select_a_composer));
 
         LinearLayoutManager manager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(manager);

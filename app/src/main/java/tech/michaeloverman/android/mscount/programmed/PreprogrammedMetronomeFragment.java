@@ -75,6 +75,8 @@ public class PreprogrammedMetronomeFragment extends Fragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
+        getActivity().setTitle(getString(R.string.app_name));
+
         if(savedInstanceState != null) {
             mCurrentTempo = savedInstanceState.getInt(CURRENT_TEMPO_KEY);
 //            mCurrentPiece = savedInstanceState.getString(CURRENT_PIECE_KEY);

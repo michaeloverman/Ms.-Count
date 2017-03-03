@@ -39,7 +39,7 @@ public class MetronomeSelectorFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
     @Override

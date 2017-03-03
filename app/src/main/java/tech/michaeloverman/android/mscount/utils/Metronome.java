@@ -93,6 +93,7 @@ public class Metronome {
     public void play(PieceOfMusic p, int tempo) {
         Log.d(TAG, "metronome play()");
         if(p.getTempoMultiplier() != 0) {
+            Log.d(TAG, "tempo multiplier!! " + p.getTempoMultiplier());
             tempo *= p.getTempoMultiplier();
         }
         mDelay = 60000 / tempo / p.getSubdivision();

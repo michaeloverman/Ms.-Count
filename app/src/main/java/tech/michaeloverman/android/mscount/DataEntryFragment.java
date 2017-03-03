@@ -72,7 +72,7 @@ public class DataEntryFragment extends Fragment {
         mBeats = new ArrayList<>();
         mDownBeats = new ArrayList<>();
 
-//        loadNewPieces();
+        loadNewPieces();
     }
 
     @Override

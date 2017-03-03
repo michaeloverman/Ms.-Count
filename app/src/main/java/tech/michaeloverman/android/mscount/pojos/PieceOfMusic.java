@@ -20,6 +20,7 @@ public class PieceOfMusic {
     private int mCountOffSubdivision;
     private int mCountOffMeasureLength;
     private int mDefaultTempo;
+    private double mTempoMultiplier;
 
     public PieceOfMusic(String title) {
         Log.d(TAG, "PieceOfMusic constructor()");
@@ -67,6 +68,14 @@ public class PieceOfMusic {
 
     public void setDefaultTempo(int defaultTempo) {
         mDefaultTempo = defaultTempo;
+    }
+
+    public double getTempoMultiplier() {
+        return mTempoMultiplier;
+    }
+
+    public void setTempoMultiplier(double tempoMultiplier) {
+        mTempoMultiplier = tempoMultiplier;
     }
 
     public List<Integer> getBeats() {

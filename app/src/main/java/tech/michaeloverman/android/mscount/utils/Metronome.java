@@ -14,8 +14,6 @@ import java.util.List;
 
 import tech.michaeloverman.android.mscount.pojos.Click;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
-import tech.michaeloverman.android.mscount.utils.MetronomeListener;
-import tech.michaeloverman.android.mscount.utils.Utilities;
 
 /**
  * Created by Michael on 10/6/2016.
@@ -94,6 +92,9 @@ public class Metronome {
      */
     public void play(PieceOfMusic p, int tempo) {
         Log.d(TAG, "metronome play()");
+        if(p.getTempoMultiplier() != 0) {
+            tempo *= p.getTempoMultiplier();
+        }
         mDelay = 60000 / tempo / p.getSubdivision();
         Log.d(TAG, p.toString());
         final int[] beats = Utilities.integerListToArray(p.getBeats());

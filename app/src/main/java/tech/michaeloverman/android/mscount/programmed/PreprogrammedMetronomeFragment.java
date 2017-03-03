@@ -239,6 +239,9 @@ public class PreprogrammedMetronomeFragment extends Fragment
         Log.d(TAG, "newPiece() " + piece.getTitle());
         mCurrentPiece = piece;
         mCurrentComposer = mCurrentPiece.getAuthor();
+        if(mCurrentPiece.getDefaultTempo() != 0) {
+            mCurrentTempo = mCurrentPiece.getDefaultTempo();
+        }
 //        mCurrentProgramLabel.setText("A barrel of laughs");
 //        updateGUI();
     }

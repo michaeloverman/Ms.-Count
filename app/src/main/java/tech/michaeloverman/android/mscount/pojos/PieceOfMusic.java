@@ -19,6 +19,7 @@ public class PieceOfMusic {
     private int[] mCountOff;
     private int mCountOffSubdivision;
     private int mCountOffMeasureLength;
+    private int mDefaultTempo;
 
     public PieceOfMusic(String title) {
         Log.d(TAG, "PieceOfMusic constructor()");
@@ -58,6 +59,14 @@ public class PieceOfMusic {
 
     public void setCountOffSubdivision(int countOffSubdivision) {
         mCountOffSubdivision = countOffSubdivision;
+    }
+
+    public int getDefaultTempo() {
+        return mDefaultTempo;
+    }
+
+    public void setDefaultTempo(int defaultTempo) {
+        mDefaultTempo = defaultTempo;
     }
 
     public List<Integer> getBeats() {

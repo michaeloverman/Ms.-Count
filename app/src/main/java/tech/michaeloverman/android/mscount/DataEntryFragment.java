@@ -72,7 +72,7 @@ public class DataEntryFragment extends Fragment {
         mBeats = new ArrayList<>();
         mDownBeats = new ArrayList<>();
 
-        loadNewPieces();
+//        loadNewPieces();
     }
 
     @Override
@@ -217,7 +217,7 @@ public class DataEntryFragment extends Fragment {
                             // update
                             key = dataSnapshot.getValue().toString();
                         } else {
-                            // push and create
+                            // push to create
                             key = mPiecesDatabaseReference.child("pieces").push().getKey();
                         }
 

@@ -469,6 +469,12 @@ public class HardData {
             7,3,1,1,2,1,1,5,
             5,7,7,1,3
     };
+    public static int[] testBeats = {
+            2,3,2,3,2,3
+    };
+    public static int[] testDownBeats = {
+            3,2,1
+    };
 
     public static String[] composers = {
 //            "Cirone, Anthony",
@@ -487,7 +493,8 @@ public class HardData {
 //            "Delecluse, Jacques",
 //            "Delecluse, Jacques",
 //            "Delecluse, Jacques",
-//            "Delecluse, Jacques",
+            "Delecluse, Jacques",
+            "Composer, Noname"
     };
     public static String[] titles = {
 //            "Portraits in Rhythm 39",
@@ -507,7 +514,8 @@ public class HardData {
 //            "Douze Etude 5",
 //            "Douze Etude 8",
 //            "Douze Etude 10",
-//            "Douze Etude 12",
+            "Douze Etude 12",
+            "New Title no Name"
 
     };
     public static int[][] lotsObeats = {
@@ -528,7 +536,8 @@ public class HardData {
 //            delecluse5beats,
 //            delecluse8beats,
 //            delecluse10beats,
-//            delecluse12beats,
+            delecluse12beats,
+            testBeats,
 
     };
     public static int[][] lotsOdownBeats = {
@@ -549,7 +558,8 @@ public class HardData {
 //            delecluse5downbeats,
 //            delecluse8downbeats,
 //            delecluse10downbeats,
-//            delecluse12downbeats,
+            delecluse12downbeats,
+            testDownBeats
 
     };
     public static int[] subdivisions = {
@@ -565,7 +575,8 @@ public class HardData {
 //            2,
 //            2,
 //            2,
-//            2,
+            2,
+            2,
 
     };
     public static int[] countoffsubdivisions = {
@@ -581,7 +592,8 @@ public class HardData {
 //            2,
 //            2,
 //            2,
-//            1
+            1,
+            2,
 
     };
 }

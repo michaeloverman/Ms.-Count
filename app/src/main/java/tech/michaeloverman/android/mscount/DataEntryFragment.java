@@ -17,8 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -195,53 +198,48 @@ public class DataEntryFragment extends Fragment {
             saveToDatabase(loader);
         }
     }
-    private void saveToDatabase(PieceOfMusic p) {
+
+    private void saveToDatabase(final PieceOfMusic p) {
         Log.d(TAG, "Saving to local database, or to Firebase: " + p.getTitle() + " by " + p.getAuthor());
         Log.d(TAG, "Pieces is " + p.getDownBeats().size() + " measures long.");
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
+        final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
 
-        String key = mPiecesDatabaseReference.child("pieces").push().getKey();
-//        Map<String, Object> values = p.toMap();
+        // Look for piece first, and if exists, get that key to update; otherwise push() to create
+        // new key for new piece.
+        mPiecesDatabaseReference.child("composers").child(p.getAuthor()).child(p.getTitle())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String key;
+                        if(dataSnapshot.exists()) {
+                            // update
+                            key = dataSnapshot.getValue().toString();
+                        } else {
+                            // push and create
+                            key = mPiecesDatabaseReference.child("pieces").push().getKey();
+                        }
 
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("/pieces/" + key, p);
-        updates.put("/composers/" + p.getAuthor() + "/" + p.getTitle(), key);
-        mPiecesDatabaseReference.updateChildren(updates);
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("/pieces/" + key, p);
+                        updates.put("/composers/" + p.getAuthor() + "/" + p.getTitle(), key);
+                        mPiecesDatabaseReference.updateChildren(updates);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
 
     }
+
     private void saveToDatabase() {
-        Log.d(TAG, "Saving to local database, or to Firebase: " + mPieceOfMusic.getTitle() + " by " + mPieceOfMusic.getAuthor());
-        Log.d(TAG, "Pieces is " + mPieceOfMusic.getDownBeats().size() + " measures long.");
-
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
-
-        String key = mPiecesDatabaseReference.child("pieces").push().getKey();
-//        Map<String, Object> values = p.toMap();
-
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("/pieces/" + key, mPieceOfMusic);
-        updates.put("/composers/" + mPieceOfMusic.getAuthor() + "/" + mPieceOfMusic.getTitle(), key);
-        mPiecesDatabaseReference.updateChildren(updates);
-
+        saveToDatabase(mPieceOfMusic);
     }
-
-//        private PieceOfMusic getCirone12() {
-//        PieceOfMusic p = new PieceOfMusic("Portraits in Rhythm 21");
-//        p.setAuthor("Cirone, Anthony");
-//        p.setSubdivision(2);
-////        p.setBeats(HardData.testPatternBeats);
-//        p.setBeats(HardData.cirone21Beats);
-////        p.setDownBeats(HardData.testPatternDownBeats);
-//        p.setDownBeats(HardData.cirone21DownBeats);
-//
-//
-//        return p;
-//    }
-
-
 
     private void toastError() {
         Toast.makeText(this.getContext(), "You Must Enter Data to Save Data!", Toast.LENGTH_SHORT).show();

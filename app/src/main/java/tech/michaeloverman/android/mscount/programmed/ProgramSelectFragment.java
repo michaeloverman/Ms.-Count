@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +40,7 @@ public class ProgramSelectFragment extends Fragment
 
     @BindView(R.id.piece_list_recycler_view) RecyclerView mRecyclerView;
     @BindView(R.id.other_pieces_label) TextView mWorksListTitle;
+    @BindView(R.id.program_select_progress_bar) ProgressBar mProgressSpinner;
 
     private static String mCurrentComposer;
     private WorksListAdapter mAdapter;
@@ -126,6 +128,7 @@ public class ProgramSelectFragment extends Fragment
     }
 
     private void composerSelected() {
+        progressSpinner(true);
         Log.d(TAG, "composerSelected() - " + mCurrentComposer);
 //        mCurrentComposer = composer;
         FirebaseDatabase.getInstance().getReference().child("composers").child(mCurrentComposer)
@@ -139,6 +142,7 @@ public class ProgramSelectFragment extends Fragment
                         }
                         mAdapter.setTitles(list);
                         mWorksListTitle.setText(getString(R.string.work_titles_label, mCurrentComposer));
+                        progressSpinner(false);
 //                        onClick(list.get(0).getKey());
                     }
 
@@ -148,5 +152,15 @@ public class ProgramSelectFragment extends Fragment
                     }
                 });
 
+    }
+
+    private void progressSpinner(boolean on) {
+        if(on) {
+            mWorksListTitle.setVisibility(View.INVISIBLE);
+            mProgressSpinner.setVisibility(View.VISIBLE);
+        } else {
+            mWorksListTitle.setVisibility(View.VISIBLE);
+            mProgressSpinner.setVisibility(View.INVISIBLE);
+        }
     }
 }

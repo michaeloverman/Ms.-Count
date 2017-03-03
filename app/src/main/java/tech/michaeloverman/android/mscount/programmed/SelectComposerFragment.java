@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -37,8 +38,8 @@ import tech.michaeloverman.android.mscount.R;
 public class SelectComposerFragment extends Fragment {
     private static final String TAG = SelectComposerFragment.class.getSimpleName();
 
-    @BindView(R.id.composer_recycler_view)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.composer_recycler_view) RecyclerView mRecyclerView;
+    @BindView(R.id.composer_select_progress_bar) ProgressBar mProgressBar;
 
     private ComposerListAdapter mAdapter;
 
@@ -102,7 +103,7 @@ public class SelectComposerFragment extends Fragment {
      */
     private void loadComposers() {
         Log.d(TAG, "loadComposers()");
-
+        progressSpinner(true);
         FirebaseDatabase.getInstance().getReference().child("composers")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -114,6 +115,7 @@ public class SelectComposerFragment extends Fragment {
                         }
                         Collections.sort(list);
                         mAdapter.setComposers(list);
+                        progressSpinner(false);
                     }
 
                     @Override
@@ -185,4 +187,11 @@ public class SelectComposerFragment extends Fragment {
         }
     }
 
+    private void progressSpinner(boolean on) {
+        if(on) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
+    }
 }

@@ -10,7 +10,17 @@ import java.util.List;
 
 public class PieceOfMusic {
     private static final String TAG = PieceOfMusic.class.getSimpleName();
-    private static final int COUNTOFF_LENGTH = 4;
+    public static final int COUNTOFF_LENGTH = 4;
+    public static final int SIXTEENTH = 1;
+    public static final int DOTTED_SIXTEENTH = 5;
+    public static final int EIGHTH = 2;
+    public static final int DOTTED_EIGHTH = 3;
+    public static final int QUARTER = 4;
+    public static final int DOTTED_QUARTER = 6;
+    public static final int HALF = 8;
+    public static final int DOTTED_HALF = 12;
+    public static final int WHOLE = 16;
+
     private String mTitle;
     private String mAuthor;
     private List<Integer> mBeats;
@@ -21,6 +31,7 @@ public class PieceOfMusic {
     private int mCountOffMeasureLength;
     private int mDefaultTempo;
     private double mTempoMultiplier;
+    private int mBaselineNoteValue;
 
     public PieceOfMusic(String title) {
         Log.d(TAG, "PieceOfMusic constructor()");
@@ -76,6 +87,14 @@ public class PieceOfMusic {
 
     public void setTempoMultiplier(double tempoMultiplier) {
         mTempoMultiplier = tempoMultiplier;
+    }
+
+    public int getBaselineNoteValue() {
+        return mBaselineNoteValue;
+    }
+
+    public void setBaselineNoteValue(int baselineNoteValue) {
+        mBaselineNoteValue = baselineNoteValue;
     }
 
     public List<Integer> getBeats() {

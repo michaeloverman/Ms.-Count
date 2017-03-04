@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class PreprogrammedMetronomeFragment extends Fragment
     @BindView(R.id.current_composer_name) TextView mTVCurrentComposer;
     @BindView(R.id.current_program_title) TextView mTVCurrentPiece;
     @BindView(R.id.current_tempo_setting) TextView mTVCurrentTempo;
+    @BindView(R.id.primary_beat_length_image) ImageView mBeatLengthImage;
     @BindView(R.id.start_stop_button) Button mStartStopButton;
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
     @BindView(R.id.tempo_down_button) ImageButton mTempoDownButton;
@@ -232,8 +234,35 @@ public class PreprogrammedMetronomeFragment extends Fragment
         Log.d(TAG, "updateGUI() " + mCurrentPiece.getAuthor() + ": " + mCurrentPiece.getTitle());
         mTVCurrentPiece.setText(mCurrentPiece.getTitle());
         mTVCurrentComposer.setText(mCurrentComposer);
+        mBeatLengthImage.setImageResource(getNoteImageResource
+                (mCurrentPiece.getBaselineNoteValue()));
 //        mCurrentProgramLabel.setText("Now isn't this fun.");
         updateTempoView();
+    }
+
+    private int getNoteImageResource(int noteValue) {
+        switch(noteValue) {
+            case PieceOfMusic.SIXTEENTH:
+                return R.drawable.ic_sixteenth_note;
+            case PieceOfMusic.DOTTED_SIXTEENTH:
+                return R.drawable.ic_dotted_sixteenth;
+            case PieceOfMusic.EIGHTH:
+                return R.drawable.ic_eighth_note;
+            case PieceOfMusic.DOTTED_EIGHTH:
+                return R.drawable.ic_dotted_eighth;
+            case PieceOfMusic.QUARTER:
+                return R.drawable.ic_quarter_note;
+            case PieceOfMusic.DOTTED_QUARTER:
+                return R.drawable.ic_dotted_quarter;
+            case PieceOfMusic.HALF:
+                return R.drawable.ic_half_note;
+            case PieceOfMusic.DOTTED_HALF:
+                return R.drawable.ic_dotted_half;
+            case PieceOfMusic.WHOLE:
+                return R.drawable.ic_whole_note;
+            default:
+                return R.drawable.ic_quarter_note;
+        }
     }
 
     @Override

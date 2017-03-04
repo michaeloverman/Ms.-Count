@@ -82,7 +82,7 @@
         <ImageButton
             android:id="@+id/tempo_down_button"
             app:srcCompat="@android:drawable/arrow_down_float"
-            android:background="@drawable/roundcorner"
+            android:background="@drawable/roundcorner_primary"
             android:layout_width="@dimen/tempo_button_size"
             android:layout_height="@dimen/tempo_button_size"
             android:layout_marginLeft="@dimen/generic_8dp_margin"
@@ -93,7 +93,7 @@
         <ImageButton
             android:id="@+id/tempo_up_button"
             app:srcCompat="@android:drawable/arrow_up_float"
-            android:background="@drawable/roundcorner"
+            android:background="@drawable/roundcorner_primary"
             android:layout_width="@dimen/tempo_button_size"
             android:layout_height="@dimen/tempo_button_size"
             android:layout_marginRight="@dimen/generic_8dp_margin"

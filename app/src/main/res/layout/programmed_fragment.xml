@@ -3,27 +3,33 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorPrimaryLight"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/start_stop_button"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/start_stop_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start"
-        android:layout_marginStart="@dimen/generic_8dp_margin"
         android:layout_marginEnd="@dimen/generic_8dp_margin"
         android:layout_marginLeft="@dimen/generic_8dp_margin"
         android:layout_marginRight="@dimen/generic_8dp_margin"
-        app:layout_constraintTop_toTopOf="@+id/current_tempo_setting"
+        android:layout_marginStart="@dimen/generic_8dp_margin"
+        android:elevation="@dimen/fab_elevation"
+        android:text="Start"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="@+id/current_tempo_setting"
         app:layout_constraintLeft_toRightOf="@+id/current_tempo_setting"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/current_tempo_setting"
+        app:rippleColor="@color/colorPrimaryLight"
+        app:srcCompat="@android:drawable/ic_media_play"/>
 
 
     <TextView
         android:id="@+id/current_composer_name"
         android:text="                  "
+        android:textColor="@color/secondaryText"
         android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,6 +41,7 @@
         android:id="@+id/current_program_title"
         android:text="select a program..."
         android:textSize="24sp"
+        android:textColor="@color/primaryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/current_composer_name"
@@ -46,6 +53,7 @@
     <TextView
         android:id="@+id/current_tempo_setting"
         android:text="120"
+        android:textColor="@color/primaryText"
         android:textSize="40sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,6 +82,7 @@
         <ImageButton
             android:id="@+id/tempo_down_button"
             app:srcCompat="@android:drawable/arrow_down_float"
+            android:background="@drawable/roundcorner"
             android:layout_width="@dimen/tempo_button_size"
             android:layout_height="@dimen/tempo_button_size"
             android:layout_marginLeft="@dimen/generic_8dp_margin"
@@ -84,6 +93,7 @@
         <ImageButton
             android:id="@+id/tempo_up_button"
             app:srcCompat="@android:drawable/arrow_up_float"
+            android:background="@drawable/roundcorner"
             android:layout_width="@dimen/tempo_button_size"
             android:layout_height="@dimen/tempo_button_size"
             android:layout_marginRight="@dimen/generic_8dp_margin"
@@ -95,6 +105,7 @@
 
     <TextView
         android:id="@+id/measure_number_label"
+        android:textColor="@color/secondaryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Current Measure:"
@@ -111,6 +122,7 @@
         android:layout_height="wrap_content"
         android:text="--"
         android:textSize="90dp"
+        android:textColor="@color/primaryText"
         android:layout_marginTop="0dp"
         app:layout_constraintTop_toBottomOf="@+id/measure_number_label"
         android:layout_marginRight="8dp"
@@ -122,15 +134,11 @@
         android:id="@+id/primary_beat_length_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
-
         app:srcCompat="@drawable/ic_dotted_quarter"
         app:layout_constraintTop_toTopOf="@+id/current_tempo_setting"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="@dimen/generic_8dp_margin"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintRight_toLeftOf="@+id/current_tempo_setting"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
     <TextView
@@ -139,6 +147,7 @@
         android:layout_height="wrap_content"
         android:text="="
         android:textSize="40dp"
+        android:textColor="@color/secondaryText"
         app:layout_constraintTop_toTopOf="@+id/primary_beat_length_image"
         android:layout_marginTop="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/primary_beat_length_image"

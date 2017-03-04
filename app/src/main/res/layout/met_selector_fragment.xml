@@ -3,12 +3,14 @@
                                              xmlns:app="http://schemas.android.com/apk/res-auto"
                                              xmlns:tools="http://schemas.android.com/tools"
                                              android:layout_width="match_parent"
+                                             android:background="@color/colorPrimaryLight"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
     <Button
         android:text="Normal Metronome"
         android:id="@+id/normal_metronome_button"
+        android:background="@color/colorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,6 +35,7 @@
     <Button
         android:text="Pre-programmed Metronome"
         android:id="@+id/preprogrammed_metronome_button"
+        android:background="@color/colorAccent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/home_screen_button_margin"
@@ -46,6 +49,7 @@
     <Button
         android:text="Create New Program"
         android:id="@+id/create_new_program_button"
+        android:background="@color/colorPrimaryDark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/home_screen_button_margin"

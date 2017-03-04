@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -12,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,9 +21,9 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
+import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 
 /**
@@ -52,7 +52,7 @@ public class PreprogrammedMetronomeFragment extends Fragment
     @BindView(R.id.current_program_title) TextView mTVCurrentPiece;
     @BindView(R.id.current_tempo_setting) TextView mTVCurrentTempo;
     @BindView(R.id.primary_beat_length_image) ImageView mBeatLengthImage;
-    @BindView(R.id.start_stop_button) Button mStartStopButton;
+    @BindView(R.id.start_stop_fab) FloatingActionButton mStartStopButton;
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
     @BindView(R.id.tempo_down_button) ImageButton mTempoDownButton;
     @BindView(R.id.current_measure_number) TextView mCurrentMeasureNumber;
@@ -193,13 +193,13 @@ public class PreprogrammedMetronomeFragment extends Fragment
         trans.commit();
     }
 
-    @OnClick(R.id.start_stop_button)
+    @OnClick(R.id.start_stop_fab)
     public void metronomeStartStop() {
         if(mMetronomeRunning) {
             Log.d(TAG, "metronomeStop() " + mCurrentComposer);
             mMetronome.stop();
             mMetronomeRunning = false;
-            mStartStopButton.setText(getString(R.string.start));
+            mStartStopButton.setImageResource(android.R.drawable.ic_media_play);
             mCurrentMeasureNumber.setText("--");
         } else {
             Log.d(TAG, "metronomeStart() " + mCurrentPiece.getTitle());
@@ -208,7 +208,7 @@ public class PreprogrammedMetronomeFragment extends Fragment
                 return;
             }
             mMetronomeRunning = true;
-            mStartStopButton.setText(getString(R.string.stop));
+            mStartStopButton.setImageResource(android.R.drawable.ic_media_pause);
             mMetronome.play(mCurrentPiece, mCurrentTempo);
         }
     }

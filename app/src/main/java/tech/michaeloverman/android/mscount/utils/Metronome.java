@@ -101,9 +101,7 @@ public class Metronome {
         final int[] beats = Utilities.integerListToArray(p.getBeats());
         final int[] downBeats = Utilities.integerListToArray(p.getDownBeats());
         final int countOffSubs = p.getCountOffSubdivision();
-
-//        Utilities.printArray(beats);
-//        Utilities.printArray(downBeats);
+        final int measureNumberOffset = p.getMeasureCountOffset();
 
         mClickId = mClicks.get(0).getSoundId(); // not using this sound at the moment...
         mHiClickId = mClicks.get(1).getSoundId();
@@ -127,7 +125,7 @@ public class Metronome {
                         mSoundPool.play(mHiClickId, 1.0f, 1.0f, 1, 0, 1.0f);
                         // start counting until next downbeat
                         beatsPerMeasureCount = downBeats[measurePointer];
-                        mListener.metronomeMeasureNumber(measurePointer++ + "");
+                        mListener.metronomeMeasureNumber( (measureNumberOffset + measurePointer++) + "");
                     } else { // inner beat
                         mSoundPool.play(mLoClickId, 1.0f, 1.0f, 1, 0, 1.0f);
 

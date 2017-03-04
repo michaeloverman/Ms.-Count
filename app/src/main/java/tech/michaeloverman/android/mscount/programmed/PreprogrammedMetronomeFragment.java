@@ -121,6 +121,8 @@ public class PreprogrammedMetronomeFragment extends Fragment
         View view = inflater.inflate(R.layout.programmed_fragment, container, false);
         ButterKnife.bind(this, view);
 
+        getActivity().setTitle(R.string.app_name);
+
         mTempoDownButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

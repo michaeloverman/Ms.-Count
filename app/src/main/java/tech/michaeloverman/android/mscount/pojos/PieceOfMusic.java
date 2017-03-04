@@ -4,6 +4,8 @@ import android.util.Log;
 
 import java.util.List;
 
+import tech.michaeloverman.android.mscount.utils.Utilities;
+
 /**
  * Created by Michael on 2/20/2017.
  */
@@ -20,6 +22,7 @@ public class PieceOfMusic {
     public static final int HALF = 8;
     public static final int DOTTED_HALF = 12;
     public static final int WHOLE = 16;
+    private static final int DEFAULT_DEFAULT_TEMPO = 120;
 
     private String mTitle;
     private String mAuthor;
@@ -32,6 +35,7 @@ public class PieceOfMusic {
     private int mDefaultTempo;
     private double mTempoMultiplier;
     private int mBaselineNoteValue;
+    private int mMeasureCountOffset;
 
     public PieceOfMusic(String title) {
         Log.d(TAG, "PieceOfMusic constructor()");
@@ -95,6 +99,14 @@ public class PieceOfMusic {
 
     public void setBaselineNoteValue(int baselineNoteValue) {
         mBaselineNoteValue = baselineNoteValue;
+    }
+
+    public int getMeasureCountOffset() {
+        return mMeasureCountOffset;
+    }
+
+    public void setMeasureCountOffset(int measureCountOffset) {
+        mMeasureCountOffset = measureCountOffset;
     }
 
     public List<Integer> getBeats() {
@@ -161,8 +173,9 @@ public class PieceOfMusic {
                 }
             }
         }
-
+        Utilities.appendCountoff(mCountOff, mBeats, mDownBeats);
     }
+
     public int[] countOffArray() {
         return mCountOff;
     }
@@ -183,5 +196,87 @@ public class PieceOfMusic {
 //            mDownBeats.add(allDownBeats[i]);
 //        }
         mDownBeats = downBeats;
+    }
+
+    public static class Builder {
+        private String title;
+        private String author;
+        private List<Integer> beats;
+        private List<Integer> downBeats;
+        private int subdivision;
+        private int countOffSubdivision;
+        private int defaultTempo;
+        private double tempoMultiplier;
+        private int baselineNoteValue;
+        private int measureCountOffset;
+
+        public Builder() {
+
+        }
+
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+        public Builder author(String author) {
+            this.author = author;
+            return this;
+        }
+        public Builder beats(List<Integer> beats) {
+            this.beats = beats;
+            return this;
+        }
+        public Builder beats(int[] beats) {
+            return beats(Utilities.arrayToIntegerList(beats));
+        }
+        public Builder downBeats(List<Integer> downBeats) {
+            this.downBeats = downBeats;
+            return this;
+        }
+        public Builder downBeats(int[] downBeats) {
+            return downBeats(Utilities.arrayToIntegerList(downBeats));
+        }
+        public Builder subdivision(int sub) {
+            this.subdivision = sub;
+            return this;
+        }
+        public Builder countOffSubdivision(int coSub) {
+            this.countOffSubdivision = coSub;
+            return this;
+        }
+        public Builder defaultTempo(int tempo) {
+            this.defaultTempo = tempo;
+            return this;
+        }
+        public Builder tempoMultiplier(double mult) {
+            this.tempoMultiplier = mult;
+            return this;
+        }
+        public Builder baselineNoteValue(int value) {
+            this.baselineNoteValue = value;
+            return this;
+        }
+        public Builder firstMeasureNumber(int offset) {
+            this.measureCountOffset = offset - 1;
+            return this;
+        }
+        public PieceOfMusic build() {
+            return new PieceOfMusic(this);
+        }
+    }
+
+    private PieceOfMusic(Builder builder) {
+        mTitle = builder.title;
+        mAuthor = builder.author;
+        mBeats = builder.beats;
+        mDownBeats = builder.downBeats;
+        mSubdivision = builder.subdivision;
+        mCountOffSubdivision = builder.countOffSubdivision;
+        mMeasureCountOffset = builder.measureCountOffset;
+        mDefaultTempo = builder.defaultTempo == 0 ? DEFAULT_DEFAULT_TEMPO : builder.defaultTempo;
+        mTempoMultiplier = builder.tempoMultiplier == 0.0 ? 1.0 : builder.tempoMultiplier;
+        mBaselineNoteValue = builder.baselineNoteValue == 0 ? QUARTER : builder.baselineNoteValue;
+
+        buildCountoff();
     }
 }

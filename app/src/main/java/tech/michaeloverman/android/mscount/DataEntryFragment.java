@@ -72,7 +72,7 @@ public class DataEntryFragment extends Fragment {
         mBeats = new ArrayList<>();
         mDownBeats = new ArrayList<>();
 
-        loadNewPieces();
+//        loadNewPieces();
     }
 
     @Override
@@ -175,27 +175,23 @@ public class DataEntryFragment extends Fragment {
     }
 
     private void loadNewPieces() {
-        PieceOfMusic loader;
+        PieceOfMusic.Builder loader;
         int NUMPIECES = HardData.composers.length;
         for(int i = 0; i < NUMPIECES; i++) {
-            loader = new PieceOfMusic();
-            loader.setAuthor(HardData.composers[i]);
-            loader.setTitle(HardData.titles[i]);
-            loader.setSubdivision(HardData.subdivisions[i]);
-            loader.setCountOffSubdivision(HardData.countoffsubdivisions[i]);
-            loader.buildCountoff();
-            List<Integer> bs;
+            loader = new PieceOfMusic.Builder()
+                    .title(HardData.titles[i])
+                    .author(HardData.composers[i])
+                    .subdivision(HardData.subdivisions[i])
+                    .countOffSubdivision(HardData.countoffsubdivisions[i])
+                    .downBeats(HardData.lotsOdownBeats[i])
+                    .defaultTempo(HardData.defaultTempos[i]);
             if(HardData.lotsObeats[i].length == 0) {
-                bs = Utilities.createBeatList(HardData.lotsOdownBeats[i], HardData.subdivisions[i]);
+                loader.beats(Utilities.createBeatList(HardData.lotsOdownBeats[i], HardData.subdivisions[i]));
             } else {
-                bs = Utilities.arrayToIntegerList(HardData.lotsObeats[i]);
+                loader.beats(HardData.lotsObeats[i]);
             }
-            List<Integer> dbs = Utilities.arrayToIntegerList(HardData.lotsOdownBeats[i]);
-            Utilities.appendCountoff(loader.countOffArray(), bs, dbs);
-            loader.setBeats(bs);
-            loader.setDownBeats(dbs);
 
-            saveToDatabase(loader);
+            saveToDatabase(loader.build());
         }
     }
 

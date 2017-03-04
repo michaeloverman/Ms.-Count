@@ -709,6 +709,18 @@ public class HardData {
             5,5,5,5,5,5,5,5,5,5,
             5,5,5,5,5,5,5,5,5,5
     };
+    public static int[] mulaBeats = {
+
+    };
+    public static int[] mulaDownbeats = {
+            4,3,4,3,4,3,4,3,4,3,4,3,
+            4,3,4,3,4,3,4,3,4,3,4,3,
+            4,3,4,3,4,3,4,3,4,3,4,3,
+            4,3,4,3,4,3,4,3,4,3,4,3,
+            4,3,4,3,4,3,4,3,4,3,4,3,
+            4,3,4,3,4,3,4,3,4,3,4,4,4,4
+
+    };
 
     public static String[] composers = {
 //            "Cirone, Anthony",
@@ -735,6 +747,7 @@ public class HardData {
 //            "Kopetzki, Eckhard",
 //            "Kopetzki, Eckhard",
 //            "Kopetzki, Eckhard",
+            "Rosauro, Ney"
     };
     public static String[] titles = {
 //            "Portraits in Rhythm 39",
@@ -762,6 +775,7 @@ public class HardData {
 //            "Concert Suite for SD: Momtong makki",
 //            "Concert Suite for SD: Son Bandal page 1",
 //            "Concert Suite for SD: Son Bandal page 2",
+            "Mula sem Cabeca, letter B"
 
     };
     public static int[][] lotsObeats = {
@@ -790,6 +804,7 @@ public class HardData {
 //            momtangBeats,
 //            sonbandalABeats,
 //            sonbandalBBeats,
+            mulaBeats
 
     };
     public static int[][] lotsOdownBeats = {
@@ -818,6 +833,7 @@ public class HardData {
 //            momtangDownBeats,
 //            sondbandalADownbeats,
 //            sonbandalBDownbeats
+            mulaDownbeats
 
     };
     public static int[] subdivisions = {
@@ -841,6 +857,7 @@ public class HardData {
 //            2,
 //            2,
 //            3,
+            3
 
     };
     public static int[] countoffsubdivisions = {
@@ -864,6 +881,7 @@ public class HardData {
 //            2,
 //            2,
 //            3,
+            3
 
     };
     public static int[] defaultTempos = {
@@ -873,6 +891,7 @@ public class HardData {
 //            108,
 //            126,
 //            108,
+            152
     };
 
 }

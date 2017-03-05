@@ -11,19 +11,17 @@
         android:id="@+id/start_stop_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/generic_8dp_margin"
-        android:layout_marginLeft="@dimen/generic_8dp_margin"
-        android:layout_marginRight="@dimen/generic_8dp_margin"
-        android:layout_marginStart="@dimen/generic_8dp_margin"
+        android:layout_marginRight="@dimen/fab_right_margin"
+        android:layout_marginEnd="@dimen/fab_right_margin"
         android:elevation="@dimen/fab_elevation"
         android:text="Start"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="@+id/current_tempo_setting"
-        app:layout_constraintLeft_toRightOf="@+id/current_tempo_setting"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/current_tempo_setting"
         app:rippleColor="@color/colorPrimaryLight"
-        app:srcCompat="@android:drawable/ic_media_play"/>
+        app:srcCompat="@android:drawable/ic_media_play"
+        />
 
 
     <TextView
@@ -136,9 +134,8 @@
         android:layout_height="80dp"
         app:srcCompat="@drawable/ic_dotted_quarter"
         app:layout_constraintTop_toTopOf="@+id/current_tempo_setting"
-        android:layout_margin="@dimen/generic_8dp_margin"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintRight_toLeftOf="@+id/current_tempo_setting"
+        android:layout_marginLeft="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/current_tempo_setting"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
     <TextView

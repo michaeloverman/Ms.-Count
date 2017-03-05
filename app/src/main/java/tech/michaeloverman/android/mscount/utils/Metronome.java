@@ -56,13 +56,11 @@ public class Metronome {
     }
 
     /**
-     * Simple metronome click, takes tempo, establishes simple timer, and clicks at
-     * defined intervals.
-     *
-     * @param tempo
+     * Simple metronome click, uses calculated delay between clicks in millis,
+     * establishes simple timer, and clicks at defined intervals.
      */
-    public void play(int tempo) {
-        mDelay = 60000 / tempo;
+    private void startClicking() {
+        Log.d(TAG, "int delay: "+ mDelay);
         mClickId = mClicks.get(0).getSoundId();
 //        mHiClickId = mClicks.get(1).getSoundId();
 //        mLoClickId = mClicks.get(2).getSoundId();
@@ -82,6 +80,15 @@ public class Metronome {
             }
         };
         mTimer.start();
+    }
+    public void play(int tempo) {
+        mDelay = 60000 / tempo;
+        startClicking();
+    }
+    public void play(float tempo) {
+        float delay = 60000f / tempo;
+        mDelay = (int) delay;
+        startClicking();
     }
 
     /**

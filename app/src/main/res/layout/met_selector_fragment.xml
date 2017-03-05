@@ -8,21 +8,21 @@
               android:orientation="vertical">
 
     <Button
-        android:text="Normal Metronome"
+        android:text="@string/normal_metronome"
         android:id="@+id/normal_metronome_button"
-        android:background="@drawable/roundcorner_primary"
+        android:background="@drawable/roundcorner_dark"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/home_screen_button_height"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
+        android:paddingLeft="@dimen/button_padding_rl"
+        android:paddingRight="@dimen/button_padding_rl"
+        android:paddingStart="@dimen/button_padding_rl"
+        android:paddingEnd="@dimen/button_padding_rl"
         android:layout_marginTop="@dimen/home_screen_button_margin"
-        android:layout_marginLeft="@dimen/home_screen_button_margin"
-        android:layout_marginRight="@dimen/home_screen_button_margin"/>
+        android:layout_marginBottom="@dimen/home_screen_button_margin"
+    />
 
     <!--<Button-->
         <!--android:text="Sticking Patterns"-->
@@ -37,37 +37,34 @@
         <!--app:layout_constraintRight_toRightOf="parent"/>-->
 
     <Button
-        android:text="Pre-programmed Metronome"
+        android:text="@string/pre_programmed_metronome"
         android:id="@+id/preprogrammed_metronome_button"
         android:background="@drawable/roundcorner_accent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/home_screen_button_height"
         android:layout_marginTop="@dimen/home_screen_button_margin"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
+        android:layout_marginBottom="@dimen/home_screen_button_margin"
+        android:paddingLeft="@dimen/button_padding_rl"
+        android:paddingRight="@dimen/button_padding_rl"
+        android:paddingStart="@dimen/button_padding_rl"
+        android:paddingEnd="@dimen/button_padding_rl"
         app:layout_constraintTop_toBottomOf="@+id/normal_metronome_button"
-        android:layout_marginLeft="@dimen/home_screen_button_margin"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="@dimen/home_screen_button_margin"
         app:layout_constraintRight_toRightOf="parent"/>
-        <!--app:layout_constraintTop_toBottomOf="@+id/sticking_patters_metronome_button"-->
 
     <Button
-        android:text="Create New Program"
+        android:text="@string/create_edit_program"
         android:id="@+id/create_new_program_button"
-        android:background="@drawable/roundcorner_dark"
+        android:background="@drawable/roundcorner_primary"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
+        android:layout_height="@dimen/home_screen_button_height"
+        android:paddingLeft="@dimen/button_padding_rl"
+        android:paddingRight="@dimen/button_padding_rl"
+        android:paddingStart="@dimen/button_padding_rl"
+        android:paddingEnd="@dimen/button_padding_rl"
         android:layout_marginTop="@dimen/home_screen_button_margin"
+        android:layout_marginBottom="@dimen/home_screen_button_margin"
         app:layout_constraintTop_toBottomOf="@+id/preprogrammed_metronome_button"
-        android:layout_marginLeft="@dimen/home_screen_button_margin"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="@dimen/home_screen_button_margin"
         app:layout_constraintRight_toRightOf="parent"/>
 </android.support.constraint.ConstraintLayout>

@@ -2,7 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="home_screen_button_margin">8dp</dimen>
+    <dimen name="home_screen_button_margin">16dp</dimen>
     <dimen name="list_time_text_size">20sp</dimen>
     <dimen name="list_item_min_height">40dp</dimen>
     <dimen name="list_item_padding">8dp</dimen>
@@ -11,4 +11,9 @@
     <dimen name="tempo_button_size">50dp</dimen>
     <dimen name="fab_elevation">6dp</dimen>
     <dimen name="button_corner_radius">4dp</dimen>
+    <dimen name="button_padding_rl">8dp</dimen>
+    <dimen name="home_screen_button_height">40dp</dimen>
+    <dimen name="fab_right_margin">32dp</dimen>
+    <dimen name="normal_met_fab_margin">16dp</dimen>
+    <dimen name="normal_met_tempo_vertical_padding">64dp</dimen>
 </resources>

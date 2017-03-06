@@ -30,7 +30,7 @@ import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 
 public class NormalMetronomeFragment extends Fragment implements MetronomeListener {
     private static final String TAG = NormalMetronomeFragment.class.getSimpleName();
-    private static final int MAX_SUBDIVISIONS = 5;
+    private static final int MAX_SUBDIVISIONS = Metronome.MAX_SUBDIVISIONS;
 
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
@@ -41,6 +41,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
     private float mBPM;
     private int mNumSubdivisions;
+    private int[] mSubdivisionVolumes;
 
     @BindView(R.id.add_subdivisions_fab) FloatingActionButton mAddSubdivisionFAB;
     @BindView(R.id.expanded_add_subdivisions_fab) FloatingActionButton mExpandedAddSubFab;
@@ -57,6 +58,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     Animation fadingFabAnim, unFadingFabAnim;
 
     private GestureDetectorCompat mDetector;
+//    private GestureDetectorCompat mSubdivisionDetector[];
 
 
     public static Fragment newInstance() {
@@ -73,6 +75,10 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
 
         mNumSubdivisions = 1;
+        mSubdivisionVolumes = new int[MAX_SUBDIVISIONS];
+        for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
+            mSubdivisionVolumes[i] = 10;
+        }
     }
 
     @Nullable
@@ -113,6 +119,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         unFadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.unfade_fab);
 
         mSubdivisionIndicators = new FloatingActionButton[]{ sub1, sub2, sub3, sub4, sub5 };
+        addSubdivisionVolumeChangeListeners();
 
         mBPM = 123.5654f;
         updateDisplay();
@@ -256,6 +263,53 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             mTempoSetting.setText((float)((int)(mBPM * 10)) / 10  + "");
         }
 
+    }
+
+    private void addSubdivisionVolumeChangeListeners() {
+//        mSubdivisionDetector = new GestureDetectorCompat[MAX_SUBDIVISIONS];
+
+        for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
+            final int subdivisionID = i;
+//            mSubdivisionDetector[subdivisionID] = new GestureDetectorCompat(this.getContext(),
+//                    new SubdivisionGestureListener(subdivisionID));
+            mSubdivisionIndicators[subdivisionID].setOnTouchListener(new View.OnTouchListener() {
+                float startY;
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getActionMasked();
+                    switch(action) {
+                        case (MotionEvent.ACTION_DOWN) :
+                            displayVolumeSub(subdivisionID);
+//                            startY = event.getY();
+                            return true;
+                        case (MotionEvent.ACTION_MOVE) :
+                            float distanceY = startY - event.getY();
+                            startY = event.getY();
+                            changeSubdivisionVolume(subdivisionID, distanceY);
+//                            mSubdivisionDetector[subdivisionID].onTouchEvent(event);
+                            return true;
+                        case (MotionEvent.ACTION_UP) :
+                            updateDisplay();
+                            return true;
+                        default:
+                            return false;
+                    }
+
+                }
+
+            });
+        }
+    }
+    private void displayVolumeSub(int subdiv) {
+        mTempoSetting.setText("vol: " + mSubdivisionVolumes[subdiv]);
+    }
+    private void changeSubdivisionVolume(int id, float volumeChange) {
+        mSubdivisionVolumes[id] += volumeChange;
+        if(mSubdivisionVolumes[id] > 10) mSubdivisionVolumes[id] = 10;
+        else if(mSubdivisionVolumes[id] < 0) mSubdivisionVolumes[id] = 0;
+
+        mTempoSetting.setText("vol: " + mSubdivisionVolumes[id]);
+        mMetronome.setClickVolumes(mSubdivisionVolumes);
     }
 
     class MetronomeGestureListener extends GestureDetector.SimpleOnGestureListener {

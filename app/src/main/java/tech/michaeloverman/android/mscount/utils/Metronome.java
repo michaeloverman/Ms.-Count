@@ -23,6 +23,7 @@ public class Metronome {
     private static final String TAG = "Metronome";
     private static final String SOUNDS_FOLDER = "sample_sounds";
     private static final long TWENTY_MINUTES = 60000 * 20;
+    public static final int MAX_SUBDIVISIONS = 5;
 
     /* Sounds and Such */
     private AssetManager mAssets;
@@ -30,6 +31,7 @@ public class Metronome {
     private SoundPool mSoundPool;
     private Integer mClickId;
     private Integer mHiClickId, mLoClickId;
+    private float[] mClickVolumes;
 
     /* Timer, clicker variables */
     private CountDownTimer mTimer;
@@ -58,6 +60,11 @@ public class Metronome {
 //        mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         mSoundPool = builder.build();
         loadSounds();
+        mClickVolumes = new float[MAX_SUBDIVISIONS];
+        for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
+            mClickVolumes[i] = 1.0f;
+        }
+
     }
     public Metronome(Context context) {
         this(context, null);
@@ -73,7 +80,7 @@ public class Metronome {
             mDelay = 60000 / tempo;
             startClicking();
         } else {
-            mDelay = 60000 / tempo / subs;
+            mDelay = 60000 / subs / tempo;
             playSubdivisions(subs);
         }
     }
@@ -83,12 +90,15 @@ public class Metronome {
             mDelay = (int) delay;
             startClicking();
         } else {
-            float delay = 60000f / tempo / subs;
+            float delay = 60000f / subs / tempo;
             mDelay = (int) delay;
             playSubdivisions(subs);
         }
     }
 
+    /**
+     * Simple, single click metronome start
+     */
     private void startClicking() {
         Log.d(TAG, "int delay: "+ mDelay);
         mClickId = mClicks.get(0).getSoundId();
@@ -101,7 +111,7 @@ public class Metronome {
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mSoundPool.play(mClickId, 1.0f, 1.0f, 1, 0, 1.0f);
+                mSoundPool.play(mClickId, mClickVolumes[0], mClickVolumes[0], 1, 0, 1.0f);
             }
 
             @Override
@@ -112,6 +122,10 @@ public class Metronome {
         mTimer.start();
     }
 
+    /**
+     * Click with number of subdivisions metronome start
+     * @param subs
+     */
     private void playSubdivisions(final int subs) {
         mHiClickId = mClicks.get(1).getSoundId();
         mLoClickId = mClicks.get(2).getSoundId();
@@ -122,9 +136,9 @@ public class Metronome {
             @Override
             public void onTick(long millisUntilFinished) {
                 if(subCount == 0) {
-                    mSoundPool.play(mHiClickId, 1.0f, 1.0f, 1, 0, 1.0f);
+                    mSoundPool.play(mHiClickId, mClickVolumes[subCount], mClickVolumes[subCount], 1, 0, 1.0f);
                 } else {
-                    mSoundPool.play(mLoClickId, 0.5f, 0.5f, 1, 0, 1.0f);
+                    mSoundPool.play(mLoClickId, mClickVolumes[subCount], mClickVolumes[subCount], 1, 0, 1.0f);
                 }
                 if(++subCount == subs) subCount = 0;
             }
@@ -149,7 +163,7 @@ public class Metronome {
             Log.d(TAG, "tempo multiplier!! " + p.getTempoMultiplier());
             tempo *= p.getTempoMultiplier();
         }
-        mDelay = 60000 / tempo / p.getSubdivision();
+        mDelay = 60000 / p.getSubdivision() / tempo;
         Log.d(TAG, p.toString());
         final int[] beats = Utilities.integerListToArray(p.getBeats());
         final int[] downBeats = Utilities.integerListToArray(p.getDownBeats());
@@ -216,6 +230,12 @@ public class Metronome {
         mTimer.cancel();
     }
 
+    public void setClickVolumes(int[] vols) {
+        int num = vols.length > MAX_SUBDIVISIONS ? MAX_SUBDIVISIONS : vols.length;
+        for(int i = 0; i < num; i++) {
+            mClickVolumes[i] = vols[i] / 10.0f;
+        }
+    }
     private void loadSounds() {
         String[] soundNames;
         try {

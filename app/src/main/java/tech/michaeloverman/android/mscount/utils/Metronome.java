@@ -3,7 +3,7 @@ package tech.michaeloverman.android.mscount.utils;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.media.AudioManager;
+import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -48,7 +48,15 @@ public class Metronome {
         mAssets = context.getAssets();
         mListener = ml;
         mClicking = false;
-        mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        SoundPool.Builder builder = new SoundPool.Builder()
+                .setAudioAttributes(new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_GAME)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setFlags(AudioAttributes.FLAG_LOW_LATENCY)
+                        .build())
+                .setMaxStreams(5);
+//        mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        mSoundPool = builder.build();
         loadSounds();
     }
     public Metronome(Context context) {
@@ -56,9 +64,31 @@ public class Metronome {
     }
 
     /**
-     * Simple metronome click, uses calculated delay between clicks in millis,
-     * establishes simple timer, and clicks at defined intervals.
+     * Simple metronome click: takes either int or float tempo marking, and number of subdivisions
+     * calculates delay between clicks in millis,
+     * starts simple timer, and clicks at defined intervals.
      */
+    public void play(int tempo, int subs) {
+        if(subs == 1) {
+            mDelay = 60000 / tempo;
+            startClicking();
+        } else {
+            mDelay = 60000 / tempo / subs;
+            playSubdivisions(subs);
+        }
+    }
+    public void play(float tempo, int subs) {
+        if(subs == 1) {
+            float delay = 60000f / tempo;
+            mDelay = (int) delay;
+            startClicking();
+        } else {
+            float delay = 60000f / tempo / subs;
+            mDelay = (int) delay;
+            playSubdivisions(subs);
+        }
+    }
+
     private void startClicking() {
         Log.d(TAG, "int delay: "+ mDelay);
         mClickId = mClicks.get(0).getSoundId();
@@ -81,14 +111,30 @@ public class Metronome {
         };
         mTimer.start();
     }
-    public void play(int tempo) {
-        mDelay = 60000 / tempo;
-        startClicking();
-    }
-    public void play(float tempo) {
-        float delay = 60000f / tempo;
-        mDelay = (int) delay;
-        startClicking();
+
+    private void playSubdivisions(final int subs) {
+        mHiClickId = mClicks.get(1).getSoundId();
+        mLoClickId = mClicks.get(2).getSoundId();
+
+        mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
+            int subCount = 0;
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(subCount == 0) {
+                    mSoundPool.play(mHiClickId, 1.0f, 1.0f, 1, 0, 1.0f);
+                } else {
+                    mSoundPool.play(mLoClickId, 0.5f, 0.5f, 1, 0, 1.0f);
+                }
+                if(++subCount == subs) subCount = 0;
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        mTimer.start();
     }
 
     /**

@@ -9,7 +9,9 @@
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,11 +43,12 @@
         app:fabSize="normal"
         app:rippleColor="@color/colorPrimaryLight"
         app:elevation="@dimen/fab_elevation"
-        />
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"/>
 
     <TextView
         android:id="@+id/current_tempo"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/normal_met_tempo_vertical_padding"
@@ -55,7 +58,7 @@
         android:textSize="100dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/normal_start_stop_fab"/>
+        app:layout_constraintTop_toBottomOf="@+id/normal_start_stop_fab"/>
 
     <LinearLayout
         android:id="@+id/tempo_button_layout"
@@ -95,4 +98,123 @@
             />
         <!--app:layout_constraintTop_toBottomOf="@+id/tempo_up_button"-->
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/subdivisions_frame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/add_subdivisions_fab"
+        app:layout_constraintTop_toBottomOf="@+id/current_tempo">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center"
+            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+    </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_subdivisions_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:backgroundTint="@color/colorPrimaryDark"
+        android:rotation="45"
+        app:fabSize="normal"
+        app:elevation="@dimen/fab_elevation"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/expanded_add_subdivisions_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/guideline"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:backgroundTint="@color/colorPrimaryDark"
+        android:visibility="invisible"
+        android:rotation="45"
+        app:fabSize="normal"
+        app:elevation="@dimen/fab_elevation"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/expanded_subtract_subdivisions_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:backgroundTint="@color/colorPrimaryDark"
+        android:visibility="invisible"
+        app:fabSize="normal"
+        app:elevation="@dimen/fab_elevation"
+        />
+
+
 </android.support.constraint.ConstraintLayout>

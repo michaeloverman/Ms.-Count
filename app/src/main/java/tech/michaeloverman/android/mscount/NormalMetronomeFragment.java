@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,17 +29,32 @@ import tech.michaeloverman.android.mscount.utils.MetronomeListener;
  */
 
 public class NormalMetronomeFragment extends Fragment implements MetronomeListener {
-
+    private static final String TAG = NormalMetronomeFragment.class.getSimpleName();
+    private static final int MAX_SUBDIVISIONS = 5;
 
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
     @BindView(R.id.normal_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.current_tempo) TextView mTempoSetting;
+    private boolean mWholeNumbersSelected = true;
     @BindView(R.id.tempo_down_button) ImageButton mTempoDownButton;
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
     private float mBPM;
+    private int mNumSubdivisions;
 
-    private boolean mWholeNumbersSelected = true;
+    @BindView(R.id.add_subdivisions_fab) FloatingActionButton mAddSubdivisionFAB;
+    @BindView(R.id.expanded_add_subdivisions_fab) FloatingActionButton mExpandedAddSubFab;
+    @BindView(R.id.expanded_subtract_subdivisions_fab) FloatingActionButton mSubtractSubFab;
+    @BindView(R.id.subdivision_indicator1) FloatingActionButton sub1;
+    @BindView(R.id.subdivision_indicator2) FloatingActionButton sub2;
+    @BindView(R.id.subdivision_indicator3) FloatingActionButton sub3;
+    @BindView(R.id.subdivision_indicator4) FloatingActionButton sub4;
+    @BindView(R.id.subdivision_indicator5) FloatingActionButton sub5;
+    FloatingActionButton[] mSubdivisionIndicators;
+
+    Animation expandingAddFabAnim, expandingSubFabAnim;
+    Animation collapsingAddFabAnim, collapsingSubFabAnim;
+    Animation fadingFabAnim, unFadingFabAnim;
 
     private GestureDetectorCompat mDetector;
 
@@ -53,6 +71,8 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
         mMetronome = new Metronome(getActivity(), this);
         mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
+
+        mNumSubdivisions = 1;
     }
 
     @Nullable
@@ -69,9 +89,74 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             }
         });
 
+        expandingAddFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.expanding_add_fab);
+        expandingSubFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.expanding_sub_fab);
+        collapsingAddFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.collapsing_add_fab);
+        collapsingSubFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.collapsing_sub_fab);
+        collapsingAddFabAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mAddSubdivisionFAB.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        fadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_fab);
+        unFadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.unfade_fab);
+
+        mSubdivisionIndicators = new FloatingActionButton[]{ sub1, sub2, sub3, sub4, sub5 };
+
         mBPM = 123.5654f;
         updateDisplay();
         return view;
+    }
+
+    @OnClick( { R.id.add_subdivisions_fab, R.id.expanded_add_subdivisions_fab } )
+    public void addASubdivision() {
+        if(mMetronomeRunning) return;
+        if(mNumSubdivisions == 1) {
+            expandFabs();
+        } else if(mNumSubdivisions == MAX_SUBDIVISIONS) {
+            Toast.makeText(getActivity(), R.string.too_many_subdivisions, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mSubdivisionIndicators[mNumSubdivisions].setVisibility(View.VISIBLE);
+
+        mNumSubdivisions++;
+
+    }
+
+    @OnClick(R.id.expanded_subtract_subdivisions_fab)
+    public void subtractASubdivision() {
+        if(mMetronomeRunning) return;
+        mNumSubdivisions--;
+        mSubdivisionIndicators[mNumSubdivisions].setVisibility(View.GONE);
+        if(mNumSubdivisions == 1) {
+            collapseFabs();
+        }
+    }
+
+    private void expandFabs() {
+        mSubtractSubFab.setVisibility(View.VISIBLE);
+        mExpandedAddSubFab.setVisibility(View.VISIBLE);
+        mAddSubdivisionFAB.setVisibility(View.INVISIBLE);
+        mExpandedAddSubFab.startAnimation(expandingAddFabAnim);
+        mSubtractSubFab.startAnimation(expandingSubFabAnim);
+    }
+    private void collapseFabs() {
+        mExpandedAddSubFab.startAnimation(collapsingAddFabAnim);
+        mSubtractSubFab.startAnimation(collapsingSubFabAnim);
+        mSubtractSubFab.setVisibility(View.INVISIBLE);
+        mExpandedAddSubFab.setVisibility(View.INVISIBLE);
+//        mAddSubdivisionFAB.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -84,9 +169,9 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         } else {
             mMetronomeRunning = true;
             if(mWholeNumbersSelected) {
-                mMetronome.play((int)mBPM);
+                mMetronome.play((int)mBPM, mNumSubdivisions);
             } else {
-                mMetronome.play(mBPM);
+                mMetronome.play(mBPM, mNumSubdivisions);
             }
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
@@ -96,9 +181,25 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
     private void clearSubdivisionFabs() {
         if(mMetronomeRunning) {
-            // TODO erase Fabs
+            if(mNumSubdivisions == 1) {
+                mAddSubdivisionFAB.startAnimation(fadingFabAnim);
+                mAddSubdivisionFAB.setClickable(false);
+            } else {
+                mExpandedAddSubFab.startAnimation(fadingFabAnim);
+                mExpandedAddSubFab.setClickable(false);
+                mSubtractSubFab.startAnimation(fadingFabAnim);
+                mSubtractSubFab.setClickable(false);
+            }
         } else {
-            // TODO bring FABS back
+            if(mNumSubdivisions == 1) {
+                mAddSubdivisionFAB.startAnimation(unFadingFabAnim);
+                mAddSubdivisionFAB.setClickable(true);
+            } else {
+                mExpandedAddSubFab.startAnimation(unFadingFabAnim);
+                mExpandedAddSubFab.setClickable(true);
+                mSubtractSubFab.startAnimation(unFadingFabAnim);
+                mSubtractSubFab.setClickable(true);
+            }
         }
     }
 

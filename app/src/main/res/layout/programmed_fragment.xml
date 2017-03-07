@@ -148,10 +148,9 @@
         app:layout_constraintTop_toTopOf="@+id/primary_beat_length_image"
         android:layout_marginTop="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/primary_beat_length_image"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.666"
-        app:layout_constraintRight_toLeftOf="@+id/current_tempo_setting"
-        android:layout_marginRight="30dp"/>
+        android:layout_marginBottom="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/primary_beat_length_image"
+        android:layout_marginLeft="70dp"/>
 
 
 </android.support.constraint.ConstraintLayout>

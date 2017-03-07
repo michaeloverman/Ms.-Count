@@ -253,7 +253,7 @@ public class PreprogrammedMetronomeFragment extends Fragment
             case PieceOfMusic.DOTTED_EIGHTH:
                 return R.drawable.ic_dotted_eighth;
             case PieceOfMusic.QUARTER:
-                return R.drawable.ic_quarter_note;
+                return R.drawable.ic_new_quarter_note;
             case PieceOfMusic.DOTTED_QUARTER:
                 return R.drawable.ic_dotted_quarter;
             case PieceOfMusic.HALF:

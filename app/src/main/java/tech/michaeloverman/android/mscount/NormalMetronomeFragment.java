@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -31,6 +32,9 @@ import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 public class NormalMetronomeFragment extends Fragment implements MetronomeListener {
     private static final String TAG = NormalMetronomeFragment.class.getSimpleName();
     private static final int MAX_SUBDIVISIONS = Metronome.MAX_SUBDIVISIONS;
+    private static final float MAX_FLOAT_VOLUME = 300.0f;
+    private static final float MIN_FLOAT_VOLUME = 0.0f;
+    private static int FLOAT_VOLUME_DIVIDER = 30;
 
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
@@ -41,6 +45,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
     private float mBPM;
     private int mNumSubdivisions;
+    private float[] mSubdivisionFloatVolumes;
     private int[] mSubdivisionVolumes;
 
     @BindView(R.id.add_subdivisions_fab) FloatingActionButton mAddSubdivisionFAB;
@@ -76,8 +81,10 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
         mNumSubdivisions = 1;
         mSubdivisionVolumes = new int[MAX_SUBDIVISIONS];
+        mSubdivisionFloatVolumes = new float[MAX_SUBDIVISIONS];
         for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
             mSubdivisionVolumes[i] = 10;
+            mSubdivisionFloatVolumes[i] = MAX_FLOAT_VOLUME;
         }
     }
 
@@ -273,30 +280,31 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 //            mSubdivisionDetector[subdivisionID] = new GestureDetectorCompat(this.getContext(),
 //                    new SubdivisionGestureListener(subdivisionID));
             mSubdivisionIndicators[subdivisionID].setOnTouchListener(new View.OnTouchListener() {
-                float startY;
+                float firstY;
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    int action = event.getActionMasked();
+                    int action = MotionEventCompat.getActionMasked(event);
                     switch(action) {
-                        case (MotionEvent.ACTION_DOWN) :
+                        case (MotionEvent.ACTION_DOWN): {
                             displayVolumeSub(subdivisionID);
-//                            startY = event.getY();
-                            return true;
+                            firstY = event.getY();
+                            break;
+                        }
                         case (MotionEvent.ACTION_MOVE) :
-                            float distanceY = startY - event.getY();
-                            startY = event.getY();
-                            changeSubdivisionVolume(subdivisionID, distanceY);
+                            final float y = event.getY();
+                            float distanceY = y - firstY;
+                            firstY = y;
+                            changeSubdivisionVolume(subdivisionID, -distanceY);
 //                            mSubdivisionDetector[subdivisionID].onTouchEvent(event);
-                            return true;
+                            break;
                         case (MotionEvent.ACTION_UP) :
                             updateDisplay();
-                            return true;
+                            break;
                         default:
                             return false;
                     }
-
+                    return true;
                 }
-
             });
         }
     }
@@ -304,9 +312,12 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         mTempoSetting.setText("vol: " + mSubdivisionVolumes[subdiv]);
     }
     private void changeSubdivisionVolume(int id, float volumeChange) {
-        mSubdivisionVolumes[id] += volumeChange;
-        if(mSubdivisionVolumes[id] > 10) mSubdivisionVolumes[id] = 10;
-        else if(mSubdivisionVolumes[id] < 0) mSubdivisionVolumes[id] = 0;
+        mSubdivisionFloatVolumes[id] += volumeChange;
+        if(mSubdivisionFloatVolumes[id] > MAX_FLOAT_VOLUME) mSubdivisionFloatVolumes[id] = MAX_FLOAT_VOLUME;
+        else if(mSubdivisionFloatVolumes[id] < MIN_FLOAT_VOLUME) mSubdivisionFloatVolumes[id] = MIN_FLOAT_VOLUME;
+        Log.d(TAG, "float volume measured: " + mSubdivisionFloatVolumes[id]);
+
+        mSubdivisionVolumes[id] = (int) (mSubdivisionFloatVolumes[id] / FLOAT_VOLUME_DIVIDER);
 
         mTempoSetting.setText("vol: " + mSubdivisionVolumes[id]);
         mMetronome.setClickVolumes(mSubdivisionVolumes);

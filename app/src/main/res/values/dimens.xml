@@ -16,4 +16,5 @@
     <dimen name="fab_right_margin">32dp</dimen>
     <dimen name="normal_met_fab_margin">16dp</dimen>
     <dimen name="normal_met_tempo_vertical_padding">64dp</dimen>
+    <dimen name="subdivision_fab_margin">16dp</dimen>
 </resources>

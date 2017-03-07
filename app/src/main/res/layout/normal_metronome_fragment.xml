@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/subdivision_fab_margin"
             android:layout_gravity="center"
-            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
             app:fabSize="mini"
             app:elevation="@dimen/fab_elevation"/>
 
@@ -127,7 +127,7 @@
             android:layout_margin="@dimen/subdivision_fab_margin"
             android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
             app:fabSize="mini"
             app:elevation="@dimen/fab_elevation"/>
         <android.support.design.widget.FloatingActionButton
@@ -137,7 +137,7 @@
             android:layout_margin="@dimen/subdivision_fab_margin"
             android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
             app:fabSize="mini"
             app:elevation="@dimen/fab_elevation"/>
         <android.support.design.widget.FloatingActionButton
@@ -147,7 +147,7 @@
             android:layout_margin="@dimen/subdivision_fab_margin"
             android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
             app:fabSize="mini"
             app:elevation="@dimen/fab_elevation"/>
         <android.support.design.widget.FloatingActionButton
@@ -157,7 +157,7 @@
             android:layout_margin="@dimen/subdivision_fab_margin"
             android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
             app:fabSize="mini"
             app:elevation="@dimen/fab_elevation"/>
     </LinearLayout>

@@ -130,6 +130,8 @@ public class Metronome {
         mHiClickId = mClicks.get(1).getSoundId();
         mLoClickId = mClicks.get(2).getSoundId();
 
+        logSubdivisionVolumes(subs);
+
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
             int subCount = 0;
 
@@ -149,6 +151,14 @@ public class Metronome {
             }
         };
         mTimer.start();
+    }
+
+    private void logSubdivisionVolumes(int subs) {
+        StringBuffer sb = new StringBuffer("Subdivision Volumes: ");
+        for(int i = 0; i < subs; i++) {
+            sb.append(mClickVolumes[i] + ", ");
+        }
+        Log.d(TAG, sb.toString());
     }
 
     /**

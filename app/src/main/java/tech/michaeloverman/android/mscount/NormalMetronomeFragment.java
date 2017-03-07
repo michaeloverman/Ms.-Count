@@ -1,5 +1,6 @@
 package tech.michaeloverman.android.mscount;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -57,6 +58,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     @BindView(R.id.subdivision_indicator4) FloatingActionButton sub4;
     @BindView(R.id.subdivision_indicator5) FloatingActionButton sub5;
     FloatingActionButton[] mSubdivisionIndicators;
+    private int[] mSubdivisionFabColors;
 
     Animation expandingAddFabAnim, expandingSubFabAnim;
     Animation collapsingAddFabAnim, collapsingSubFabAnim;
@@ -86,6 +88,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             mSubdivisionVolumes[i] = 10;
             mSubdivisionFloatVolumes[i] = MAX_FLOAT_VOLUME;
         }
+        mSubdivisionFabColors = getContext().getResources().getIntArray(R.array.subdivision_colors);
     }
 
     @Nullable
@@ -320,7 +323,11 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         mSubdivisionVolumes[id] = (int) (mSubdivisionFloatVolumes[id] / FLOAT_VOLUME_DIVIDER);
 
         mTempoSetting.setText("vol: " + mSubdivisionVolumes[id]);
+        setFabAppearance(mSubdivisionIndicators[id], mSubdivisionVolumes[id]);
         mMetronome.setClickVolumes(mSubdivisionVolumes);
+    }
+    private void setFabAppearance(FloatingActionButton fab, int level) {
+        fab.setBackgroundTintList(ColorStateList.valueOf(mSubdivisionFabColors[level]));
     }
 
     class MetronomeGestureListener extends GestureDetector.SimpleOnGestureListener {

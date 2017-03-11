@@ -270,13 +270,15 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
     @OnClick(R.id.tempo_down_button)
     public void onDownButtonClick() {
-        mBPM -= 0.1f;
-        updateDisplay();
+//        mBPM -= 0.1f;
+//        updateDisplay();
+        changeTempo(-0.1f);
     }
     @OnClick(R.id.tempo_up_button)
     public void onUpButtonClick() {
-        mBPM += 0.1f;
-        updateDisplay();
+//        mBPM += 0.1f;
+//        updateDisplay();
+        changeTempo(0.1f);
     }
     private void changeTempo(float tempoChange) {
         mBPM += tempoChange;
@@ -293,10 +295,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             mTempoSetting.setText((float)((int)(mBPM * 10)) / 10  + "");
         }
 
-        if(mMetronomeRunning) {
-            metronomeStartStop();
-            metronomeStartStop();
-        }
     }
 
     private void addSubdivisionVolumeChangeListeners() {

@@ -158,7 +158,12 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
     @OnClick( { R.id.add_subdivisions_fab, R.id.expanded_add_subdivisions_fab } )
     public void addASubdivision() {
-        if(mMetronomeRunning) return;
+//        if(mMetronomeRunning) return;
+        boolean restart = false;
+        if(mMetronomeRunning) {
+            metronomeStartStop();
+            restart = true;
+        }
         if(mNumSubdivisions == 1) {
             expandFabs();
         } else if(mNumSubdivisions == MAX_SUBDIVISIONS) {
@@ -169,16 +174,23 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
         mNumSubdivisions++;
 
+        if(restart) metronomeStartStop();
     }
 
     @OnClick(R.id.expanded_subtract_subdivisions_fab)
     public void subtractASubdivision() {
-        if(mMetronomeRunning) return;
+        boolean restart = false;
+        if(mMetronomeRunning) {
+            metronomeStartStop();
+            restart = true;
+        }
         mNumSubdivisions--;
         mSubdivisionIndicators[mNumSubdivisions].setVisibility(View.GONE);
         if(mNumSubdivisions == 1) {
             collapseFabs();
         }
+
+        if(restart) metronomeStartStop();
     }
 
     private void expandFabs() {
@@ -212,7 +224,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             }
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
-        clearSubdivisionFabs();
 
     }
 
@@ -285,6 +296,10 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         if(mBPM > MAX_TEMPO_BPM_INT) mBPM = MAX_TEMPO_BPM_FLOAT;
         else if(mBPM < MIN_TEMPO_BPM_INT) mBPM = MIN_TEMPO_BPM_FLOAT;
         updateDisplay();
+
+//        if(mMetronomeRunning) {
+//            mMetronome.runningTempoChange(mBPM);
+//        }
     }
 
     private void updateDisplay() {
@@ -368,6 +383,15 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
                 changeTempo(distanceY / 10);
             } else {
                 changeTempo(-distanceX / 100);
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if(mMetronomeRunning) {
+                metronomeStartStop();
+                metronomeStartStop();
             }
             return true;
         }

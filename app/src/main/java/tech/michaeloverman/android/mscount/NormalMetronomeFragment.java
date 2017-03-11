@@ -150,6 +150,12 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         return view;
     }
 
+    @Override
+    public void onPause() {
+        if(mMetronomeRunning) metronomeStartStop();
+        super.onPause();
+    }
+
     @OnClick( { R.id.add_subdivisions_fab, R.id.expanded_add_subdivisions_fab } )
     public void addASubdivision() {
         if(mMetronomeRunning) return;
@@ -287,6 +293,10 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             mTempoSetting.setText((float)((int)(mBPM * 10)) / 10  + "");
         }
 
+        if(mMetronomeRunning) {
+            metronomeStartStop();
+            metronomeStartStop();
+        }
     }
 
     private void addSubdivisionVolumeChangeListeners() {

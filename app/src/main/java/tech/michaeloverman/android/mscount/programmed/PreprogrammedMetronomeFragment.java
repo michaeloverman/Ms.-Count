@@ -166,6 +166,12 @@ public class PreprogrammedMetronomeFragment extends Fragment
         return view;
     }
 
+    @Override
+    public void onPause() {
+        if(mMetronomeRunning) metronomeStartStop();
+        super.onPause();
+    }
+
     private void changeTempo(boolean direction) {
         if(direction) {
             mCurrentTempo++;
@@ -178,6 +184,7 @@ public class PreprogrammedMetronomeFragment extends Fragment
             mCurrentTempo = MAXIMUM_TEMPO;
         }
         updateTempoView();
+
     }
 
     private void updateTempoView() {

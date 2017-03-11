@@ -32,22 +32,25 @@ import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 
 public class NormalMetronomeFragment extends Fragment implements MetronomeListener {
     private static final String TAG = NormalMetronomeFragment.class.getSimpleName();
+
     private static final int MAX_SUBDIVISIONS = Metronome.MAX_SUBDIVISIONS;
+    private static final int MAX_TEMPO_BPM_INT = Metronome.MAX_TEMPO;
+    private static final float MAX_TEMPO_BPM_FLOAT = (float) MAX_TEMPO_BPM_INT;
+    private static final int MIN_TEMPO_BPM_INT = Metronome.MIN_TEMPO;
+    private static final float MIN_TEMPO_BPM_FLOAT = (float) MIN_TEMPO_BPM_INT;
+
     private static final float MAX_FLOAT_VOLUME = 300.0f;
     private static final float MIN_FLOAT_VOLUME = 0.0f;
-    private static int FLOAT_VOLUME_DIVIDER = 30;
+    private static final int FLOAT_VOLUME_DIVIDER = 30;
 
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
+
     @BindView(R.id.normal_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.current_tempo) TextView mTempoSetting;
     private boolean mWholeNumbersSelected = true;
     @BindView(R.id.tempo_down_button) ImageButton mTempoDownButton;
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
-    private float mBPM;
-    private int mNumSubdivisions;
-    private float[] mSubdivisionFloatVolumes;
-    private int[] mSubdivisionVolumes;
 
     @BindView(R.id.add_subdivisions_fab) FloatingActionButton mAddSubdivisionFAB;
     @BindView(R.id.expanded_add_subdivisions_fab) FloatingActionButton mExpandedAddSubFab;
@@ -57,12 +60,22 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     @BindView(R.id.subdivision_indicator3) FloatingActionButton sub3;
     @BindView(R.id.subdivision_indicator4) FloatingActionButton sub4;
     @BindView(R.id.subdivision_indicator5) FloatingActionButton sub5;
+    @BindView(R.id.subdivision_indicator6) FloatingActionButton sub6;
+    @BindView(R.id.subdivision_indicator7) FloatingActionButton sub7;
+    @BindView(R.id.subdivision_indicator8) FloatingActionButton sub8;
+    @BindView(R.id.subdivision_indicator9) FloatingActionButton sub9;
+    @BindView(R.id.subdivision_indicator10) FloatingActionButton sub10;
     FloatingActionButton[] mSubdivisionIndicators;
     private int[] mSubdivisionFabColors;
 
     Animation expandingAddFabAnim, expandingSubFabAnim;
     Animation collapsingAddFabAnim, collapsingSubFabAnim;
     Animation fadingFabAnim, unFadingFabAnim;
+
+    private float mBPM;
+    private int mNumSubdivisions;
+    private float[] mSubdivisionFloatVolumes;
+    private int[] mSubdivisionVolumes;
 
     private GestureDetectorCompat mDetector;
 //    private GestureDetectorCompat mSubdivisionDetector[];
@@ -128,10 +141,11 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         fadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_fab);
         unFadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.unfade_fab);
 
-        mSubdivisionIndicators = new FloatingActionButton[]{ sub1, sub2, sub3, sub4, sub5 };
+        mSubdivisionIndicators = new FloatingActionButton[]
+                { sub1, sub2, sub3, sub4, sub5, sub6, sub7, sub8, sub9, sub10 };
         addSubdivisionVolumeChangeListeners();
 
-        mBPM = 123.5654f;
+        mBPM = 123.4f;
         updateDisplay();
         return view;
     }
@@ -260,8 +274,8 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     }
     private void changeTempo(float tempoChange) {
         mBPM += tempoChange;
-        if(mBPM > 300) mBPM = 300f;
-        else if(mBPM < 20) mBPM = 20f;
+        if(mBPM > MAX_TEMPO_BPM_INT) mBPM = MAX_TEMPO_BPM_FLOAT;
+        else if(mBPM < MIN_TEMPO_BPM_INT) mBPM = MIN_TEMPO_BPM_FLOAT;
         updateDisplay();
     }
 

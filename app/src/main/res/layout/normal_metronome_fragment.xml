@@ -107,7 +107,7 @@
         android:gravity="center_horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/add_subdivisions_fab"
+        app:layout_constraintBottom_toTopOf="@+id/subdivisions_frame_2"
         app:layout_constraintTop_toBottomOf="@+id/current_tempo">
 
         <android.support.design.widget.FloatingActionButton
@@ -152,6 +152,69 @@
             app:elevation="@dimen/fab_elevation"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/subdivision_fab_margin"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/subdivisions_frame_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/add_subdivisions_fab"
+        app:layout_constraintTop_toBottomOf="@+id/subdivisions_frame">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/subdivision_fab_margin"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/subdivision_fab_margin"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/subdivision_fab_margin"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/subdivision_fab_margin"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSubdivisionIndicator10"
+            app:fabSize="mini"
+            app:elevation="@dimen/fab_elevation"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/subdivision_indicator10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/subdivision_fab_margin"

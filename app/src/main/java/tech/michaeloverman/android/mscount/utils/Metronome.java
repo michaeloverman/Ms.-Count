@@ -23,7 +23,9 @@ public class Metronome {
     private static final String TAG = "Metronome";
     private static final String SOUNDS_FOLDER = "sample_sounds";
     private static final long TWENTY_MINUTES = 60000 * 20;
-    public static final int MAX_SUBDIVISIONS = 5;
+    public static final int MAX_SUBDIVISIONS = 10;
+    public static final int MAX_TEMPO = 400;
+    public static final int MIN_TEMPO = 15;
 
     /* Sounds and Such */
     private AssetManager mAssets;
@@ -71,28 +73,28 @@ public class Metronome {
     }
 
     /**
-     * Simple metronome click: takes either int or float tempo marking, and number of subdivisions
-     * calculates delay between clicks in millis,
+     * Simple metronome click: takes either int or float tempo marking, and number of
+     * beats per measure, calculates delay between clicks in millis,
      * starts simple timer, and clicks at defined intervals.
      */
-    public void play(int tempo, int subs) {
-        if(subs == 1) {
+    public void play(int tempo, int beats) {
+        if(beats == 1) {
             mDelay = 60000 / tempo;
             startClicking();
         } else {
-            mDelay = 60000 / subs / tempo;
-            playSubdivisions(subs);
+            mDelay = 60000 / tempo;
+            playSubdivisions(beats);
         }
     }
-    public void play(float tempo, int subs) {
-        if(subs == 1) {
+    public void play(float tempo, int beats) {
+        if(beats == 1) {
             float delay = 60000f / tempo;
             mDelay = (int) delay;
             startClicking();
         } else {
-            float delay = 60000f / subs / tempo;
+            float delay = 60000f / tempo;
             mDelay = (int) delay;
-            playSubdivisions(subs);
+            playSubdivisions(beats);
         }
     }
 

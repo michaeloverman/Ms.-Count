@@ -1,7 +1,9 @@
 package tech.michaeloverman.android.mscount;
 
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -44,6 +46,9 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     private static final float MAX_FLOAT_VOLUME = 300.0f;
     private static final float MIN_FLOAT_VOLUME = 0.0f;
     private static final int FLOAT_VOLUME_DIVIDER = 30;
+    private static final String PREF_KEY_SUBDIVISIONS = "pref_subdivisions";
+    private static final String PREF_KEY_BPM = "pref_bpm";
+    private static final String PREF_WHOLE_NUMBERS = "pref_whole_numbers";
 
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
@@ -72,7 +77,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
     Animation expandingAddFabAnim, expandingSubFabAnim;
     Animation collapsingAddFabAnim, collapsingSubFabAnim;
-    Animation fadingFabAnim, unFadingFabAnim;
+//    Animation fadingFabAnim, unFadingFabAnim;
 
     private float mBPM;
     private int mNumSubdivisions;
@@ -80,8 +85,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     private int[] mSubdivisionVolumes;
 
     private GestureDetectorCompat mDetector;
-//    private GestureDetectorCompat mSubdivisionDetector[];
-
 
     public static Fragment newInstance() {
         return new NormalMetronomeFragment();
@@ -96,7 +99,11 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         mMetronome = new Metronome(getActivity(), this);
         mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
 
-        mNumSubdivisions = 1;
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mNumSubdivisions = pref.getInt(PREF_KEY_SUBDIVISIONS, 1);
+        mBPM = pref.getFloat(PREF_KEY_BPM, 123.4f);
+        mWholeNumbersSelected = pref.getBoolean(PREF_WHOLE_NUMBERS, true);
+
         mSubdivisionVolumes = new int[MAX_SUBDIVISIONS];
         mSubdivisionFloatVolumes = new float[MAX_SUBDIVISIONS];
         for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
@@ -154,22 +161,54 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
             }
         });
-        fadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_fab);
-        unFadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.unfade_fab);
+//        fadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_fab);
+//        unFadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.unfade_fab);
 
         mSubdivisionIndicators = new FloatingActionButton[]
                 { sub1, sub2, sub3, sub4, sub5, sub6, sub7, sub8, sub9, sub10 };
         addSubdivisionVolumeChangeListeners();
 
-        mBPM = 123.4f;
+        if(mNumSubdivisions > 1) {
+            expandFabs();
+            for(int i = 1; i < mNumSubdivisions; i++) {
+                mSubdivisionIndicators[i].setVisibility(View.VISIBLE);
+            }
+        }
+
+        if(!mWholeNumbersSelected) {
+            RadioButton b = (RadioButton) view.findViewById(R.id.decimals);
+            b.setChecked(true);
+        }
+
+//        mBPM = 123.4f;
         updateDisplay();
         return view;
     }
 
+//    @Override
+//    public void onDetach() {
+//        Log.d(TAG, "onDetach()");
+//        if(mMetronomeRunning) metronomeStartStop();
+//        super.onDetach();
+//    }
+
+//    @Override
+//    public void onPause() {
+//        if(mMetronomeRunning) metronomeStartStop();
+//        super.onPause();
+//    }
+
+
     @Override
-    public void onPause() {
-        if(mMetronomeRunning) metronomeStartStop();
-        super.onPause();
+    public void onDestroy() {
+        SharedPreferences.Editor prefs = PreferenceManager
+                .getDefaultSharedPreferences(getContext()).edit();
+        prefs.putFloat(PREF_KEY_BPM, mBPM);
+        prefs.putInt(PREF_KEY_SUBDIVISIONS, mNumSubdivisions);
+        prefs.putBoolean(PREF_WHOLE_NUMBERS, mWholeNumbersSelected);
+        prefs.commit();
+
+        super.onDestroy();
     }
 
     @OnClick( { R.id.add_subdivisions_fab, R.id.expanded_add_subdivisions_fab } )

@@ -16,5 +16,5 @@
     <string name="create_edit_program">Create/Edit Program</string>
     <string name="whole_num_format">#</string>
     <string name="tenths_num_format">#.#</string>
-    <string name="too_many_subdivisions">No more than five subdivisions allowed.</string>
+    <string name="too_many_subdivisions">No more than ten beats per measure.</string>
 </resources>

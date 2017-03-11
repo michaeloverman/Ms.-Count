@@ -26,6 +26,8 @@ import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 
+import static android.view.MotionEvent.ACTION_UP;
+
 /**
  * Created by Michael on 2/24/2017.
  */
@@ -110,10 +112,24 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         View view = inflater.inflate(R.layout.normal_metronome_fragment, container, false);
         ButterKnife.bind(this, view);
 
+        // use the "naked" listener to catch ACTION_UP (release) for resetting tempo
+        // otherwise defer to GestureDetector to handle scrolling
         mTempoSetting.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mDetector.onTouchEvent(event);
+                int action = MotionEventCompat.getActionMasked(event);
+                switch(action) {
+                    case MotionEvent.ACTION_UP:
+                        if(mMetronomeRunning) {
+                            // stop the met
+                            metronomeStartStop();
+                            // restart at new tempo
+                            metronomeStartStop();
+                        }
+                        break;
+                    default:
+                        mDetector.onTouchEvent(event);
+                }
                 return true;
             }
         });
@@ -227,29 +243,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
     }
 
-    private void clearSubdivisionFabs() {
-        if(mMetronomeRunning) {
-            if(mNumSubdivisions == 1) {
-                mAddSubdivisionFAB.startAnimation(fadingFabAnim);
-                mAddSubdivisionFAB.setClickable(false);
-            } else {
-                mExpandedAddSubFab.startAnimation(fadingFabAnim);
-                mExpandedAddSubFab.setClickable(false);
-                mSubtractSubFab.startAnimation(fadingFabAnim);
-                mSubtractSubFab.setClickable(false);
-            }
-        } else {
-            if(mNumSubdivisions == 1) {
-                mAddSubdivisionFAB.startAnimation(unFadingFabAnim);
-                mAddSubdivisionFAB.setClickable(true);
-            } else {
-                mExpandedAddSubFab.startAnimation(unFadingFabAnim);
-                mExpandedAddSubFab.setClickable(true);
-                mSubtractSubFab.startAnimation(unFadingFabAnim);
-                mSubtractSubFab.setClickable(true);
-            }
-        }
-    }
 
     @Override
     public void metronomeMeasureNumber(String mm) {
@@ -297,9 +290,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         else if(mBPM < MIN_TEMPO_BPM_INT) mBPM = MIN_TEMPO_BPM_FLOAT;
         updateDisplay();
 
-//        if(mMetronomeRunning) {
-//            mMetronome.runningTempoChange(mBPM);
-//        }
     }
 
     private void updateDisplay() {
@@ -337,7 +327,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
                             changeSubdivisionVolume(subdivisionID, -distanceY);
 //                            mSubdivisionDetector[subdivisionID].onTouchEvent(event);
                             break;
-                        case (MotionEvent.ACTION_UP) :
+                        case (ACTION_UP) :
                             updateDisplay();
                             break;
                         default:
@@ -372,12 +362,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         private static final float MINIMUM_Y_FOR_FAST_CHANGE = 10;
 
         @Override
-        public boolean onDown(MotionEvent e) {
-            Log.d(TAG, "onDown: " + e.toString());
-            return true;
-        }
-
-        @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             if(Math.abs(distanceY) > MINIMUM_Y_FOR_FAST_CHANGE) {
                 changeTempo(distanceY / 10);
@@ -387,20 +371,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             return true;
         }
 
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            if(mMetronomeRunning) {
-                metronomeStartStop();
-                metronomeStartStop();
-            }
-            return true;
-        }
 
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//            mDirection.setText("flinging: " + velocityX + ", " + velocityY);
-
-            return true;
-        }
     }
 }

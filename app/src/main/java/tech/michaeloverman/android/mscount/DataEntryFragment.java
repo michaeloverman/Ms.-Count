@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,34 +26,43 @@ import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 public class DataEntryFragment extends Fragment {
     private static final String TAG = DataEntryFragment.class.getSimpleName();
 
-    private PieceOfMusic mPieceOfMusic;
+    private PieceOfMusic.Builder mBuilder;
+//    private PieceOfMusic mPieceOfMusic;
+
+    static DataEntryCallback sDataEntryCallback;
 
     @BindView(R.id.data_title_view) TextView mTitleView;
     @BindView(R.id.entered_data_recycler_view) RecyclerView mEnteredDataRecycler;
-    @BindView(R.id.barline) TextView mBarline;
-    @BindView(R.id.one) TextView mOne;
-    @BindView(R.id.two) TextView mTwo;
-    @BindView(R.id.three) TextView mThree;
-    @BindView(R.id.four) TextView mFour;
-    @BindView(R.id.five) TextView mFive;
-    @BindView(R.id.six) TextView mSix;
-    @BindView(R.id.seven) TextView mSeven;
-    @BindView(R.id.eight) TextView mEight;
-    @BindView(R.id.nine) TextView mNine;
-    @BindView(R.id.ten) TextView mTen;
-    @BindView(R.id.eleven) TextView mEleven;
-    @BindView(R.id.twelve) TextView mTwelve;
-    @BindView(R.id.other) TextView mQuestion;
-    @BindView(R.id.data_delete_button) Button mDeleteButton;
+//    @BindView(R.id.barline) TextView mBarline;
+//    @BindView(R.id.one) TextView mOne;
+//    @BindView(R.id.two) TextView mTwo;
+//    @BindView(R.id.three) TextView mThree;
+//    @BindView(R.id.four) TextView mFour;
+//    @BindView(R.id.five) TextView mFive;
+//    @BindView(R.id.six) TextView mSix;
+//    @BindView(R.id.seven) TextView mSeven;
+//    @BindView(R.id.eight) TextView mEight;
+//    @BindView(R.id.nine) TextView mNine;
+//    @BindView(R.id.ten) TextView mTen;
+//    @BindView(R.id.twelve) TextView mTwelve;
+//    @BindView(R.id.other) TextView mQuestion;
+//    @BindView(R.id.data_delete_button) Button mDeleteButton;
 
+    private String mTitle;
     private List<DataEntry> mDataList;
     private int mMeasureNumber;
     private DataListAdapter mAdapter;
 
-    public static Fragment newInstance() {
+    interface DataEntryCallback {
+        void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder);
+    }
+
+    public static Fragment newInstance(String title, DataEntryCallback callback, PieceOfMusic.Builder builder) {
         Log.d(TAG, "newInstance()");
         DataEntryFragment fragment = new DataEntryFragment();
-//        fragment.mPieceOfMusic = piece;
+        fragment.mTitle = title;
+        fragment.mBuilder = builder;
+        sDataEntryCallback = callback;
         return fragment;
     }
 
@@ -77,8 +85,8 @@ public class DataEntryFragment extends Fragment {
         View view = inflater.inflate(R.layout.data_input_layout, container, false);
         ButterKnife.bind(this, view);
 
-//        mTitleView.setText(mPieceOfMusic.getTitle());
-        mTitleView.setText("Dummy Text Title");
+        mTitleView.setText(mTitle);
+//        mTitleView.setText("Dummy Text Title");
 
         LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mEnteredDataRecycler.setLayoutManager(manager);
@@ -95,53 +103,74 @@ public class DataEntryFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
+    @OnClick(R.id.data_save_button)
+    public void saveData() {
+//        mBuilder.dataEntries(mDataList);
+//        mPieceOfMusic.setDataBeats(mDataList);
+        // TODO Save to Firebase
+        if(!mDataList.get(mDataList.size() - 1).isBarline()) {
+            mDataList.add(new DataEntry(++mMeasureNumber, true));
+        }
+        sDataEntryCallback.returnDataList(mDataList, mBuilder);
+        getFragmentManager().popBackStackImmediate();
+    }
+
+    @OnClick(R.id.data_back_button)
+    public void back() {
+//        mPieceOfMusic.setDataBeats(mDataList);
+        getFragmentManager().popBackStackImmediate();
+    }
+
     @OnClick( { R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six, R.id.seven,
-            R.id.eight, R.id.nine, R.id.ten, R.id.eleven, R.id.twelve, R.id.other, R.id.barline } )
+            R.id.eight, R.id.nine, R.id.ten, R.id.twelve, R.id.other, R.id.barline } )
     public void subdivisionCountEntered(TextView view) {
         String value = view.getText().toString();
         switch(value) {
             case "|":
                 mDataList.add(new DataEntry(++mMeasureNumber, true));
                 break;
-            case "1":
-                mDataList.add(new DataEntry(1, false));
-                break;
-            case "2":
-                mDataList.add(new DataEntry(2, false));
-                break;
-            case "3":
-                mDataList.add(new DataEntry(3, false));
-                break;
-            case "4":
-                mDataList.add(new DataEntry(4, false));
-                break;
-            case "5":
-                mDataList.add(new DataEntry(5, false));
-                break;
-            case "6":
-                mDataList.add(new DataEntry(6, false));
-                break;
-            case "7":
-                mDataList.add(new DataEntry(7, false));
-                break;
-            case "8":
-                mDataList.add(new DataEntry(8, false));
-                break;
-            case "9":
-                mDataList.add(new DataEntry(9, false));
-                break;
-            case "10":
-                mDataList.add(new DataEntry(10, false));
-                break;
-            case "11":
-                mDataList.add(new DataEntry(11, false));
-                break;
-            case "12":
-                mDataList.add(new DataEntry(12, false));
-                break;
             case "?":
-                mDataList.add(new DataEntry(13, false));
+                // TODO Open dialog to get another number....
                 break;
+            default:
+                mDataList.add(new DataEntry(Integer.parseInt(value), false));
+                break;
+//            case "1":
+//                mDataList.add(new DataEntry(1, false));
+//                break;
+//            case "2":
+//                mDataList.add(new DataEntry(2, false));
+//                break;
+//            case "3":
+//                mDataList.add(new DataEntry(3, false));
+//                break;
+//            case "4":
+//                mDataList.add(new DataEntry(4, false));
+//                break;
+//            case "5":
+//                mDataList.add(new DataEntry(5, false));
+//                break;
+//            case "6":
+//                mDataList.add(new DataEntry(6, false));
+//                break;
+//            case "7":
+//                mDataList.add(new DataEntry(7, false));
+//                break;
+//            case "8":
+//                mDataList.add(new DataEntry(8, false));
+//                break;
+//            case "9":
+//                mDataList.add(new DataEntry(9, false));
+//                break;
+//            case "10":
+//                mDataList.add(new DataEntry(10, false));
+//                break;
+//            case "11":
+//                mDataList.add(new DataEntry(11, false));
+//                break;
+//            case "12":
+//                mDataList.add(new DataEntry(12, false));
+//                break;
         }
         Log.d(TAG, value + " subdivisions in next beat");
         mAdapter.notifyDataSetChanged();

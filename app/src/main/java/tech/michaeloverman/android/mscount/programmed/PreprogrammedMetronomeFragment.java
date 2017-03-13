@@ -282,6 +282,8 @@ public class PreprogrammedMetronomeFragment extends Fragment
         if(mCurrentPiece.getDefaultTempo() != 0) {
             mCurrentTempo = mCurrentPiece.getDefaultTempo();
         }
+
+        Log.d(TAG, "Subd: " + mCurrentPiece.getSubdivision() + "; CountoffSubs: " + mCurrentPiece.getCountOffSubdivision());
 //        mCurrentProgramLabel.setText("A barrel of laughs");
 //        updateGUI();
     }

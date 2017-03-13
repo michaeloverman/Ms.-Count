@@ -3,18 +3,12 @@ package tech.michaeloverman.android.mscount;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +33,8 @@ import tech.michaeloverman.android.mscount.utils.Utilities;
 /**
  *
  */
-public class MetaDataEntryFragment extends Fragment {
+public class MetaDataEntryFragment extends Fragment
+        implements DataEntryFragment.DataEntryCallback {
     private static final String TAG = MetaDataEntryFragment.class.getSimpleName();
 
     @BindView(R.id.composer_name_text_entry)
@@ -47,13 +42,15 @@ public class MetaDataEntryFragment extends Fragment {
     @BindView(R.id.title_text_entry) EditText mTitleEntry;
     @BindView(R.id.baseline_subdivision_entry) EditText mBaselineSubdivisionEntry;
     @BindView(R.id.countoff_subdivision_entry) EditText mCountoffSubdivisionEntry;
-    @BindView(R.id.beats_in_measure_label) TextView mBeatsInMeasureLabel;
-    @BindView(R.id.beats_in_measure_entry) EditText mBeatsInMeasureEntry;
+    @BindView(R.id.default_tempo_label) TextView mDefaultTempoLabel;
+    @BindView(R.id.default_tempo_entry) EditText mDefaultTempoEntry;
 //    @BindView(R.id.first_beat_subdivisions_entry) EditText mFirstBeatEntry;
-    @BindView(R.id.beats_entry_container) LinearLayout mBeatEntryContainer;
-    @BindView(R.id.enter_measure_button) Button mEnterMeasureButton;
+//    @BindView(R.id.beats_entry_container) LinearLayout mBeatEntryContainer;
+    @BindView(R.id.enter_beats_button) Button mEnterBeatsButton;
+    @BindView(R.id.baseline_rhythmic_value_entry) EditText mBaselineRhythmicValueEntry;
 
     private PieceOfMusic mPieceOfMusic;
+    private PieceOfMusic.Builder mBuilder;
     private List<Integer> mBeats;
     private List<Integer> mDownBeats;
 
@@ -61,6 +58,8 @@ public class MetaDataEntryFragment extends Fragment {
         Log.d(TAG, "newInstance()");
         return new MetaDataEntryFragment();
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,103 +81,107 @@ public class MetaDataEntryFragment extends Fragment {
         View view = inflater.inflate(R.layout.meta_data_input_layout, container, false);
         ButterKnife.bind(this, view);
 //        mBeatEntryContainer = (LinearLayout) this.getActivity().findViewById(R.id.beats_entry_container);
-        Log.d(TAG, mBeatEntryContainer.toString());
+//        Log.d(TAG, mBeatEntryContainer.toString());
 
-        mBeatsInMeasureLabel.setText(getString(R.string.beats_in_current_measure, mDownBeats.size() + 1));
-        mBeatsInMeasureEntry.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(s.length() < 1) return;
-                int beats = Integer.parseInt(s.toString());
-                createBeatEntries(beats);
-            }
-        });
+//        mDefaultTempoLabel.setText(getString(R.string.beats_in_current_measure, mDownBeats.size() + 1));
+//        mDefaultTempoEntry.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if(s.length() < 1) return;
+//                int beats = Integer.parseInt(s.toString());
+//                createBeatEntries(beats);
+//            }
+//        });
 
         return view;
     }
 
-    @OnClick(R.id.enter_measure_button)
-    public void enterMeasureClick() {
-        int numBeats = Integer.parseInt(mBeatsInMeasureEntry.getText().toString());
-        mDownBeats.add(numBeats);
-        for(int i = 0; i < numBeats; i++) {
-            mBeats.add(Integer.parseInt(((EditText) mBeatEntryContainer.getChildAt(i)).getText().toString()));
+    @OnClick(R.id.enter_beats_button)
+    public void enterBeatsClicked() {
+        String composer = mComposerEntry.getText().toString();
+        if(composer == null) {
+            toastError();
+            return;
         }
-        mBeatsInMeasureLabel.setText(getString(R.string.beats_in_current_measure, mDownBeats.size() + 1));
+        String title = mTitleEntry.getText().toString();
+        if(title == null) {
+            toastError();
+            return;
+        }
+        String subd = mBaselineSubdivisionEntry.getText().toString();
+        if(subd == null) {
+            toastError();
+            return;
+        }
+        String countoffSubd = mCountoffSubdivisionEntry.getText().toString();
+        if(countoffSubd == null) {
+            toastError();
+            return;
+        }
+        String defaultTempo = mDefaultTempoEntry.getText().toString();
+        if(defaultTempo == null) {
+            toastError();
+            return;
+        }
+        String countOffValue = mBaselineRhythmicValueEntry.getText().toString();
+        if(countOffValue == null) {
+            toastError();
+            return;
+        }
 
-        Log.d(TAG, "Measures: " + mDownBeats.size() + ", Beats: " + mBeats.size());
-        if(mDownBeats.size() == 5) {
-            Log.d(TAG, mDownBeats.toString());
-        }
+        mBuilder = new PieceOfMusic.Builder()
+                .author(composer)
+                .title(title)
+                .subdivision(Integer.parseInt(subd))
+                .countOffSubdivision(Integer.parseInt(countoffSubd))
+                .defaultTempo(Integer.parseInt(defaultTempo))
+                .baselineNoteValue(Integer.parseInt(countOffValue));
+
+//        mPieceOfMusic = mBuilder.build();
+        gotoDataEntryFragment(title);
     }
 
-    private void createBeatEntries(int newBeats) {
-        mBeatEntryContainer.removeAllViews();
-        for(int i = 0; i < newBeats; i++) {
-            EditText newEditText = new EditText(this.getContext());
-            newEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
-            newEditText.setGravity(Gravity.CENTER);
-            if(i != newBeats - 1) {
-                newEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-            } else {
-                newEditText.setNextFocusForwardId(R.id.beats_in_measure_entry);
-            }
-            mBeatEntryContainer.addView(newEditText);
-        }
-
-    }
+//    private void createBeatEntries(int newBeats) {
+//        mBeatEntryContainer.removeAllViews();
+//        for(int i = 0; i < newBeats; i++) {
+//            EditText newEditText = new EditText(this.getContext());
+//            newEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+//            newEditText.setGravity(Gravity.CENTER);
+//            if(i != newBeats - 1) {
+//                newEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+//            } else {
+//                newEditText.setNextFocusForwardId(R.id.beats_in_measure_entry);
+//            }
+//            mBeatEntryContainer.addView(newEditText);
+//        }
+//
+//    }
 
     @OnClick(R.id.save_program_button)
     public void saveProgram() {
-//        String composer = mComposerEntry.getText().toString();
-//        if(composer == null) {
-//            toastError();
-//            return;
-//        }
-//        String title = mTitleEntry.getText().toString();
-//        if(title == null) {
-//            toastError();
-//            return;
-//        }
-//        String subd = mBaselineSubdivisionEntry.getText().toString();
-//        if(subd == null) {
-//            toastError();
-//            return;
-//        }
-//        String countoffSubd = mCountoffSubdivisionEntry.getText().toString();
-//        if(countoffSubd == null) {
-//            toastError();
-//            return;
-//        }
-//
-//        mPieceOfMusic.setAuthor(composer);
-//        mPieceOfMusic.setTitle(title);
-//        mPieceOfMusic.setSubdivision(Integer.parseInt(subd));
-//        mPieceOfMusic.setCountOffSubdivision(Integer.parseInt(countoffSubd));
 //        mPieceOfMusic.buildCountoff();
 //        Utilities.appendCountoff(mPieceOfMusic.countOffArray(), mBeats, mDownBeats);
 //        mPieceOfMusic.setBeats(mBeats);
 //        mPieceOfMusic.setDownBeats(mDownBeats);
 
-//        saveToDatabase();
+        saveToDatabase();
 
-//        getFragmentManager().popBackStackImmediate();
+        getFragmentManager().popBackStackImmediate();
 
-        gotoDataEntryFragment();
     }
 
-    private void gotoDataEntryFragment() {
-        Fragment fragment = DataEntryFragment.newInstance();
+    private void gotoDataEntryFragment(String title) {
+        Fragment fragment = DataEntryFragment.newInstance(title, this, mBuilder);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
@@ -251,5 +254,12 @@ public class MetaDataEntryFragment extends Fragment {
 
     private void toastError() {
         Toast.makeText(this.getContext(), "You Must Enter Data to Save Data!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder) {
+        mBuilder = builder;
+        mBuilder.dataEntries(data);
+        mPieceOfMusic = mBuilder.build();
     }
 }

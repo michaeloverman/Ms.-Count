@@ -2,8 +2,10 @@ package tech.michaeloverman.android.mscount.pojos;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import tech.michaeloverman.android.mscount.DataEntry;
 import tech.michaeloverman.android.mscount.utils.Utilities;
 
 /**
@@ -130,34 +132,10 @@ public class PieceOfMusic {
         mBeats = beats;
     }
 
-//    public void setBeatsWithDoubles(double[] beats) {
-//        int[] bigbeats = new int[beats.length];
-//        for(int i = 0; i < beats.length; i++) {
-//            bigbeats[i] = (int) (beats[i] * 100);
-//        }
-//        int gcd = findGCD(bigbeats);
-//        for(int i = 0; i < bigbeats.length; i++) {
-//            bigbeats[i] /= gcd;
-//        }
-//        mCountOffSubdivision = mSubdivision;
-//        mSubdivision = mSubdivision * 100 / gcd;
-//        setBeats(bigbeats);
-//    }
+    public void setDataBeats(List<DataEntry> data) {
 
-//    private int findGCD(int[] input) {
-//        int result = input[0];
-//        for(int i = 0; i < input.length; i++) result = findGCD(result, input[i]);
-//        return result;
-//    }
-//    private int findGCD(int a, int b) {
-//        while (b > 0) {
-//            int temp = b;
-//            b = a % b;
-//            a = temp;
-//        }
-//        return a;
-//    }
-
+        buildCountoff();
+    }
 
     /** Uses the 'length' of first beat to generate count off measure */
     public void buildCountoff() {
@@ -258,6 +236,27 @@ public class PieceOfMusic {
         }
         public Builder firstMeasureNumber(int offset) {
             this.measureCountOffset = offset - 1;
+            return this;
+        }
+        public Builder dataEntries(List<DataEntry> data) {
+            beats = new ArrayList<>();
+            downBeats = new ArrayList<>();
+
+            int start = data.get(0).isBarline() ? 1 : 0;
+
+            int beatsPerMeasureCount = 0;
+
+            for(int i = start; i < data.size(); i++) {
+
+                if(data.get(i).isBarline()) {
+                    downBeats.add(beatsPerMeasureCount);
+                    beatsPerMeasureCount = 0;
+                } else {
+                    beats.add(data.get(i).getData());
+                    beatsPerMeasureCount++;
+                }
+            }
+
             return this;
         }
         public PieceOfMusic build() {

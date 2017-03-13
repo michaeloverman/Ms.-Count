@@ -97,7 +97,7 @@
         android:ems="10"
         android:gravity="center"
         android:hint="2"
-        android:nextFocusForward="@+id/beats_in_measure_entry"
+        android:nextFocusForward="@+id/default_tempo_entry"
         android:inputType="number"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/countoff_subdivision_label"/>
@@ -111,21 +111,21 @@
         />
 
     <TextView
-        android:id="@+id/beats_in_measure_label"
+        android:id="@+id/default_tempo_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/beats_in_current_measure"
+        android:text="Default Tempo"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@+id/baseline_subdivision_entry"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toLeftOf="@+id/enter_measure_button"
+        app:layout_constraintRight_toLeftOf="@+id/enter_beats_button"
         android:layout_marginRight="8dp"/>
 
     <EditText
-        android:id="@+id/beats_in_measure_entry"
+        android:id="@+id/default_tempo_entry"
         android:layout_width="63dp"
         android:layout_height="43dp"
         android:layout_marginEnd="8dp"
@@ -137,77 +137,55 @@
         android:hint="4"
         android:inputType="number"
         android:nextFocusForward="@+id/beats_entry_container"
-        app:layout_constraintLeft_toLeftOf="@+id/beats_in_measure_label"
-        app:layout_constraintRight_toRightOf="@+id/beats_in_measure_label"
-        app:layout_constraintTop_toBottomOf="@+id/beats_in_measure_label"
+        app:layout_constraintLeft_toLeftOf="@+id/default_tempo_label"
+        app:layout_constraintRight_toRightOf="@+id/default_tempo_label"
+        app:layout_constraintTop_toBottomOf="@+id/default_tempo_label"
         android:layout_marginTop="-1dp"
         app:layout_constraintHorizontal_bias="0.501"/>
 
     <TextView
-        android:id="@+id/subdivisions_per_beat_label"
+        android:id="@+id/baseline_rhythmic_value_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Subdivisions per beat:"
+        android:text="Baseline Rhythmic Value:"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/beats_in_measure_entry"
+        app:layout_constraintTop_toBottomOf="@+id/default_tempo_entry"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"/>
-
-    <HorizontalScrollView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+    <EditText
+        android:id="@+id/baseline_rhythmic_value_entry"
+        android:layout_width="63dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/baseline_rhythmic_value_label"
         android:layout_marginRight="8dp"
-        android:minHeight="40sp"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subdivisions_per_beat_label"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
-
-        <LinearLayout
-            android:id="@+id/beats_entry_container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/first_beat_subdivisions_entry"
-                android:layout_width="63dp"
-                android:layout_height="43dp"
-                android:gravity="center"
-                android:ems="10"
-                android:hint="2"
-                android:inputType="number"
-                />
-        </LinearLayout>
-    </HorizontalScrollView>
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
     <Button
-        android:id="@+id/enter_measure_button"
+        android:id="@+id/enter_beats_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ok"
-        app:layout_constraintTop_toTopOf="@+id/beats_in_measure_label"
+        android:text="Enter Beats"
+        app:layout_constraintTop_toTopOf="@+id/default_tempo_label"
         android:layout_marginTop="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/beats_in_measure_entry"
+        app:layout_constraintBottom_toBottomOf="@+id/default_tempo_entry"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/subdivisions_per_beat_label"
+        app:layout_constraintLeft_toLeftOf="@+id/baseline_rhythmic_value_label"
         app:layout_constraintVertical_bias="0.0"/>
 
     <Button
         android:id="@+id/save_program_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter Beats"
+        android:text="Save Program"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="8dp"

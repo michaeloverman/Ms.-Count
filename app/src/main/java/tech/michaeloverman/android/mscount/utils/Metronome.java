@@ -190,12 +190,17 @@ public class Metronome {
             return;
         }
 
+        Log.d(TAG, "Metronome Countoff M: " + downBeats[0] + " beats, " + countOffSubs + " countOffSubdivisions");
+        Log.d(TAG, "Check this: countOffSubs: " + countOffSubs + ", p.getCountOffSubdivisions: " + p.getCountOffSubdivision());
+
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
             int nextClick = 0;  // number of subdivisions in 'this' beat, before next click
             int count = 0;      // count of subdivisions since last click
             int beatPointer = 0; // pointer to move through beats array
             int beatsPerMeasureCount = 0; // count of beats since last downbeat
             int measurePointer = 0; //pointer to move through downbeats array
+
+
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -216,17 +221,19 @@ public class Metronome {
                     }
                     nextClick += beats[beatPointer++]; // set the subdivision counter for next beat
                     beatsPerMeasureCount--; // count down one beat in the measure
-                }
-                count++; // count one subdivision gone by...
-                if(measurePointer == 1) {
-                    if(beatPointer >= 3 + countOffSubs) {
-                        mListener.metronomeMeasureNumber("GO");
-                    } else if (beatPointer >= 3) {
-                        mListener.metronomeMeasureNumber("READY");
-                    } else {
-                        mListener.metronomeMeasureNumber((beatPointer) + "");
+
+                    if(measurePointer == 1) {
+//                        Log.d(TAG, "Countoff Measure, beat" + beatPointer);
+                        if(beatPointer >= 3 + countOffSubs) {
+                            mListener.metronomeMeasureNumber("GO");
+                        } else if (beatPointer >= 3) {
+                            mListener.metronomeMeasureNumber("READY");
+                        } else {
+                            mListener.metronomeMeasureNumber((beatPointer) + "");
+                        }
                     }
                 }
+                count++; // count one subdivision gone by...
             }
 
             @Override

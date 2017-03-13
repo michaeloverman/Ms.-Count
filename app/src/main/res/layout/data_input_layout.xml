@@ -21,7 +21,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/entered_data_recycler_view"
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/data_title_view"
         android:layout_marginLeft="16dp"
@@ -36,7 +36,6 @@
         android:id="@+id/barline"
         android:text="|"
         android:textSize="@dimen/data_entry_sub_button_text_size"
-        android:layout_marginRight="12dp"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:layout_width="wrap_content"
@@ -56,7 +55,8 @@
         app:layout_constraintLeft_toRightOf="@+id/barline"
         android:layout_marginTop="10dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -174,17 +174,6 @@
                 android:background="@drawable/roundcorner_light"/>
 
             <TextView
-                android:id="@+id/eleven"
-                android:text="11"
-                android:textSize="@dimen/data_entry_sub_button_text_size"
-                android:layout_margin="@dimen/data_entry_sub_button_margin"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/roundcorner_light"/>
-
-            <TextView
                 android:id="@+id/twelve"
                 android:text="12"
                 android:textSize="@dimen/data_entry_sub_button_text_size"
@@ -216,4 +205,24 @@
         android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/data_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <Button
+        android:id="@+id/data_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 </android.support.constraint.ConstraintLayout>

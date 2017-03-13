@@ -278,6 +278,9 @@ public class PreprogrammedMetronomeFragment extends Fragment
     public void newPiece(PieceOfMusic piece) {
         Log.d(TAG, "newPiece() " + piece.getTitle());
         mCurrentPiece = piece;
+
+        Log.d(TAG, "piece COsub: " + piece.getCountOffSubdivision() + "; mCurrentPiece COsub: " + mCurrentPiece.getCountOffSubdivision());
+
         mCurrentComposer = mCurrentPiece.getAuthor();
         if(mCurrentPiece.getDefaultTempo() != 0) {
             mCurrentTempo = mCurrentPiece.getDefaultTempo();

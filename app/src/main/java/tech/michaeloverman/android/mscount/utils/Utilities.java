@@ -12,6 +12,11 @@ import java.util.List;
 public class Utilities {
     public static final String TAG = Utilities.class.getSimpleName();
 
+    /**
+     * Used to turn beat length data, in List, from database, into int[] for actual use by metronome.
+     * @param integerList
+     * @return
+     */
     public static int[] integerListToArray(List<Integer> integerList) {
 //        if(integerList == null) return null;
         int[] ints = new int[integerList.size()];
@@ -21,6 +26,11 @@ public class Utilities {
         return ints;
     }
 
+    /**
+     * Used by hard coded data entry. Should probably be removed prior to actual release.
+     * @param ints
+     * @return
+     */
     public static List<Integer> arrayToIntegerList(int[] ints) {
         List<Integer> list = new ArrayList<>();
         for(int i = 0 ; i < ints.length; i++) {

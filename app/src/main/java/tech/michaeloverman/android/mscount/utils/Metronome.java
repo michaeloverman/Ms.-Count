@@ -190,9 +190,6 @@ public class Metronome {
             return;
         }
 
-        Log.d(TAG, "Metronome Countoff M: " + downBeats[0] + " beats, " + countOffSubs + " countOffSubdivisions");
-        Log.d(TAG, "Check this: countOffSubs: " + countOffSubs + ", p.getCountOffSubdivisions: " + p.getCountOffSubdivision());
-
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
             int nextClick = 0;  // number of subdivisions in 'this' beat, before next click
             int count = 0;      // count of subdivisions since last click

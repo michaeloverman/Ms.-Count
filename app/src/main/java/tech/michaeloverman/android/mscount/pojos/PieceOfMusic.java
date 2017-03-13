@@ -5,7 +5,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import tech.michaeloverman.android.mscount.DataEntry;
 import tech.michaeloverman.android.mscount.utils.Utilities;
 
 /**
@@ -52,7 +51,7 @@ public class PieceOfMusic {
 
     public void setTitle(String title) {
         mTitle = title;
-        Log.d(TAG, "setTitle()" + title);
+//        Log.d(TAG, "setTitle()" + title);
     }
 
     public String getAuthor() {
@@ -61,7 +60,7 @@ public class PieceOfMusic {
 
     public void setAuthor(String author) {
         mAuthor = author;
-        Log.d(TAG, "setAuthor()" + author);
+//        Log.d(TAG, "setAuthor()" + author);
     }
 
     public int getSubdivision() {
@@ -71,16 +70,16 @@ public class PieceOfMusic {
     public void setSubdivision(int subdivision) {
         mSubdivision = subdivision;
 //        mCountOffSubdivision = mSubdivision;
-        Log.d(TAG, "setSubdivision()" + subdivision + " COsub: " + mCountOffSubdivision);
+//        Log.d(TAG, "setSubdivision()" + subdivision + " COsub: " + mCountOffSubdivision);
     }
 
     public int getCountOffSubdivision() {
-        return mCountOffSubdivision;
+        return mCountOffSubdivision == 0 ? mSubdivision : mCountOffSubdivision;
     }
 
     public void setCountOffSubdivision(int countOffSubdivision) {
         mCountOffSubdivision = countOffSubdivision;
-        Log.d(TAG, "setCountOffSubdivision()" + countOffSubdivision + " sub: " + mSubdivision);
+//        Log.d(TAG, "setCountOffSubdivision()" + countOffSubdivision + " sub: " + mSubdivision);
     }
 
     public int getDefaultTempo() {
@@ -89,7 +88,7 @@ public class PieceOfMusic {
 
     public void setDefaultTempo(int defaultTempo) {
         mDefaultTempo = defaultTempo;
-        Log.d(TAG, "setDefaultTempo()" + defaultTempo);
+//        Log.d(TAG, "setDefaultTempo()" + defaultTempo);
     }
 
     public double getTempoMultiplier() {
@@ -98,7 +97,7 @@ public class PieceOfMusic {
 
     public void setTempoMultiplier(double tempoMultiplier) {
         mTempoMultiplier = tempoMultiplier;
-        Log.d(TAG, "setTempoMultiplier" + tempoMultiplier);
+//        Log.d(TAG, "setTempoMultiplier" + tempoMultiplier);
     }
 
     public int getBaselineNoteValue() {
@@ -107,7 +106,7 @@ public class PieceOfMusic {
 
     public void setBaselineNoteValue(int baselineNoteValue) {
         mBaselineNoteValue = baselineNoteValue;
-        Log.d(TAG, "setBaselineNoteValue() " + baselineNoteValue);
+//        Log.d(TAG, "setBaselineNoteValue() " + baselineNoteValue);
     }
 
     public int getMeasureCountOffset() {
@@ -116,7 +115,7 @@ public class PieceOfMusic {
 
     public void setMeasureCountOffset(int measureCountOffset) {
         mMeasureCountOffset = measureCountOffset;
-        Log.d(TAG, "setMeasureCountOffset()" +measureCountOffset);
+//        Log.d(TAG, "setMeasureCountOffset()" +measureCountOffset);
     }
 
     public List<Integer> getBeats() {

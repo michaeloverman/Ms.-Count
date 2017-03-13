@@ -14,6 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import tech.michaeloverman.android.mscount.dataentry.MetaDataEntryFragment;
 import tech.michaeloverman.android.mscount.programmed.PreprogrammedMetronomeFragment;
 
 /**

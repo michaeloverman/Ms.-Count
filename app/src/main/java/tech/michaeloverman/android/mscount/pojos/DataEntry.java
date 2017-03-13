@@ -1,4 +1,4 @@
-package tech.michaeloverman.android.mscount;
+package tech.michaeloverman.android.mscount.pojos;
 
 /**
  * Created by Michael on 3/13/2017.

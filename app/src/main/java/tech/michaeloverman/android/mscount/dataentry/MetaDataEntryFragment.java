@@ -1,4 +1,4 @@
-package tech.michaeloverman.android.mscount;
+package tech.michaeloverman.android.mscount.dataentry;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,6 +26,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import tech.michaeloverman.android.mscount.R;
+import tech.michaeloverman.android.mscount.pojos.DataEntry;
 import tech.michaeloverman.android.mscount.pojos.HardData;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Utilities;

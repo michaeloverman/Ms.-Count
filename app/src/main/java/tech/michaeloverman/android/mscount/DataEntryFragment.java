@@ -1,243 +1,215 @@
 package tech.michaeloverman.android.mscount;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import tech.michaeloverman.android.mscount.pojos.HardData;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
-import tech.michaeloverman.android.mscount.utils.Utilities;
 
 /**
- *
+ * Created by Michael on 3/12/2017.
  */
+
 public class DataEntryFragment extends Fragment {
     private static final String TAG = DataEntryFragment.class.getSimpleName();
 
-    @BindView(R.id.composer_name_text_entry)
-    EditText mComposerEntry;
-    @BindView(R.id.title_text_entry) EditText mTitleEntry;
-    @BindView(R.id.baseline_subdivision_entry) EditText mBaselineSubdivisionEntry;
-    @BindView(R.id.countoff_subdivision_entry) EditText mCountoffSubdivisionEntry;
-    @BindView(R.id.beats_in_measure_label) TextView mBeatsInMeasureLabel;
-    @BindView(R.id.beats_in_measure_entry) EditText mBeatsInMeasureEntry;
-//    @BindView(R.id.first_beat_subdivisions_entry) EditText mFirstBeatEntry;
-    @BindView(R.id.beats_entry_container) LinearLayout mBeatEntryContainer;
-    @BindView(R.id.enter_measure_button) Button mEnterMeasureButton;
-
     private PieceOfMusic mPieceOfMusic;
-    private List<Integer> mBeats;
-    private List<Integer> mDownBeats;
+
+    @BindView(R.id.data_title_view) TextView mTitleView;
+    @BindView(R.id.entered_data_recycler_view) RecyclerView mEnteredDataRecycler;
+    @BindView(R.id.barline) TextView mBarline;
+    @BindView(R.id.one) TextView mOne;
+    @BindView(R.id.two) TextView mTwo;
+    @BindView(R.id.three) TextView mThree;
+    @BindView(R.id.four) TextView mFour;
+    @BindView(R.id.five) TextView mFive;
+    @BindView(R.id.six) TextView mSix;
+    @BindView(R.id.seven) TextView mSeven;
+    @BindView(R.id.eight) TextView mEight;
+    @BindView(R.id.nine) TextView mNine;
+    @BindView(R.id.ten) TextView mTen;
+    @BindView(R.id.eleven) TextView mEleven;
+    @BindView(R.id.twelve) TextView mTwelve;
+    @BindView(R.id.other) TextView mQuestion;
+    @BindView(R.id.data_delete_button) Button mDeleteButton;
+
+    private List<DataEntry> mDataList;
+    private int mMeasureNumber;
+    private DataListAdapter mAdapter;
 
     public static Fragment newInstance() {
         Log.d(TAG, "newInstance()");
-        return new DataEntryFragment();
+        DataEntryFragment fragment = new DataEntryFragment();
+//        fragment.mPieceOfMusic = piece;
+        return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate()");
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        mPieceOfMusic = new PieceOfMusic();
-        mBeats = new ArrayList<>();
-        mDownBeats = new ArrayList<>();
+        // set up variables
+        mDataList = new ArrayList<>();
+        mMeasureNumber = 0;
+        mDataList.add(new DataEntry(++mMeasureNumber, true));
 
-        loadNewPieces();
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView()");
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.data_input_layout, container, false);
         ButterKnife.bind(this, view);
-//        mBeatEntryContainer = (LinearLayout) this.getActivity().findViewById(R.id.beats_entry_container);
-        Log.d(TAG, mBeatEntryContainer.toString());
 
-        mBeatsInMeasureLabel.setText(getString(R.string.beats_in_current_measure, mDownBeats.size() + 1));
-        mBeatsInMeasureEntry.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//        mTitleView.setText(mPieceOfMusic.getTitle());
+        mTitleView.setText("Dummy Text Title");
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(s.length() < 1) return;
-                int beats = Integer.parseInt(s.toString());
-                createBeatEntries(beats);
-            }
-        });
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mEnteredDataRecycler.setLayoutManager(manager);
+        mAdapter = new DataListAdapter();
+        mEnteredDataRecycler.setAdapter(mAdapter);
 
         return view;
     }
 
-    @OnClick(R.id.enter_measure_button)
-    public void enterMeasureClick() {
-        int numBeats = Integer.parseInt(mBeatsInMeasureEntry.getText().toString());
-        mDownBeats.add(numBeats);
-        for(int i = 0; i < numBeats; i++) {
-            mBeats.add(Integer.parseInt(((EditText) mBeatEntryContainer.getChildAt(i)).getText().toString()));
-        }
-        mBeatsInMeasureLabel.setText(getString(R.string.beats_in_current_measure, mDownBeats.size() + 1));
-
-        Log.d(TAG, "Measures: " + mDownBeats.size() + ", Beats: " + mBeats.size());
-        if(mDownBeats.size() == 5) {
-            Log.d(TAG, mDownBeats.toString());
-        }
+    @OnClick(R.id.data_delete_button)
+    public void delete() {
+        Log.d(TAG, "delete last data item");
+        mDataList.remove(mDataList.size() - 1);
+        mAdapter.notifyDataSetChanged();
     }
 
-    private void createBeatEntries(int newBeats) {
-        mBeatEntryContainer.removeAllViews();
-        for(int i = 0; i < newBeats; i++) {
-            EditText newEditText = new EditText(this.getContext());
-            newEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
-            newEditText.setGravity(Gravity.CENTER);
-            if(i != newBeats - 1) {
-                newEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-            } else {
-                newEditText.setNextFocusForwardId(R.id.beats_in_measure_entry);
+    @OnClick( { R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six, R.id.seven,
+            R.id.eight, R.id.nine, R.id.ten, R.id.eleven, R.id.twelve, R.id.other, R.id.barline } )
+    public void subdivisionCountEntered(TextView view) {
+        String value = view.getText().toString();
+        switch(value) {
+            case "|":
+                mDataList.add(new DataEntry(++mMeasureNumber, true));
+                break;
+            case "1":
+                mDataList.add(new DataEntry(1, false));
+                break;
+            case "2":
+                mDataList.add(new DataEntry(2, false));
+                break;
+            case "3":
+                mDataList.add(new DataEntry(3, false));
+                break;
+            case "4":
+                mDataList.add(new DataEntry(4, false));
+                break;
+            case "5":
+                mDataList.add(new DataEntry(5, false));
+                break;
+            case "6":
+                mDataList.add(new DataEntry(6, false));
+                break;
+            case "7":
+                mDataList.add(new DataEntry(7, false));
+                break;
+            case "8":
+                mDataList.add(new DataEntry(8, false));
+                break;
+            case "9":
+                mDataList.add(new DataEntry(9, false));
+                break;
+            case "10":
+                mDataList.add(new DataEntry(10, false));
+                break;
+            case "11":
+                mDataList.add(new DataEntry(11, false));
+                break;
+            case "12":
+                mDataList.add(new DataEntry(12, false));
+                break;
+            case "?":
+                mDataList.add(new DataEntry(13, false));
+                break;
+        }
+        Log.d(TAG, value + " subdivisions in next beat");
+        mAdapter.notifyDataSetChanged();
+        mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
+    }
+
+    public void dataEntryClicked(int position) {
+        Log.d(TAG, "data point " + position + " clicked");
+    }
+
+    public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataViewHolder> {
+
+        private static final int VIEW_TYPE_BARLINE = 0;
+        private static final int VIEW_TYPE_BEAT = 1;
+
+        @Override
+        public DataViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            int layoutId;
+
+            switch(viewType) {
+                case VIEW_TYPE_BARLINE:
+                    layoutId = R.layout.data_input_barline_layout;
+                    break;
+                case VIEW_TYPE_BEAT:
+                    layoutId = R.layout.data_input_single_entry_layout;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid view type, value of " + viewType);
             }
-            mBeatEntryContainer.addView(newEditText);
+
+            View item = LayoutInflater.from(getContext()).inflate(layoutId, parent, false);
+            return new DataViewHolder(item);
         }
 
-    }
-
-    @OnClick(R.id.save_program_button)
-    public void saveProgram() {
-        String composer = mComposerEntry.getText().toString();
-        if(composer == null) {
-            toastError();
-            return;
-        }
-        String title = mTitleEntry.getText().toString();
-        if(title == null) {
-            toastError();
-            return;
-        }
-        String subd = mBaselineSubdivisionEntry.getText().toString();
-        if(subd == null) {
-            toastError();
-            return;
-        }
-        String countoffSubd = mCountoffSubdivisionEntry.getText().toString();
-        if(countoffSubd == null) {
-            toastError();
-            return;
+        @Override
+        public void onBindViewHolder(DataViewHolder holder, int position) {
+            holder.dataEntry.setText(mDataList.get(position).getData() + "");
         }
 
-        mPieceOfMusic.setAuthor(composer);
-        mPieceOfMusic.setTitle(title);
-        mPieceOfMusic.setSubdivision(Integer.parseInt(subd));
-        mPieceOfMusic.setCountOffSubdivision(Integer.parseInt(countoffSubd));
-        mPieceOfMusic.buildCountoff();
-        Utilities.appendCountoff(mPieceOfMusic.countOffArray(), mBeats, mDownBeats);
-        mPieceOfMusic.setBeats(mBeats);
-        mPieceOfMusic.setDownBeats(mDownBeats);
+        @Override
+        public int getItemCount() {
+            return mDataList == null ? 0 : mDataList.size();
+        }
 
-        saveToDatabase();
-
-        getFragmentManager().popBackStackImmediate();
-    }
-
-    private void loadNewPieces() {
-        PieceOfMusic.Builder loader;
-        int NUMPIECES = HardData.composers.length;
-        for(int i = 0; i < NUMPIECES; i++) {
-            loader = new PieceOfMusic.Builder()
-                    .title(HardData.titles[i])
-                    .author(HardData.composers[i])
-                    .subdivision(HardData.subdivisions[i])
-                    .countOffSubdivision(HardData.countoffsubdivisions[i])
-                    .downBeats(HardData.lotsOdownBeats[i])
-                    .defaultTempo(HardData.defaultTempos[i]);
-            if(HardData.lotsObeats[i].length == 0) {
-                loader.beats(Utilities.createBeatList(HardData.lotsOdownBeats[i], HardData.subdivisions[i]));
+        @Override
+        public int getItemViewType(int position) {
+            if(mDataList.get(position).isBarline()) {
+                return VIEW_TYPE_BARLINE;
             } else {
-                loader.beats(HardData.lotsObeats[i]);
+                return VIEW_TYPE_BEAT;
+            }
+        }
+
+        class DataViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            @BindView(R.id.data_entry) TextView dataEntry;
+
+            DataViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+                itemView.setOnClickListener(this);
             }
 
-            saveToDatabase(loader.build());
+            @Override
+            public void onClick(View v) {
+                int value = getAdapterPosition();
+                dataEntryClicked(value);
+            }
         }
-    }
-
-    private void saveToDatabase(final PieceOfMusic p) {
-        Log.d(TAG, "Saving to local database, or to Firebase: " + p.getTitle() + " by " + p.getAuthor());
-        Log.d(TAG, "Pieces is " + p.getDownBeats().size() + " measures long.");
-
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
-
-        // Look for piece first, and if exists, get that key to update; otherwise push() to create
-        // new key for new piece.
-        mPiecesDatabaseReference.child("composers").child(p.getAuthor()).child(p.getTitle())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String key;
-                        if(dataSnapshot.exists()) {
-                            // update
-                            key = dataSnapshot.getValue().toString();
-                        } else {
-                            // push to create
-                            key = mPiecesDatabaseReference.child("pieces").push().getKey();
-                        }
-
-                        Map<String, Object> updates = new HashMap<>();
-                        updates.put("/pieces/" + key, p);
-                        updates.put("/composers/" + p.getAuthor() + "/" + p.getTitle(), key);
-                        mPiecesDatabaseReference.updateChildren(updates);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
-
-    }
-
-    private void saveToDatabase() {
-        saveToDatabase(mPieceOfMusic);
-    }
-
-    private void toastError() {
-        Toast.makeText(this.getContext(), "You Must Enter Data to Save Data!", Toast.LENGTH_SHORT).show();
     }
 }

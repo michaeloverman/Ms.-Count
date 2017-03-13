@@ -73,7 +73,7 @@ public class MetronomeSelectorFragment extends Fragment {
                 fragment = PreprogrammedMetronomeFragment.newInstance();
                 break;
             case R.id.create_new_program_button:
-                fragment = DataEntryFragment.newInstance();
+                fragment = MetaDataEntryFragment.newInstance();
                 break;
             default:
                 fragment = null;

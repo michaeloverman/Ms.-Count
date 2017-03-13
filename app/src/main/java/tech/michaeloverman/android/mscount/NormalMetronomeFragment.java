@@ -180,7 +180,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             b.setChecked(true);
         }
 
-//        mBPM = 123.4f;
         updateDisplay();
         return view;
     }

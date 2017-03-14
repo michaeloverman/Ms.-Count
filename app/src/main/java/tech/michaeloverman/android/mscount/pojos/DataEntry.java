@@ -6,12 +6,12 @@ package tech.michaeloverman.android.mscount.pojos;
 
 public class DataEntry {
     private static int measureNumberCount;
-    private int mCount;
+    private int mData;
     private boolean isBarline;
     private int measureNumber;
 
-    public DataEntry(int count, boolean bar) {
-        mCount = count;
+    public DataEntry(int data, boolean bar) {
+        mData = data;
         isBarline = bar;
         if(isBarline) {
             measureNumberCount++;
@@ -19,19 +19,25 @@ public class DataEntry {
         }
     }
 
+    public DataEntry() { }
+
     public boolean isBarline() {
         return isBarline;
     }
 
     public int getData() {
-        return mCount;
+        return mData;
+    }
+
+    public void setData(int data) {
+        mData = data;
     }
 
     public void decreaseMeasureNumber() {
-        if(isBarline) mCount--;
+        if(isBarline) mData--;
     }
     public void increaseMeasureNumber() {
-        if(isBarline) mCount++;
+        if(isBarline) mData++;
     }
 
 }

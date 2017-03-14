@@ -54,6 +54,9 @@ public class DataEntryFragment extends Fragment {
     private List<DataEntry> mDataList;
     private int mMeasureNumber;
     private DataListAdapter mAdapter;
+    private boolean mDataItemSelected;
+//    private int mSelectedDataItemPosition;
+//    private DataListAdapter.DataViewHolder mSelectedDataItem;
 
     interface DataEntryCallback {
         void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder);
@@ -100,8 +103,16 @@ public class DataEntryFragment extends Fragment {
 
     @OnClick(R.id.data_delete_button)
     public void delete() {
-        Log.d(TAG, "delete last data item");
-        mDataList.remove(mDataList.size() - 1);
+        if(mDataItemSelected) {
+            mDataList.remove(mAdapter.selectedPosition);
+            if(mAdapter.selectedPosition >= mDataList.size()) {
+                mAdapter.selectedPosition = -1;
+                mDataItemSelected = false;
+            }
+
+        } else {
+            mDataList.remove(mDataList.size() - 1);
+        }
         mAdapter.notifyDataSetChanged();
     }
 
@@ -129,64 +140,57 @@ public class DataEntryFragment extends Fragment {
         String value = view.getText().toString();
         switch(value) {
             case "|":
-                mDataList.add(new DataEntry(++mMeasureNumber, true));
+                if(mDataItemSelected) {
+//                    mAdapter.notifyItemChanged(mSelectedDataItemPosition);
+                    mDataList.add(mAdapter.selectedPosition++, new DataEntry(++mMeasureNumber, true));
+
+//                    mAdapter.notifyItemChanged(mSelectedDataItemPosition);
+                }
+                else mDataList.add(new DataEntry(++mMeasureNumber, true));
                 break;
             case "?":
                 // TODO Open dialog to get another number....
                 break;
             default:
-                mDataList.add(new DataEntry(Integer.parseInt(value), false));
+                if(mDataItemSelected) {
+//                    mAdapter.notifyItemChanged(mSelectedDataItemPosition);
+                    mDataList.add(mAdapter.selectedPosition++, new DataEntry(Integer.parseInt(value), false));
+//                    mAdapter.notifyItemChanged(mSelectedDataItemPosition);
+                }
+                else mDataList.add(new DataEntry(Integer.parseInt(value), false));
                 break;
-//            case "1":
-//                mDataList.add(new DataEntry(1, false));
-//                break;
-//            case "2":
-//                mDataList.add(new DataEntry(2, false));
-//                break;
-//            case "3":
-//                mDataList.add(new DataEntry(3, false));
-//                break;
-//            case "4":
-//                mDataList.add(new DataEntry(4, false));
-//                break;
-//            case "5":
-//                mDataList.add(new DataEntry(5, false));
-//                break;
-//            case "6":
-//                mDataList.add(new DataEntry(6, false));
-//                break;
-//            case "7":
-//                mDataList.add(new DataEntry(7, false));
-//                break;
-//            case "8":
-//                mDataList.add(new DataEntry(8, false));
-//                break;
-//            case "9":
-//                mDataList.add(new DataEntry(9, false));
-//                break;
-//            case "10":
-//                mDataList.add(new DataEntry(10, false));
-//                break;
-//            case "11":
-//                mDataList.add(new DataEntry(11, false));
-//                break;
-//            case "12":
-//                mDataList.add(new DataEntry(12, false));
-//                break;
+
         }
         Log.d(TAG, value + " subdivisions in next beat");
         mAdapter.notifyDataSetChanged();
-        mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
+        if(!mDataItemSelected) mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
     }
 
-    public void dataEntryClicked(int position) {
-        Log.d(TAG, "data point " + position + " clicked");
+    @OnClick(R.id.repeat_sign)
+    public void repeatSignClicked() {
+//        if(mDataItemSelected) unselectDataItem();
+
+        int lastIndex = mDataList.size() - 1;
+        if(mDataList.get(lastIndex).isBarline()) {
+            mDataList.remove(lastIndex--);
+        }
+        int i;
+        for (i = lastIndex; i >= 0; i--) {
+            if(mDataList.get(i).isBarline()) break;
+        }
+        mDataList.add(new DataEntry(++mMeasureNumber, true));
+        for (++i; i <= lastIndex; i++) {
+            mDataList.add(mDataList.get(i));
+        }
+        mAdapter.notifyDataSetChanged();
+        mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
     }
 
     public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataViewHolder> {
 
         private static final int VIEW_TYPE_BARLINE = 0;
         private static final int VIEW_TYPE_BEAT = 1;
+        private int selectedPosition = -1;
 
         @Override
         public DataViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -209,8 +213,33 @@ public class DataEntryFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(DataViewHolder holder, int position) {
+        public void onBindViewHolder(DataViewHolder holder, final int position) {
             holder.dataEntry.setText(mDataList.get(position).getData() + "");
+//            holder.itemView.setSelected(selectedPosition == position);
+
+            if(selectedPosition == position) {
+                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
+            } else {
+                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
+            }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    // Update views
+                    notifyItemChanged(selectedPosition);
+                    if(selectedPosition == position) {
+                        selectedPosition = -1;
+                        mDataItemSelected = false;
+                    } else {
+                        selectedPosition = position;
+                        mDataItemSelected = true;
+                    }
+                    notifyItemChanged(selectedPosition);
+
+                }
+            });
         }
 
         @Override
@@ -227,20 +256,14 @@ public class DataEntryFragment extends Fragment {
             }
         }
 
-        class DataViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        class DataViewHolder extends RecyclerView.ViewHolder {
             @BindView(R.id.data_entry) TextView dataEntry;
 
             DataViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
-                itemView.setOnClickListener(this);
             }
 
-            @Override
-            public void onClick(View v) {
-                int value = getAdapterPosition();
-                dataEntryClicked(value);
-            }
         }
     }
 }

@@ -37,6 +37,7 @@ public class PieceOfMusic {
     private double mTempoMultiplier;
     private int mBaselineNoteValue;
     private int mMeasureCountOffset;
+    private List<DataEntry> mRawData;
 
     public PieceOfMusic(String title) {
         Log.d(TAG, "PieceOfMusic constructor()");
@@ -139,10 +140,16 @@ public class PieceOfMusic {
         mBeats = beats;
     }
 
-    public void setDataBeats(List<DataEntry> data) {
+    public void setRawData(List<DataEntry> data) {
 
-        buildCountoff();
+        mRawData = data;
     }
+
+    public List<DataEntry> getRawData() {
+        return mRawData;
+    }
+
+
 
     /** Uses the 'length' of first beat to generate count off measure */
     public void buildCountoff() {
@@ -188,6 +195,7 @@ public class PieceOfMusic {
         private String author;
         private List<Integer> beats;
         private List<Integer> downBeats;
+        private List<DataEntry> rawData;
         private int subdivision;
         private int countOffSubdivision;
         private int defaultTempo;
@@ -246,6 +254,7 @@ public class PieceOfMusic {
             return this;
         }
         public Builder dataEntries(List<DataEntry> data) {
+            this.rawData = data;
             beats = new ArrayList<>();
             downBeats = new ArrayList<>();
 
@@ -282,6 +291,7 @@ public class PieceOfMusic {
         mDefaultTempo = builder.defaultTempo == 0 ? DEFAULT_DEFAULT_TEMPO : builder.defaultTempo;
         mTempoMultiplier = builder.tempoMultiplier == 0.0 ? 1.0 : builder.tempoMultiplier;
         mBaselineNoteValue = builder.baselineNoteValue == 0 ? QUARTER : builder.baselineNoteValue;
+        mRawData = builder.rawData;
 
         buildCountoff();
     }

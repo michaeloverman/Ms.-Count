@@ -20,4 +20,6 @@
     <color name="colorSubdivisionIndicator2">#f9c386</color>
     <color name="colorSubdivisionIndicator1">#f8d193</color>
     <color name="colorSubdivisionIndicator0">#f8dfa0</color>
+
+    <color name="parchment">#F3ECE2</color>
 </resources>

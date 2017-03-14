@@ -106,6 +106,11 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
 
     @OnClick( { R.id.two_subs_button, R.id.three_subs_button, R.id.four_subs_button } )
     public void addSubdivision(TextView button) {
+        boolean wasRunning = false;
+        if(mMetronomeRunning) {
+            metronomeStartStop();
+            wasRunning = true;
+        }
         int beat = Integer.parseInt(button.getText().toString());
         switch (beat) {
             case 2:
@@ -116,8 +121,10 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
                 break;
             default:
         }
-        Log.d(TAG, "Subdivision" + beat + " pressed");
+
         updateSubdivisionDisplay();
+
+        if(wasRunning) metronomeStartStop();
     }
 
     @OnClick(R.id.other_subs_button)
@@ -128,9 +135,17 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
     @OnClick(R.id.delete_button)
     public void deleteSubdivision() {
         Log.d(TAG, "remove a subdivision");
+        if(mSubdivisionsList.size() == 0) return;
+        boolean wasRunning = false;
+        if(mMetronomeRunning) {
+            wasRunning = true;
+            metronomeStartStop();
+        }
         mSubdivisionsList.remove(mSubdivisionsList.size() - 1);
         mSubdivisionLayout.removeView(mSubdivisionViews.get(mSubdivisionViews.size() - 1));
         mSubdivisionViews.remove(mSubdivisionViews.size() - 1);
+
+        if(wasRunning && mSubdivisionsList.size() > 0) metronomeStartStop();
     }
 
     @Override
@@ -143,8 +158,9 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
     @Override
     @OnClick(R.id.oddmeter_start_stop_fab)
     public void metronomeStartStop() {
+        Log.d(TAG, "Loop length: " + mSubdivisionsList.size() + ", view size: " + mSubdivisionViews.size());
         if(mMetronomeRunning) {
-//            mMetronome.stop();  // TODO Uncomment when the logic is actually set up to run
+            mMetronome.stop();
             mMetronomeRunning = false;
             mStartStopFab.setImageResource(android.R.drawable.ic_media_play);
         } else {

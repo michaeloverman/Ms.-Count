@@ -197,8 +197,6 @@ public class Metronome {
             int beatsPerMeasureCount = 0; // count of beats since last downbeat
             int measurePointer = 0; //pointer to move through downbeats array
 
-
-
             @Override
             public void onTick(long millisUntilFinished) {
                 if (count == nextClick) {
@@ -249,6 +247,53 @@ public class Metronome {
      */
     public void play(int tempo, List<Integer> groupings) {
 
+        Log.d(TAG, "play an odd-meter loop");
+
+        final int[] beats = Utilities.integerListToArray(groupings);
+
+        Log.d(TAG, "beat loop length: " + beats.length);
+
+        mDelay = 60000 / tempo;
+
+        mClickId = mClicks.get(0).getSoundId(); // not using this sound at the moment...
+        mHiClickId = mClicks.get(1).getSoundId();
+        mLoClickId = mClicks.get(2).getSoundId();
+        // if the sounds don't load properly, quit while you can...
+        if (mClickId == null) {
+            Log.d(TAG, "clicks not loaded proprely");
+            return;
+        }
+
+        mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
+            int nextClick = 0;  // number of subdivisions in 'this' beat, before next click
+            int count = 0;      // count of subdivisions since last click
+            int beatPointer = 0; // pointer to move through beats array
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                if (count == nextClick) {
+                    if(beatPointer == beats.length || beatPointer == 0) { // It's a downbeat!
+                        mSoundPool.play(mHiClickId, 1.0f, 1.0f, 1, 0, 1.0f);
+                    } else { // inner beat
+                        mSoundPool.play(mLoClickId, 1.0f, 1.0f, 1, 0, 1.0f);
+                    }
+                    // if we've reached the end of the array, loop back to beginning.
+                    if(beatPointer == beats.length) {
+                        beatPointer = 0;
+                    }
+                    nextClick += beats[beatPointer++]; // set the subdivision counter for next beat
+
+                }
+                count++; // count one subdivision gone by...
+            }
+
+            @Override
+            public void onFinish() {
+                this.cancel();
+            }
+        };
+        mTimer.start();
     }
 
     public void stop() {

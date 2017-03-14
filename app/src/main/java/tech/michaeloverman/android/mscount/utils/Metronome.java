@@ -242,6 +242,15 @@ public class Metronome {
         mTimer.start();
     }
 
+    /**
+     * Method accepts tempo and groupings, loops through groupings
+     * @param tempo
+     * @param groupings
+     */
+    public void play(int tempo, List<Integer> groupings) {
+
+    }
+
     public void stop() {
         mTimer.cancel();
     }

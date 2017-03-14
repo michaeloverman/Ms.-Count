@@ -12,7 +12,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,18 +32,23 @@ import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 public class OddMeterLoopFragment extends Fragment implements MetronomeListener {
     private static final String TAG = OddMeterLoopFragment.class.getSimpleName();
 
-    private static final int MAX_TEMPO_BPM = Metronome.MAX_TEMPO;
-    private static final int MIN_TEMPO_BPM = Metronome.MIN_TEMPO;
+    private static final float MAX_TEMPO_BPM = Metronome.MAX_TEMPO;
+    private static final float MIN_TEMPO_BPM = Metronome.MIN_TEMPO;
+    private static final float SUBDIVISION_DISPLAY_SIZE = 40;
+    private static final int MARGIN = 8;
 
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
-    private int mBPM;
+    private float mBPM;
+    private int mMultiplier;
 
-    @BindView(R.id.oddmeter_start_stop_fab)
-    FloatingActionButton mStartStopFab;
-    @BindView(R.id.oddmeter_tempo_view)
-    TextView mTempoSetting;
+    @BindView(R.id.oddmeter_start_stop_fab) FloatingActionButton mStartStopFab;
+    @BindView(R.id.oddmeter_tempo_view) TextView mTempoSetting;
 
+    private List<Integer> mSubdivisionsList;
+    private List<View> mSubdivisionViews;
+    @BindView(R.id.subdivision_layout) LinearLayout mSubdivisionLayout;
+//    private LinearLayout mSubdivisionLayout;
 
     private GestureDetectorCompat mDetector;
 
@@ -53,6 +63,10 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
         setHasOptionsMenu(true);
 
         mMetronome = new Metronome(getActivity(), this);
+        mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
+
+        mSubdivisionsList = new ArrayList<>();
+        mSubdivisionViews = new ArrayList<>();
 
     }
 
@@ -61,7 +75,7 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.oddmeter_metronome_layout, container, false);
         ButterKnife.bind(this, view);
-
+//        mSubdivisionLayout = (LinearLayout) this.getActivity().findViewById(R.id.subdivision_layout);
         // use the "naked" listener to catch ACTION_UP (release) for resetting tempo
         // otherwise defer to GestureDetector to handle scrolling
         mTempoSetting.setOnTouchListener(new View.OnTouchListener() {
@@ -84,6 +98,9 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
             }
         });
 
+        mBPM = 120f; //TODO change this to read from past shared prefs
+        mMultiplier = 2;
+
         return view;
     }
 
@@ -92,17 +109,15 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
         int beat = Integer.parseInt(button.getText().toString());
         switch (beat) {
             case 2:
-
-                break;
             case 3:
-
-                break;
             case 4:
-
+                mSubdivisionsList.add(beat);
+                mSubdivisionViews.add(getNewSubdivisionView(beat));
                 break;
             default:
         }
         Log.d(TAG, "Subdivision" + beat + " pressed");
+        updateSubdivisionDisplay();
     }
 
     @OnClick(R.id.other_subs_button)
@@ -113,6 +128,9 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
     @OnClick(R.id.delete_button)
     public void deleteSubdivision() {
         Log.d(TAG, "remove a subdivision");
+        mSubdivisionsList.remove(mSubdivisionsList.size() - 1);
+        mSubdivisionLayout.removeView(mSubdivisionViews.get(mSubdivisionViews.size() - 1));
+        mSubdivisionViews.remove(mSubdivisionViews.size() - 1);
     }
 
     @Override
@@ -123,8 +141,21 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
     }
 
     @Override
+    @OnClick(R.id.oddmeter_start_stop_fab)
     public void metronomeStartStop() {
-
+        if(mMetronomeRunning) {
+//            mMetronome.stop();  // TODO Uncomment when the logic is actually set up to run
+            mMetronomeRunning = false;
+            mStartStopFab.setImageResource(android.R.drawable.ic_media_play);
+        } else {
+            if(mSubdivisionsList.size() == 0) {
+                Toast.makeText(getContext(), "You must enter subdivisions to click subdivisions...", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            mMetronomeRunning = true;
+            mMetronome.play(((int) mBPM * mMultiplier), mSubdivisionsList);
+            mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
+        }
     }
 
     @Override
@@ -136,11 +167,30 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
         mBPM += tempoChange;
         if(mBPM > MAX_TEMPO_BPM) mBPM = MAX_TEMPO_BPM;
         else if(mBPM < MIN_TEMPO_BPM) mBPM = MIN_TEMPO_BPM;
-        updateDisplay();
+        updateTempoDisplay();
     }
 
-    private void updateDisplay() {
-            mTempoSetting.setText(mBPM + "");
+    private void updateTempoDisplay() {
+        mTempoSetting.setText((int) mBPM + "");
+    }
+
+    private void updateSubdivisionDisplay() {
+
+    }
+
+    private View getNewSubdivisionView(int value) {
+        TextView view = new TextView(getContext());
+        view.setText(value + "");
+        view.setTextSize(SUBDIVISION_DISPLAY_SIZE);
+        view.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
+        view.setPadding(MARGIN, 0, MARGIN, 0);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN);
+
+        view.setLayoutParams(params);
+        mSubdivisionLayout.addView(view);
+        return view;
     }
 
     class MetronomeGestureListener extends GestureDetector.SimpleOnGestureListener {

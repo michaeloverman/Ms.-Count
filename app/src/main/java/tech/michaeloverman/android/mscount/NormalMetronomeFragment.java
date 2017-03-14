@@ -184,19 +184,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         return view;
     }
 
-//    @Override
-//    public void onDetach() {
-//        Log.d(TAG, "onDetach()");
-//        if(mMetronomeRunning) metronomeStartStop();
-//        super.onDetach();
-//    }
-
-//    @Override
-//    public void onPause() {
-//        if(mMetronomeRunning) metronomeStartStop();
-//        super.onPause();
-//    }
-
 
     @Override
     public void onDestroy() {
@@ -408,7 +395,5 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             }
             return true;
         }
-
-
     }
 }

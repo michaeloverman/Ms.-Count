@@ -57,8 +57,6 @@ public class MetaDataEntryFragment extends Fragment
         return new MetaDataEntryFragment();
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,9 +174,6 @@ public class MetaDataEntryFragment extends Fragment
 
                     }
                 });
-
-
-
     }
 
     private void saveToDatabase() {
@@ -189,6 +184,12 @@ public class MetaDataEntryFragment extends Fragment
         Toast.makeText(this.getContext(), "You Must Enter Data to Save Data!", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Callback from the DataEntryFragment. Takes the raw data and the reference to the original
+     * Builder object, and creates the PieceOfMusic.
+     * @param data
+     * @param builder
+     */
     @Override
     public void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder) {
         mBuilder = builder;

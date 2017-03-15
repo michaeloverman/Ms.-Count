@@ -1,6 +1,8 @@
 package tech.michaeloverman.android.mscount;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -36,6 +38,10 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
     private static final float MIN_TEMPO_BPM = Metronome.MIN_TEMPO;
     private static final float SUBDIVISION_DISPLAY_SIZE = 40;
     private static final int MARGIN = 8;
+    private static final String PREF_KEY_BPM = "pref_key_oddmeter_bpm";
+    private static final String PREF_LIST_LENGTH = "pref_key_oddmeter_subdivision_list";
+    private static final String PREF_KEY_LIST = "oddmeter_subdivision_";
+    private static final String PREF_KEY_MULTIPLIER = "oddmeter_multiplier";
 
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
@@ -101,9 +107,17 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
             }
         });
 
-        mBPM = 120f; //TODO change this to read from past shared prefs
-        mMultiplier = 2;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mBPM = prefs.getFloat(PREF_KEY_BPM, 120f);
+        mMultiplier = prefs.getInt(PREF_KEY_MULTIPLIER, 2);
+        int listlength = prefs.getInt(PREF_LIST_LENGTH, 0);
+        for(int i = 0; i < listlength; i++) {
+            int subdiv = prefs.getInt(PREF_KEY_LIST + i, 2);
+            mSubdivisionsList.add(subdiv);
+            mSubdivisionViews.add(getNewSubdivisionView(subdiv));
+        }
 
+        updateTempoDisplay();
         return view;
     }
 
@@ -120,7 +134,7 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
         int beat = Integer.parseInt(button.getText().toString());
         if(mMultiplierSelected) {
             mMultiplier = beat;
-            mPulseMultiplierView.setText(String.format("%d=", beat));
+            mPulseMultiplierView.setText(beat + "=");
             multiplierSelected();
             return;
         }
@@ -128,8 +142,6 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
         mSubdivisionViews.add(getNewSubdivisionView(beat));
 
         if(mOtherButtons.isShown()) mOtherButtons.setVisibility(View.GONE);
-
-        updateSubdivisionDisplay();
 
         if(wasRunning) metronomeStartStop();
     }
@@ -174,7 +186,16 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
 
     @Override
     public void onDestroy() {
-        // TODO store settings in SharedPrefers
+        SharedPreferences.Editor prefs = PreferenceManager
+                .getDefaultSharedPreferences(getContext()).edit();
+        prefs.putFloat(PREF_KEY_BPM, mBPM);
+        prefs.putInt(PREF_KEY_MULTIPLIER, mMultiplier);
+        prefs.putInt(PREF_LIST_LENGTH, mSubdivisionsList.size());
+        for(int i = 0; i < mSubdivisionsList.size(); i++) {
+            prefs.remove(PREF_KEY_LIST + i);
+            prefs.putInt(PREF_KEY_LIST + i, mSubdivisionsList.get(i));
+        }
+        prefs.commit();
 
         super.onDestroy();
     }
@@ -212,10 +233,7 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
 
     private void updateTempoDisplay() {
         mTempoSetting.setText((int) mBPM + "");
-    }
-
-    private void updateSubdivisionDisplay() {
-
+        mPulseMultiplierView.setText(mMultiplier + "=");
     }
 
     private View getNewSubdivisionView(int value) {

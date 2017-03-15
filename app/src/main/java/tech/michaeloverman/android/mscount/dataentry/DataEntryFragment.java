@@ -35,20 +35,6 @@ public class DataEntryFragment extends Fragment {
 
     @BindView(R.id.data_title_view) TextView mTitleView;
     @BindView(R.id.entered_data_recycler_view) RecyclerView mEnteredDataRecycler;
-//    @BindView(R.id.barline) TextView mBarline;
-//    @BindView(R.id.one) TextView mOne;
-//    @BindView(R.id.two) TextView mTwo;
-//    @BindView(R.id.three) TextView mThree;
-//    @BindView(R.id.four) TextView mFour;
-//    @BindView(R.id.five) TextView mFive;
-//    @BindView(R.id.six) TextView mSix;
-//    @BindView(R.id.seven) TextView mSeven;
-//    @BindView(R.id.eight) TextView mEight;
-//    @BindView(R.id.nine) TextView mNine;
-//    @BindView(R.id.ten) TextView mTen;
-//    @BindView(R.id.twelve) TextView mTwelve;
-//    @BindView(R.id.other) TextView mQuestion;
-//    @BindView(R.id.data_delete_button) Button mDeleteButton;
 
     private String mTitle;
     private List<DataEntry> mDataList;
@@ -58,6 +44,9 @@ public class DataEntryFragment extends Fragment {
 //    private int mSelectedDataItemPosition;
 //    private DataListAdapter.DataViewHolder mSelectedDataItem;
 
+    /**
+     * Callback to return the raw data to the previous fragment
+     */
     interface DataEntryCallback {
         void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder);
     }
@@ -101,6 +90,9 @@ public class DataEntryFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Delete the last item, or the selected item
+     */
     @OnClick(R.id.data_delete_button)
     public void delete() {
         if(mDataItemSelected) {
@@ -116,11 +108,15 @@ public class DataEntryFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * returns data to previous fragment, which allows for saving to Firebase, at least at this
+     * point it does...
+     */
     @OnClick(R.id.data_save_button)
     public void saveData() {
 //        mBuilder.dataEntries(mDataList);
 //        mPieceOfMusic.setDataBeats(mDataList);
-        // TODO Save to Firebase
+
         if(!mDataList.get(mDataList.size() - 1).isBarline()) {
             mDataList.add(new DataEntry(++mMeasureNumber, true));
         }
@@ -128,9 +124,13 @@ public class DataEntryFragment extends Fragment {
         getFragmentManager().popBackStackImmediate();
     }
 
+    /**
+     * returns to previous fragment WITHOUT saving the data
+     */
     @OnClick(R.id.data_back_button)
     public void back() {
 //        mPieceOfMusic.setDataBeats(mDataList);
+        // TODO put a warning about losing data before actually doing this...
         getFragmentManager().popBackStackImmediate();
     }
 
@@ -141,23 +141,20 @@ public class DataEntryFragment extends Fragment {
         switch(value) {
             case "|":
                 if(mDataItemSelected) {
-//                    mAdapter.notifyItemChanged(mSelectedDataItemPosition);
                     mDataList.add(mAdapter.selectedPosition++, new DataEntry(++mMeasureNumber, true));
-
-//                    mAdapter.notifyItemChanged(mSelectedDataItemPosition);
+                } else {
+                    mDataList.add(new DataEntry(++mMeasureNumber, true));
                 }
-                else mDataList.add(new DataEntry(++mMeasureNumber, true));
                 break;
             case "?":
                 // TODO Open dialog to get another number....
                 break;
             default:
                 if(mDataItemSelected) {
-//                    mAdapter.notifyItemChanged(mSelectedDataItemPosition);
                     mDataList.add(mAdapter.selectedPosition++, new DataEntry(Integer.parseInt(value), false));
-//                    mAdapter.notifyItemChanged(mSelectedDataItemPosition);
+                } else {
+                    mDataList.add(new DataEntry(Integer.parseInt(value), false));
                 }
-                else mDataList.add(new DataEntry(Integer.parseInt(value), false));
                 break;
 
         }
@@ -166,19 +163,23 @@ public class DataEntryFragment extends Fragment {
         if(!mDataItemSelected) mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
     }
 
+    /**
+     * Backs up the data list until finding the previous barline, copies from there back to the
+     * end again.
+     */
     @OnClick(R.id.repeat_sign)
     public void repeatSignClicked() {
-//        if(mDataItemSelected) unselectDataItem();
-
         int lastIndex = mDataList.size() - 1;
-        if(mDataList.get(lastIndex).isBarline()) {
-            mDataList.remove(lastIndex--);
+        // if it's not a barline at the end, add it....
+        if(!mDataList.get(lastIndex).isBarline()) {
+            mDataList.add(new DataEntry(++mMeasureNumber, true));
         }
         int i;
+        // reverse up the list looking for the previous barline
         for (i = lastIndex; i >= 0; i--) {
             if(mDataList.get(i).isBarline()) break;
         }
-        mDataList.add(new DataEntry(++mMeasureNumber, true));
+        // follow back to the end, copying beats
         for (++i; i <= lastIndex; i++) {
             mDataList.add(mDataList.get(i));
         }
@@ -186,6 +187,10 @@ public class DataEntryFragment extends Fragment {
         mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
     }
 
+    /**
+     * Adapter for displaying data as it is entered. Also keeps track if an item is selected for
+     * editing.
+     */
     public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataViewHolder> {
 
         private static final int VIEW_TYPE_BARLINE = 0;
@@ -197,6 +202,7 @@ public class DataEntryFragment extends Fragment {
 
             int layoutId;
 
+            // select the xml layout file based on whether it is a beat or a barline
             switch(viewType) {
                 case VIEW_TYPE_BARLINE:
                     layoutId = R.layout.data_input_barline_layout;
@@ -215,7 +221,6 @@ public class DataEntryFragment extends Fragment {
         @Override
         public void onBindViewHolder(DataViewHolder holder, final int position) {
             holder.dataEntry.setText(mDataList.get(position).getData() + "");
-//            holder.itemView.setSelected(selectedPosition == position);
 
             if(selectedPosition == position) {
                 holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
@@ -223,6 +228,7 @@ public class DataEntryFragment extends Fragment {
                 holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
             }
 
+            // select/deselect data items for edit
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

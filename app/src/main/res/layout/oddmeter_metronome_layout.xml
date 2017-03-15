@@ -41,7 +41,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/oddmeter_tempo_view"
-        app:layout_constraintBottom_toTopOf="@+id/delete_button"
+        app:layout_constraintBottom_toTopOf="@+id/extra_subdivision_buttons"
         android:layout_width="0dp"
         android:layout_height="0dp">
 
@@ -126,6 +126,123 @@
         app:layout_constraintLeft_toLeftOf="@+id/four_subs_button"
         android:layout_marginStart="16dp"/>
 
+    <LinearLayout
+        android:id="@+id/extra_subdivision_buttons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/delete_button"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subdivision_layout">
 
+        <TextView
+            android:id="@+id/one_subs_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/roundcorner_primary"
+            android:gravity="center"
+            android:text="1"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/five_subs_button"/>
+
+        <TextView
+            android:id="@+id/five_subs_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/roundcorner_primary"
+            android:gravity="center"
+            android:text="5"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/one_subs_button"
+            app:layout_constraintRight_toLeftOf="@+id/six_subs_button"/>
+
+        <TextView
+            android:id="@+id/six_subs_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/roundcorner_primary"
+            android:gravity="center"
+            android:text="6"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/five_subs_button"
+            app:layout_constraintRight_toLeftOf="@+id/seven_subs_button"/>
+
+        <TextView
+            android:id="@+id/seven_subs_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/roundcorner_primary"
+            android:gravity="center"
+            android:text="7"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/six_subs_button"
+            app:layout_constraintRight_toLeftOf="@+id/eight_subs_button"/>
+
+        <TextView
+            android:id="@+id/eight_subs_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/roundcorner_primary"
+            android:gravity="center"
+            android:text="8"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/seven_subs_button"
+            app:layout_constraintRight_toLeftOf="@+id/nine_subs_button"/>
+
+        <TextView
+            android:id="@+id/nine_subs_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/roundcorner_primary"
+            android:gravity="center"
+            android:text="9"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/eight_subs_button"
+            app:layout_constraintRight_toLeftOf="@+id/ten_subs_button"/>
+
+        <TextView
+            android:id="@+id/ten_subs_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/roundcorner_primary"
+            android:gravity="center"
+            android:text="10"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/nine_subs_button"
+            app:layout_constraintRight_toRightOf="@+id/parent"/>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

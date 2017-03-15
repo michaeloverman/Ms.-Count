@@ -44,6 +44,7 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
 
     @BindView(R.id.oddmeter_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.oddmeter_tempo_view) TextView mTempoSetting;
+    @BindView(R.id.extra_subdivision_buttons) LinearLayout mOtherButtons;
 
     private List<Integer> mSubdivisionsList;
     private List<View> mSubdivisionViews;
@@ -104,7 +105,10 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
         return view;
     }
 
-    @OnClick( { R.id.two_subs_button, R.id.three_subs_button, R.id.four_subs_button } )
+    @OnClick( { R.id.one_subs_button, R.id.two_subs_button, R.id.three_subs_button,
+            R.id.four_subs_button, R.id.five_subs_button, R.id.six_subs_button,
+            R.id.seven_subs_button, R.id.eight_subs_button, R.id.nine_subs_button,
+            R.id.ten_subs_button,} )
     public void addSubdivision(TextView button) {
         boolean wasRunning = false;
         if(mMetronomeRunning) {
@@ -112,15 +116,10 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
             wasRunning = true;
         }
         int beat = Integer.parseInt(button.getText().toString());
-        switch (beat) {
-            case 2:
-            case 3:
-            case 4:
-                mSubdivisionsList.add(beat);
-                mSubdivisionViews.add(getNewSubdivisionView(beat));
-                break;
-            default:
-        }
+        mSubdivisionsList.add(beat);
+        mSubdivisionViews.add(getNewSubdivisionView(beat));
+
+        if(mOtherButtons.isShown()) mOtherButtons.setVisibility(View.GONE);
 
         updateSubdivisionDisplay();
 
@@ -130,6 +129,7 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
     @OnClick(R.id.other_subs_button)
     public void addUnusualSubdivision() {
         Log.d(TAG, "add a different length of subdivision");
+        mOtherButtons.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.delete_button)

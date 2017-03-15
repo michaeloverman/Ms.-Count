@@ -25,6 +25,10 @@ public class DataEntry {
         return isBarline;
     }
 
+    public void setBarline(boolean is) {
+        isBarline = is;
+    }
+
     public int getData() {
         return mData;
     }

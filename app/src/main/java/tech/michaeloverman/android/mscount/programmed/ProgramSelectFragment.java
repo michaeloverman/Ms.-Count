@@ -25,7 +25,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
-import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.pojos.TitleKeyObject;
 
 /**
@@ -50,7 +49,7 @@ public class ProgramSelectFragment extends Fragment
 
 
     interface ProgramCallback {
-        void newPiece(PieceOfMusic piece);
+        void newPiece(String pieceId);
     }
 
     public static Fragment newInstance(ProgramCallback pc, String composer) {
@@ -106,22 +105,12 @@ public class ProgramSelectFragment extends Fragment
 
     @Override
     public void onClick(String pieceId) {
-        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        PieceOfMusic piece = dataSnapshot.getValue(PieceOfMusic.class);
-                        sProgramCallback.newPiece(piece);
+        Log.d(TAG, "ProgramSelect onClick() pieceId: " + pieceId);
+        sProgramCallback.newPiece(pieceId);
 
-                        getFragmentManager().popBackStackImmediate();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+        getFragmentManager().popBackStackImmediate();
     }
+
     @Override
     public void newComposer(String name) {
         mCurrentComposer = name;

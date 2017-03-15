@@ -18,6 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -41,8 +46,11 @@ public class PreprogrammedMetronomeFragment extends Fragment
     private static final String CURRENT_PIECE_KEY = "current_piece_key";
     private static final String CURRENT_TEMPO_KEY = "current_tempo_key";
     private static final String CURRENT_COMPOSER_KEY = "current_composer_key";
+    private static final String PREF_CURRENT_TEMPO = "programmable_tempo_key";
+    private static final String PREF_PIECE_KEY = "programmable_piece_id";
 
     private PieceOfMusic mCurrentPiece;
+    private String mCurrentPieceKey;
     private int mCurrentTempo;
     private String mCurrentComposer;
     private Metronome mMetronome;
@@ -86,8 +94,11 @@ public class PreprogrammedMetronomeFragment extends Fragment
             Log.d(TAG, "savedInstanceState retrieved: composer: " + mCurrentComposer);
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-            mCurrentTempo = prefs.getInt(CURRENT_TEMPO_KEY, 120);
-            mCurrentComposer = prefs.getString(CURRENT_COMPOSER_KEY, null);
+            mCurrentPieceKey = prefs.getString(PREF_PIECE_KEY, null);
+            mCurrentTempo = prefs.getInt(PREF_CURRENT_TEMPO, 120);
+            if(mCurrentPieceKey != null) {
+                newPiece(mCurrentPieceKey);
+            }
         }
 
         mMetronome = new Metronome(getActivity(), this);
@@ -158,11 +169,10 @@ public class PreprogrammedMetronomeFragment extends Fragment
             }
         });
 
-//        mCurrentComposer = "Cirone, Anthony";
+
         if(mCurrentPiece != null) {
             updateGUI();
         }
-//        updateTempoView();
         return view;
     }
 
@@ -170,6 +180,17 @@ public class PreprogrammedMetronomeFragment extends Fragment
     public void onPause() {
         if(mMetronomeRunning) metronomeStartStop();
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        SharedPreferences.Editor prefs = PreferenceManager
+                .getDefaultSharedPreferences(getContext()).edit();
+        prefs.putString(PREF_PIECE_KEY, mCurrentPieceKey);
+        prefs.putInt(PREF_CURRENT_TEMPO, mCurrentTempo);
+        prefs.commit();
+
+        super.onDestroy();
     }
 
     private void changeTempo(boolean direction) {
@@ -275,19 +296,45 @@ public class PreprogrammedMetronomeFragment extends Fragment
     }
 
     @Override
-    public void newPiece(PieceOfMusic piece) {
-        Log.d(TAG, "newPiece() " + piece.getTitle());
-        mCurrentPiece = piece;
+    public void newPiece(String pieceId) {
 
-        Log.d(TAG, "piece COsub: " + piece.getCountOffSubdivision() + "; mCurrentPiece COsub: " + mCurrentPiece.getCountOffSubdivision());
+        mCurrentPieceKey = pieceId;
+
+        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mCurrentPiece = dataSnapshot.getValue(PieceOfMusic.class);
+                        updateVariables();
+                        updateGUI();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+//        mCurrentProgramLabel.setText("A barrel of laughs");
+//        updateGUI();
+    }
+
+    private void updateVariables() {
+        Log.d(TAG, "newPiece() " + mCurrentPiece.getTitle());
+        mCurrentPiece = mCurrentPiece;
+
+        Log.d(TAG, "piece COsub: " + mCurrentPiece.getCountOffSubdivision() + "; mCurrentPiece COsub: " + mCurrentPiece.getCountOffSubdivision());
 
         mCurrentComposer = mCurrentPiece.getAuthor();
         if(mCurrentPiece.getDefaultTempo() != 0) {
             mCurrentTempo = mCurrentPiece.getDefaultTempo();
         }
 
+
+
         Log.d(TAG, "Subd: " + mCurrentPiece.getSubdivision() + "; CountoffSubs: " + mCurrentPiece.getCountOffSubdivision());
-//        mCurrentProgramLabel.setText("A barrel of laughs");
-//        updateGUI();
+
     }
 }

@@ -21,5 +21,4 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
         sClickSound = 4;
     }
 
-
 }

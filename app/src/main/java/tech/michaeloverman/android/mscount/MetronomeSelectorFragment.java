@@ -86,4 +86,5 @@ public class MetronomeSelectorFragment extends Fragment {
         transaction.commit();
 
     }
+
 }

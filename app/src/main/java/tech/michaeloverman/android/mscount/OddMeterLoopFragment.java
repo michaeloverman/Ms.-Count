@@ -45,6 +45,8 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
     @BindView(R.id.oddmeter_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.oddmeter_tempo_view) TextView mTempoSetting;
     @BindView(R.id.extra_subdivision_buttons) LinearLayout mOtherButtons;
+    @BindView(R.id.pulse_multiplier_view) TextView mPulseMultiplierView;
+    private boolean mMultiplierSelected;
 
     private List<Integer> mSubdivisionsList;
     private List<View> mSubdivisionViews;
@@ -116,6 +118,12 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
             wasRunning = true;
         }
         int beat = Integer.parseInt(button.getText().toString());
+        if(mMultiplierSelected) {
+            mMultiplier = beat;
+            mPulseMultiplierView.setText(String.format("%d=", beat));
+            multiplierSelected();
+            return;
+        }
         mSubdivisionsList.add(beat);
         mSubdivisionViews.add(getNewSubdivisionView(beat));
 
@@ -129,7 +137,11 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
     @OnClick(R.id.other_subs_button)
     public void addUnusualSubdivision() {
         Log.d(TAG, "add a different length of subdivision");
-        mOtherButtons.setVisibility(View.VISIBLE);
+        if(mOtherButtons.isShown()) {
+            mOtherButtons.setVisibility(View.GONE);
+        } else {
+            mOtherButtons.setVisibility(View.VISIBLE);
+        }
     }
 
     @OnClick(R.id.delete_button)
@@ -146,6 +158,18 @@ public class OddMeterLoopFragment extends Fragment implements MetronomeListener 
         mSubdivisionViews.remove(mSubdivisionViews.size() - 1);
 
         if(wasRunning && mSubdivisionsList.size() > 0) metronomeStartStop();
+    }
+
+    @OnClick(R.id.pulse_multiplier_view)
+    public void multiplierSelected() {
+        if(mMultiplierSelected) {
+            mMultiplierSelected = false;
+            mPulseMultiplierView.setBackground(getResources().getDrawable(R.drawable.roundcorner_light));
+            if(mOtherButtons.isShown()) mOtherButtons.setVisibility(View.GONE);
+        } else {
+            mPulseMultiplierView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
+            mMultiplierSelected = true;
+        }
     }
 
     @Override

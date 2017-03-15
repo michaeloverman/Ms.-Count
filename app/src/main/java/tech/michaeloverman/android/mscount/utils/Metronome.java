@@ -118,9 +118,10 @@ public class Metronome {
 
             @Override
             public void onFinish() {
-
+                mClicking = false;
             }
         };
+        mClicking = true;
         mTimer.start();
     }
 
@@ -149,9 +150,10 @@ public class Metronome {
 
             @Override
             public void onFinish() {
-
+                mClicking = false;
             }
         };
+        mClicking = true;
         mTimer.start();
     }
 
@@ -234,9 +236,11 @@ public class Metronome {
             @Override
             public void onFinish() {
                 this.cancel();
+                mClicking = false;
 //                mListener.metronomeStartStop();
             }
         };
+        mClicking = true;
         mTimer.start();
     }
 
@@ -291,13 +295,16 @@ public class Metronome {
             @Override
             public void onFinish() {
                 this.cancel();
+                mClicking = false;
             }
         };
+        mClicking = true;
         mTimer.start();
     }
 
     public void stop() {
         mTimer.cancel();
+        mClicking = false;
     }
 
     public void setClickVolumes(int[] vols) {
@@ -337,4 +344,6 @@ public class Metronome {
     public List<Click> getClicks() {
         return mClicks;
     }
+
+
 }

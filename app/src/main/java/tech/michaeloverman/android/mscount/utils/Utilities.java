@@ -26,18 +26,18 @@ public class Utilities {
         return ints;
     }
 
-    /**
-     * Used by hard coded data entry. Should probably be removed prior to actual release.
-     * @param ints
-     * @return
-     */
-    public static List<Integer> arrayToIntegerList(int[] ints) {
-        List<Integer> list = new ArrayList<>();
-        for(int i = 0 ; i < ints.length; i++) {
-            list.add(ints[i]);
-        }
-        return list;
-    }
+//    /**
+//     * Used by hard coded data entry. Should probably be removed prior to actual release.
+//     * @param ints
+//     * @return
+//     */
+//    public static List<Integer> arrayToIntegerList(int[] ints) {
+//        List<Integer> list = new ArrayList<>();
+//        for(int i = 0 ; i < ints.length; i++) {
+//            list.add(ints[i]);
+//        }
+//        return list;
+//    }
 
     public static void printArray(int[] array) {
         StringBuilder sb = new StringBuilder();

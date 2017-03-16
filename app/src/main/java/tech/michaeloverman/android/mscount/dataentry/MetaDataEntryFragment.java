@@ -199,9 +199,6 @@ public class MetaDataEntryFragment extends Fragment
             return;
         }
 
-        mBuilder.author(composer)
-                .title(title);
-
         int subdInt, countoffInt;
         try {
             subdInt = Integer.parseInt(subd);
@@ -231,9 +228,11 @@ public class MetaDataEntryFragment extends Fragment
             return;
         }
 
-        mBuilder.subdivision(subdInt)
-                .countOffSubdivision(countoffInt);
 
+        mBuilder.author(composer)
+                .title(title)
+                .subdivision(subdInt)
+                .countOffSubdivision(countoffInt);
         int tempoInt, rhythmInt;
         try {
             if(!defaultTempo.equals("")) {

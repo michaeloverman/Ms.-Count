@@ -219,16 +219,16 @@ public class PieceOfMusic {
             this.beats = beats;
             return this;
         }
-        public Builder beats(int[] beats) {
-            return beats(Utilities.arrayToIntegerList(beats));
-        }
+//        public Builder beats(int[] beats) {
+//            return beats(Utilities.arrayToIntegerList(beats));
+//        }
         public Builder downBeats(List<Integer> downBeats) {
             this.downBeats = downBeats;
             return this;
         }
-        public Builder downBeats(int[] downBeats) {
-            return downBeats(Utilities.arrayToIntegerList(downBeats));
-        }
+//        public Builder downBeats(int[] downBeats) {
+//            return downBeats(Utilities.arrayToIntegerList(downBeats));
+//        }
         public Builder subdivision(int sub) {
             this.subdivision = sub;
             return this;
@@ -255,8 +255,8 @@ public class PieceOfMusic {
         }
         public Builder dataEntries(List<DataEntry> data) {
             this.rawData = data;
-            beats = new ArrayList<>();
-            downBeats = new ArrayList<>();
+            this.beats = new ArrayList<>();
+            this.downBeats = new ArrayList<>();
 
             int start = data.get(0).isBarline() ? 1 : 0;
 
@@ -265,10 +265,10 @@ public class PieceOfMusic {
             for(int i = start; i < data.size(); i++) {
 
                 if(data.get(i).isBarline()) {
-                    downBeats.add(beatsPerMeasureCount);
+                    this.downBeats.add(beatsPerMeasureCount);
                     beatsPerMeasureCount = 0;
                 } else {
-                    beats.add(data.get(i).getData());
+                    this.beats.add(data.get(i).getData());
                     beatsPerMeasureCount++;
                 }
             }

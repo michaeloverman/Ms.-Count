@@ -3,6 +3,8 @@ package tech.michaeloverman.android.mscount.dataentry;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.pojos.DataEntry;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
+import tech.michaeloverman.android.mscount.utils.Metronome;
 
 /**
  *
@@ -49,7 +51,7 @@ public class MetaDataEntryFragment extends Fragment
 
     private PieceOfMusic mPieceOfMusic;
     private PieceOfMusic.Builder mBuilder;
-    private List<Integer> mBeats;
+    private List<DataEntry> mDataEntries;
     private List<Integer> mDownBeats;
 
     public static Fragment newInstance() {
@@ -64,9 +66,9 @@ public class MetaDataEntryFragment extends Fragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
+        mBuilder = new PieceOfMusic.Builder();
         mPieceOfMusic = new PieceOfMusic();
-        mBeats = new ArrayList<>();
-        mDownBeats = new ArrayList<>();
+
 
     }
 
@@ -76,65 +78,200 @@ public class MetaDataEntryFragment extends Fragment
         View view = inflater.inflate(R.layout.meta_data_input_layout, container, false);
         ButterKnife.bind(this, view);
 
+        // When a countoff value is entered, make sure it is an even divisor of the baseline subdivisions
+        mCountoffSubdivisionEntry.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int primary = Integer.parseInt(mBaselineSubdivisionEntry.getText().toString());
+                    int countoff = Integer.parseInt(s.toString());
+                    if(primary % countoff != 0) {
+                        Toast.makeText(getContext(),
+                                "Countoff subdivisions must divide evenly into baseline subdivisions.",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } catch (NumberFormatException n) {
+                    return;
+                }
+            }
+        });
+
+        // When default tempo is entered, make sure it is in the metronome's range
+        mDefaultTempoEntry.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    try {
+                        int tempo = Integer.parseInt(mDefaultTempoEntry.getText().toString());
+                        if(tempo < Metronome.MIN_TEMPO || tempo > Metronome.MAX_TEMPO) {
+                            Toast.makeText(getContext(), String.format(
+                                    "Tempo must be between %d and %d", Metronome.MIN_TEMPO, Metronome.MAX_TEMPO),
+                                    Toast.LENGTH_SHORT).show();
+                            mDefaultTempoEntry.setText("");
+                            return;
+                        }
+                    } catch (NumberFormatException n) {
+                        Toast.makeText(getContext(), "Tempo must be an integer.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+        });
+
         return view;
     }
 
     @OnClick(R.id.enter_beats_button)
     public void enterBeatsClicked() {
+        Log.d(TAG, "enterBeatsClicked()");
         String composer = mComposerEntry.getText().toString();
-        if(composer == null) {
+        if(composer.equals("")) {
             toastError();
             return;
         }
+
         String title = mTitleEntry.getText().toString();
-        if(title == null) {
-            toastError();
-            return;
-        }
-        String subd = mBaselineSubdivisionEntry.getText().toString();
-        if(subd == null) {
-            toastError();
-            return;
-        }
-        String countoffSubd = mCountoffSubdivisionEntry.getText().toString();
-        if(countoffSubd == null) {
-            toastError();
-            return;
-        }
-        String defaultTempo = mDefaultTempoEntry.getText().toString();
-        if(defaultTempo == null) {
-            toastError();
-            return;
-        }
-        String countOffValue = mBaselineRhythmicValueEntry.getText().toString();
-        if(countOffValue == null) {
+        if(title.equals("")) {
             toastError();
             return;
         }
 
-        mBuilder = new PieceOfMusic.Builder()
-                .author(composer)
-                .title(title)
-                .subdivision(Integer.parseInt(subd))
-                .countOffSubdivision(Integer.parseInt(countoffSubd))
-                .defaultTempo(Integer.parseInt(defaultTempo))
-                .baselineNoteValue(Integer.parseInt(countOffValue));
+        mBuilder.author(composer)
+                .title(title);
 
-//        mPieceOfMusic = mBuilder.build();
         gotoDataEntryFragment(title);
     }
 
     @OnClick(R.id.save_program_button)
     public void saveProgram() {
 
-        saveToDatabase();
+        if(mDataEntries == null || mDataEntries.size() == 0) {
+            Toast.makeText(getContext(), "Error: Please Click \"Program Beats\" to enter your program.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mBuilder.dataEntries(mDataEntries);
+
+        // get all the metadata fields
+        String composer = mComposerEntry.getText().toString();
+        String title = mTitleEntry.getText().toString();
+        String subd = mBaselineSubdivisionEntry.getText().toString();
+        String countoff = mCountoffSubdivisionEntry.getText().toString();
+        String defaultTempo = mDefaultTempoEntry.getText().toString();
+        String rhythm = mBaselineRhythmicValueEntry.getText().toString();
+
+        if(composer.equals("")) {
+            Toast.makeText(getContext(), "Error: Please enter a composer's name.",
+                    Toast.LENGTH_SHORT).show();
+            mComposerEntry.requestFocus();
+            return;
+        }
+
+        if(title.equals("")) {
+            Toast.makeText(getContext(), "Error: Please enter a title.",
+                    Toast.LENGTH_SHORT).show();
+            mTitleEntry.requestFocus();
+            return;
+        }
+
+        if(subd.equals("")) {
+            Toast.makeText(getContext(), "Error: Please enter a baseline subdivision.",
+                    Toast.LENGTH_SHORT).show();
+            mBaselineSubdivisionEntry.requestFocus();
+            return;
+        }
+
+        if(countoff.equals("")) {
+            Toast.makeText(getContext(), "Error: Please enter a countoff subdivision.",
+                    Toast.LENGTH_SHORT).show();
+            mCountoffSubdivisionEntry.requestFocus();
+            return;
+        }
+
+        mBuilder.author(composer)
+                .title(title);
+
+        int subdInt, countoffInt;
+        try {
+            subdInt = Integer.parseInt(subd);
+            if(subdInt < 1 || subdInt > 24) {
+                Toast.makeText(getContext(), "Subdivisions out of range.", Toast.LENGTH_SHORT).show();
+            } else if (subdInt > 12) {
+                //TODO dialog box to confirm unusually large baseline subdivision
+            }
+        } catch (NumberFormatException nfe) {
+            Toast.makeText(getContext(), "Please enter only numbers for subdivisions.", Toast.LENGTH_SHORT).show();
+            mBaselineSubdivisionEntry.requestFocus();
+            return;
+        }
+
+        try {
+            countoffInt = Integer.parseInt(countoff);
+            if(countoffInt > subdInt || countoffInt == 0) {
+                Toast.makeText(getContext(),
+                        "Countoff subdivisions must be an even divisor of the baseline subdivisions.",
+                        Toast.LENGTH_SHORT).show();
+                mCountoffSubdivisionEntry.requestFocus();
+                return;
+            }
+        } catch (NumberFormatException nfe) {
+            Toast.makeText(getContext(), "Please enter only numbers for countoff.", Toast.LENGTH_SHORT).show();
+            mBaselineSubdivisionEntry.requestFocus();
+            return;
+        }
+
+        mBuilder.subdivision(subdInt)
+                .countOffSubdivision(countoffInt);
+
+        int tempoInt, rhythmInt;
+        try {
+            if(!defaultTempo.equals("")) {
+                tempoInt = Integer.parseInt(defaultTempo);
+                mBuilder.defaultTempo(tempoInt);
+            }
+        } catch (NumberFormatException nfe) {
+            Log.d(TAG, "You should not be here: should not be able to enter anything but numbers, and any numbers entered have already been checked for range.");
+        }
+
+        // TODO redo the UI so this is not a raw data input, but a selection from various note values
+        try {
+            if(!rhythm.equals("")) {
+                rhythmInt = Integer.parseInt(rhythm);
+                mBuilder.baselineNoteValue(rhythmInt);
+            }
+        } catch (NumberFormatException nfe) {
+            Log.d(TAG, "You really shouldn't be here, with a NumberFormatException on the baseline rhythmic value.");
+        }
+
+        // get other optional data entries, if present: tempo multiplier,
+
+
+
+        mPieceOfMusic = mBuilder.build();
+        saveToDatabase(mPieceOfMusic);
 
         getFragmentManager().popBackStackImmediate();
 
     }
 
     private void gotoDataEntryFragment(String title) {
-        Fragment fragment = DataEntryFragment.newInstance(title, this, mBuilder);
+        Fragment fragment;
+        if(mDataEntries == null) {
+            fragment = DataEntryFragment.newInstance(title, this, mBuilder);
+        } else {
+            fragment = DataEntryFragment.newInstance(title, this, mBuilder, mDataEntries);
+        }
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
@@ -176,12 +313,10 @@ public class MetaDataEntryFragment extends Fragment
                 });
     }
 
-    private void saveToDatabase() {
-        saveToDatabase(mPieceOfMusic);
-    }
-
     private void toastError() {
-        Toast.makeText(this.getContext(), "You Must Enter Data to Save Data!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getContext(),
+                "Please enter a composer name and title before continuing.",
+                Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -193,7 +328,7 @@ public class MetaDataEntryFragment extends Fragment
     @Override
     public void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder) {
         mBuilder = builder;
-        mBuilder.dataEntries(data);
-        mPieceOfMusic = mBuilder.build();
+        mDataEntries = data;
+//        mPieceOfMusic = mBuilder.build();
     }
 }

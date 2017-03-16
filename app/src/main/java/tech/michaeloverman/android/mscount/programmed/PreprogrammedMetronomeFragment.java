@@ -306,7 +306,6 @@ public class PreprogrammedMetronomeFragment extends Fragment
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         mCurrentPiece = dataSnapshot.getValue(PieceOfMusic.class);
                         updateVariables();
-                        updateGUI();
                     }
 
                     @Override
@@ -323,9 +322,7 @@ public class PreprogrammedMetronomeFragment extends Fragment
 
     private void updateVariables() {
         Log.d(TAG, "newPiece() " + mCurrentPiece.getTitle());
-        mCurrentPiece = mCurrentPiece;
-
-        Log.d(TAG, "piece COsub: " + mCurrentPiece.getCountOffSubdivision() + "; mCurrentPiece COsub: " + mCurrentPiece.getCountOffSubdivision());
+//        Log.d(TAG, "piece COsub: " + mCurrentPiece.getCountOffSubdivision() + "; mCurrentPiece COsub: " + mCurrentPiece.getCountOffSubdivision());
 
         mCurrentComposer = mCurrentPiece.getAuthor();
         if(mCurrentPiece.getDefaultTempo() != 0) {
@@ -334,7 +331,8 @@ public class PreprogrammedMetronomeFragment extends Fragment
 
 
 
-        Log.d(TAG, "Subd: " + mCurrentPiece.getSubdivision() + "; CountoffSubs: " + mCurrentPiece.getCountOffSubdivision());
+//        Log.d(TAG, "Subd: " + mCurrentPiece.getSubdivision() + "; CountoffSubs: " + mCurrentPiece.getCountOffSubdivision());
 
+        updateGUI();
     }
 }

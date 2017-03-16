@@ -59,6 +59,16 @@ public class DataEntryFragment extends Fragment {
         sDataEntryCallback = callback;
         return fragment;
     }
+    public static Fragment newInstance(String title, DataEntryCallback callback,
+                                       PieceOfMusic.Builder builder, List<DataEntry> data) {
+        DataEntryFragment fragment = new DataEntryFragment();
+        fragment.mDataList = data;
+        fragment.mTitle = title;
+        fragment.mBuilder = builder;
+        sDataEntryCallback = callback;
+        return fragment;
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,9 +77,13 @@ public class DataEntryFragment extends Fragment {
         setHasOptionsMenu(true);
 
         // set up variables
-        mDataList = new ArrayList<>();
-        mMeasureNumber = 0;
-        mDataList.add(new DataEntry(++mMeasureNumber, true));
+        if(mDataList == null) {
+            mDataList = new ArrayList<>();
+            mMeasureNumber = 0;
+            mDataList.add(new DataEntry(++mMeasureNumber, true));
+        } else {
+            mMeasureNumber = mDataList.get(mDataList.size() - 1).getData();
+        }
 
     }
 
@@ -86,6 +100,11 @@ public class DataEntryFragment extends Fragment {
         mEnteredDataRecycler.setLayoutManager(manager);
         mAdapter = new DataListAdapter();
         mEnteredDataRecycler.setAdapter(mAdapter);
+
+        if(mDataList.size() > 0) {
+            mAdapter.notifyDataSetChanged();
+            mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
+        }
 
         return view;
     }
@@ -114,6 +133,7 @@ public class DataEntryFragment extends Fragment {
      */
     @OnClick(R.id.data_save_button)
     public void saveData() {
+        Log.d(TAG, "saveData()");
 //        mBuilder.dataEntries(mDataList);
 //        mPieceOfMusic.setDataBeats(mDataList);
 

@@ -193,16 +193,19 @@ public class DataEntryFragment extends Fragment {
         // if it's not a barline at the end, add it....
         if(!mDataList.get(lastIndex).isBarline()) {
             mDataList.add(new DataEntry(++mMeasureNumber, true));
+            lastIndex++;
         }
         int i;
         // reverse up the list looking for the previous barline
-        for (i = lastIndex; i >= 0; i--) {
+        for (i = lastIndex - 1; i >= 0; i--) {
             if(mDataList.get(i).isBarline()) break;
         }
         // follow back to the end, copying beats
-        for (++i; i <= lastIndex; i++) {
+        for (++i; i < lastIndex; i++) {
             mDataList.add(mDataList.get(i));
         }
+        mDataList.add(new DataEntry(++mMeasureNumber, true));
+
         mAdapter.notifyDataSetChanged();
         mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
     }

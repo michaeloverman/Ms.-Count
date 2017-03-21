@@ -115,17 +115,33 @@ public class DataEntryFragment extends Fragment {
     @OnClick(R.id.data_delete_button)
     public void delete() {
         boolean barline = false;
-        if(mDataItemSelected) {
-            mDataList.remove(mAdapter.selectedPosition);
-            if(mAdapter.selectedPosition >= mDataList.size()) {
-                mAdapter.selectedPosition = -1;
-                mDataItemSelected = false;
-            }
+        boolean resetMeasureNumbers = false;
+        int itemToDelete = mDataItemSelected ? mAdapter.selectedPosition : mDataList.size() - 1;
 
-        } else {
-            mDataList.remove(mDataList.size() - 1);
+        if(mDataList.get(itemToDelete).isBarline()) {
+            barline = true;
+            resetMeasureNumbers = mDataItemSelected;
         }
+
+        mDataList.remove(itemToDelete);
+        if(mAdapter.selectedPosition >= mDataList.size()) {
+            mAdapter.selectedPosition = -1;
+            mDataItemSelected = false;
+        }
+
+        if(barline) mMeasureNumber--;
+        if(resetMeasureNumbers) resetMeasureNumbers();
+
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void resetMeasureNumbers() {
+        mMeasureNumber = 0;
+        for(int i = 0; i < mDataList.size(); i++) {
+            if(mDataList.get(i).isBarline()) {
+                mDataList.get(i).setData(++mMeasureNumber);
+            }
+        }
     }
 
     /**
@@ -157,7 +173,7 @@ public class DataEntryFragment extends Fragment {
 
     @OnClick( { R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six, R.id.seven,
             R.id.eight, R.id.nine, R.id.ten, R.id.twelve, R.id.other, R.id.barline } )
-    public void subdivisionCountEntered(TextView view) {
+    public void dataEntered(TextView view) {
         String value = view.getText().toString();
         switch(value) {
             case "|":

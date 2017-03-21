@@ -19,6 +19,7 @@
     <string name="too_many_subdivisions">No more than ten beats per measure.</string>
     <string name="sign_in_cancelled">Sign in to Database cancelled.</string>
     <string name="no_internet_connection">Connect to internet, and sign again.</string>
-    <string name="unknown_error">An error has occured signing in to the database. Please try again.</string>
+    <string name="unknown_error">An error has occurred signing in to the database. Please try again.</string>
     <string name="unknown_sign_in_response">A response from the database has come back that we don\'t understand. Not sure if you\'re signed in or not...</string>
+    <string name="overwrite_data_confirmation" formatted="false">%s by %s already exists in the database. Are you sure you want to overwrite new data?</string>
 </resources>

@@ -153,7 +153,20 @@ public class MetaDataEntryFragment extends Fragment
         mBuilder.author(composer)
                 .title(title);
 
-        checkForExistingData(composer, title);
+        gotoDataEntryFragment(title);
+    }
+
+    private void gotoDataEntryFragment(String title) {
+        Fragment fragment;
+        if(mDataEntries == null) {
+            fragment = DataEntryFragment.newInstance(title, this, mBuilder);
+        } else {
+            fragment = DataEntryFragment.newInstance(title, this, mBuilder, mDataEntries);
+        }
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @OnClick(R.id.load_program_button)
@@ -298,49 +311,60 @@ public class MetaDataEntryFragment extends Fragment
 
 
         mPieceOfMusic = mBuilder.build();
-        saveToDatabase(mPieceOfMusic);
 
-        getFragmentManager().popBackStackImmediate();
+        checkForExistingData();
 
     }
 
-    private void checkForExistingData(final String composer, final String title) {
+    /**
+     * Checks database for existence same title by same composer. If it doesn't exist,
+     * goes ahead and saves. If it does exists, call on a dialog to confirm before saving.
+     */
+    private void checkForExistingData() {
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
 
         // Look for piece first, and if exists, get that key to update; otherwise push() to create
         // new key for new piece.
+        final String composer = mPieceOfMusic.getAuthor();
+        final String title = mPieceOfMusic.getTitle();
         mPiecesDatabaseReference.child("composers").child(composer).child(title)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
                         if(dataSnapshot.exists()) {
-                            overwriteDataAlertDialog(title);
+                            overwriteDataAlertDialog(title, composer);
                         } else {
-                            gotoDataEntryFragment(title);
+                            saveToDatabase(mPieceOfMusic);
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getContext(), "Error: Database connection problem.",
+                        Toast.makeText(getContext(), "Error: Database problem. Save canceled.",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
 
     }
 
-    private void overwriteDataAlertDialog(final String title) {
+    /**
+     * Called prior to saving, if piece by same title already exists in database. If confirmed,
+     * overwrites data, if canceled, does nothing.
+     *
+     * @param title
+     * @param composer
+     */
+    private void overwriteDataAlertDialog(final String title, final String composer) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setCancelable(false);
         dialog.setTitle("Overwrite Data?");
-        dialog.setMessage("You are about to overwrite existing data. Are you sure you want to continue?" );
+        dialog.setMessage(String.format(getResources().getString(R.string.overwrite_data_confirmation), title, composer));
         dialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        gotoDataEntryFragment(title);
+                        saveToDatabase(mPieceOfMusic);
                     }
                 })
                 .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
@@ -353,20 +377,6 @@ public class MetaDataEntryFragment extends Fragment
         final AlertDialog alert = dialog.create();
         alert.show();
     }
-
-    private void gotoDataEntryFragment(String title) {
-        Fragment fragment;
-        if(mDataEntries == null) {
-            fragment = DataEntryFragment.newInstance(title, MetaDataEntryFragment.this, mBuilder);
-        } else {
-            fragment = DataEntryFragment.newInstance(title, MetaDataEntryFragment.this, mBuilder, mDataEntries);
-        }
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
 
     private void saveToDatabase(final PieceOfMusic p) {
         Log.d(TAG, "Saving to local database, or to Firebase: " + p.getTitle() + " by " + p.getAuthor());
@@ -383,7 +393,6 @@ public class MetaDataEntryFragment extends Fragment
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String key;
                         if(dataSnapshot.exists()) {
-
                             // update
                             key = dataSnapshot.getValue().toString();
                         } else {
@@ -395,14 +404,21 @@ public class MetaDataEntryFragment extends Fragment
                         updates.put("/pieces/" + key, p);
                         updates.put("/composers/" + p.getAuthor() + "/" + p.getTitle(), key);
                         mPiecesDatabaseReference.updateChildren(updates);
+
+                        getFragmentManager().popBackStackImmediate();
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getContext(), "Error: Save to database cancelled.",
-                                Toast.LENGTH_SHORT).show();
+                        databaseSaveErrorStayHere();
                     }
                 });
+
+    }
+
+    private void databaseSaveErrorStayHere() {
+        Toast.makeText(getContext(), "Error: Save to database cancelled.",
+                Toast.LENGTH_SHORT).show();
     }
 
     private void toastError() {

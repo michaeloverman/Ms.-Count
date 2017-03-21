@@ -114,6 +114,7 @@ public class DataEntryFragment extends Fragment {
      */
     @OnClick(R.id.data_delete_button)
     public void delete() {
+        boolean barline = false;
         if(mDataItemSelected) {
             mDataList.remove(mAdapter.selectedPosition);
             if(mAdapter.selectedPosition >= mDataList.size()) {

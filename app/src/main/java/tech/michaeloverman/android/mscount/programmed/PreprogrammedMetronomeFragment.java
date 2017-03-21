@@ -321,6 +321,11 @@ public class PreprogrammedMetronomeFragment extends Fragment
     }
 
     private void updateVariables() {
+        if(mCurrentPiece == null) {
+            selectNewProgram();
+            return;
+        }
+
         Log.d(TAG, "newPiece() " + mCurrentPiece.getTitle());
 //        Log.d(TAG, "piece COsub: " + mCurrentPiece.getCountOffSubdivision() + "; mCurrentPiece COsub: " + mCurrentPiece.getCountOffSubdivision());
 

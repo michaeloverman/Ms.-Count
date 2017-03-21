@@ -310,7 +310,8 @@ public class PreprogrammedMetronomeFragment extends Fragment
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Toast.makeText(getContext(), "A database error occurred. Please try again.",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
 

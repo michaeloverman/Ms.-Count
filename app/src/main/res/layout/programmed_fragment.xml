@@ -43,10 +43,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/current_composer_name"
-        android:layout_marginLeft="@dimen/generic_8dp_margin"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="@dimen/generic_8dp_margin"/>
+        />
 
     <TextView
         android:id="@+id/current_tempo_setting"

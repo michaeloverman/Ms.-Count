@@ -1,8 +1,10 @@
 package tech.michaeloverman.android.mscount.dataentry;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -151,7 +153,7 @@ public class MetaDataEntryFragment extends Fragment
         mBuilder.author(composer)
                 .title(title);
 
-        gotoDataEntryFragment(title);
+        checkForExistingData(composer, title);
     }
 
     @OnClick(R.id.load_program_button)
@@ -302,18 +304,69 @@ public class MetaDataEntryFragment extends Fragment
 
     }
 
+    private void checkForExistingData(final String composer, final String title) {
+
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
+
+        // Look for piece first, and if exists, get that key to update; otherwise push() to create
+        // new key for new piece.
+        mPiecesDatabaseReference.child("composers").child(composer).child(title)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.exists()) {
+                            overwriteDataAlertDialog(title);
+                        } else {
+                            gotoDataEntryFragment(title);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getContext(), "Error: Database connection problem.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    private void overwriteDataAlertDialog(final String title) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setCancelable(false);
+        dialog.setTitle("Overwrite Data?");
+        dialog.setMessage("You are about to overwrite existing data. Are you sure you want to continue?" );
+        dialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        gotoDataEntryFragment(title);
+                    }
+                })
+                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Action for "Cancel".
+                    }
+                });
+
+        final AlertDialog alert = dialog.create();
+        alert.show();
+    }
+
     private void gotoDataEntryFragment(String title) {
         Fragment fragment;
         if(mDataEntries == null) {
-            fragment = DataEntryFragment.newInstance(title, this, mBuilder);
+            fragment = DataEntryFragment.newInstance(title, MetaDataEntryFragment.this, mBuilder);
         } else {
-            fragment = DataEntryFragment.newInstance(title, this, mBuilder, mDataEntries);
+            fragment = DataEntryFragment.newInstance(title, MetaDataEntryFragment.this, mBuilder, mDataEntries);
         }
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
 
     private void saveToDatabase(final PieceOfMusic p) {
         Log.d(TAG, "Saving to local database, or to Firebase: " + p.getTitle() + " by " + p.getAuthor());
@@ -330,6 +383,7 @@ public class MetaDataEntryFragment extends Fragment
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String key;
                         if(dataSnapshot.exists()) {
+
                             // update
                             key = dataSnapshot.getValue().toString();
                         } else {
@@ -345,7 +399,8 @@ public class MetaDataEntryFragment extends Fragment
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Toast.makeText(getContext(), "Error: Save to database cancelled.",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -358,7 +413,7 @@ public class MetaDataEntryFragment extends Fragment
 
     /**
      * Callback from the DataEntryFragment. Takes the raw data and the reference to the original
-     * Builder object, and creates the PieceOfMusic.
+     * Builder object, and assigns to local variables.
      * @param data
      * @param builder
      */
@@ -366,7 +421,6 @@ public class MetaDataEntryFragment extends Fragment
     public void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder) {
         mBuilder = builder;
         mDataEntries = data;
-//        mPieceOfMusic = mBuilder.build();
     }
 
 }

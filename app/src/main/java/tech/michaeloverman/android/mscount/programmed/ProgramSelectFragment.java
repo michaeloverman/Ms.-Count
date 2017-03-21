@@ -48,7 +48,7 @@ public class ProgramSelectFragment extends Fragment
     static ProgramCallback sProgramCallback = null;
 
 
-    interface ProgramCallback {
+    public interface ProgramCallback {
         void newPiece(String pieceId);
     }
 

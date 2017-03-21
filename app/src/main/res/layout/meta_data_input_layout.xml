@@ -215,4 +215,18 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"/>
 
+    <Button
+        android:id="@+id/load_program_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Load Program to Edit"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/save_program_button"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/save_program_button"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/save_program_button"
+        app:layout_constraintHorizontal_bias="0.48"/>
+
 </android.support.constraint.ConstraintLayout>

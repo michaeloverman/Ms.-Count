@@ -30,13 +30,14 @@ import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.pojos.DataEntry;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
+import tech.michaeloverman.android.mscount.programmed.ProgramSelectFragment;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 
 /**
  *
  */
 public class MetaDataEntryFragment extends Fragment
-        implements DataEntryFragment.DataEntryCallback {
+        implements DataEntryFragment.DataEntryCallback, ProgramSelectFragment.ProgramCallback {
     private static final String TAG = MetaDataEntryFragment.class.getSimpleName();
 
     @BindView(R.id.composer_name_text_entry)
@@ -151,6 +152,43 @@ public class MetaDataEntryFragment extends Fragment
                 .title(title);
 
         gotoDataEntryFragment(title);
+    }
+
+    @OnClick(R.id.load_program_button)
+    public void loadProgram() {
+        Fragment fragment = ProgramSelectFragment.newInstance(this, null);
+        FragmentTransaction trans = getFragmentManager().beginTransaction();
+        trans.replace(R.id.fragment_container, fragment);
+        trans.addToBackStack(null);
+        trans.commit();
+    }
+
+    @Override
+    public void newPiece(String pieceId) {
+
+        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
+                        updateGUI();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void updateGUI() {
+        mComposerEntry.setText(mPieceOfMusic.getAuthor());
+        mTitleEntry.setText(mPieceOfMusic.getTitle());
+        mBaselineSubdivisionEntry.setText(Integer.toString(mPieceOfMusic.getSubdivision()));
+        mCountoffSubdivisionEntry.setText(Integer.toString(mPieceOfMusic.getCountOffSubdivision()));
+        mDefaultTempoEntry.setText(Integer.toString(mPieceOfMusic.getDefaultTempo()));
+        mBaselineRhythmicValueEntry.setText(Integer.toString(mPieceOfMusic.getBaselineNoteValue()));
+        mDataEntries = mPieceOfMusic.getRawData();
     }
 
     @OnClick(R.id.save_program_button)
@@ -330,4 +368,5 @@ public class MetaDataEntryFragment extends Fragment
         mDataEntries = data;
 //        mPieceOfMusic = mBuilder.build();
     }
+
 }

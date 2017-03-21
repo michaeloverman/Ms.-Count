@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,7 +75,14 @@ public class MetronomeSelectorFragment extends Fragment {
                 fragment = PreprogrammedMetronomeFragment.newInstance();
                 break;
             case R.id.create_new_program_button:
-                fragment = MetaDataEntryFragment.newInstance();
+                if(((MsCountActivity)getActivity()).isUserAdmin()) {
+                    fragment = MetaDataEntryFragment.newInstance();
+                } else {
+                    Log.d(TAG, "unauthorized for writing to database");
+                    Toast.makeText(getContext(), "You are not authorized to write to the database.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 break;
             default:
                 fragment = null;
@@ -86,5 +94,6 @@ public class MetronomeSelectorFragment extends Fragment {
         transaction.commit();
 
     }
+
 
 }

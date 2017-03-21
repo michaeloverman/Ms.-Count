@@ -12,6 +12,10 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleFragmentActivity {
     private static final String TAG = MsCountActivity.class.getSimpleName();
@@ -19,6 +23,7 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
     public static int sClickSound;
 
     private FirebaseAuth mAuth;
+    private boolean userIsAdmin;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
@@ -43,6 +48,7 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    checkAdmin();
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -61,6 +67,31 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
         }
     }
 
+    private void checkAdmin() {
+        FirebaseDatabase.getInstance().getReference().child("admin")
+                .child(mAuth.getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot == null) {
+                            Log.d(TAG, "user is NOT admin");
+                            userIsAdmin = false;
+                        } else {
+                            Log.d(TAG, "user IS admin");
+                            userIsAdmin = true;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public boolean isUserAdmin() {
+        return userIsAdmin;
+    }
     @Override
     public void onStart() {
         super.onStart();

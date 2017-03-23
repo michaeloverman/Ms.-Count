@@ -22,4 +22,6 @@
     <string name="unknown_error">An error has occurred signing in to the database. Please try again.</string>
     <string name="unknown_sign_in_response">A response from the database has come back that we don\'t understand. Not sure if you\'re signed in or not...</string>
     <string name="overwrite_data_confirmation" formatted="false">%s by %s already exists in the database. Are you sure you want to overwrite new data?</string>
+    <string name="title_of_the_piece_dummy_data">Title Of the Piece</string>
+    <string name="save">Save</string>
 </resources>

@@ -20,4 +20,9 @@
     <dimen name="data_entry_sub_button_text_size">60sp</dimen>
     <dimen name="data_entry_barline_text_size">88sp</dimen>
     <dimen name="data_entry_sub_button_margin">4dp</dimen>
+    <dimen name="data_entry_title_text_size">18sp</dimen>
+    <dimen name="data_entry_usual_margin">16dp</dimen>
+    <dimen name="data_entry_usual_padding">4dp</dimen>
+    <dimen name="data_entry_interbutton_vertical_margin">8dp</dimen>
+    <dimen name="data_entry_recycler_view_min_height">60dp</dimen>
 </resources>

@@ -25,4 +25,5 @@
     <dimen name="data_entry_usual_padding">4dp</dimen>
     <dimen name="data_entry_interbutton_vertical_margin">8dp</dimen>
     <dimen name="data_entry_recycler_view_min_height">60dp</dimen>
+    <dimen name="data_entry_single_input_text_size">35sp</dimen>
 </resources>

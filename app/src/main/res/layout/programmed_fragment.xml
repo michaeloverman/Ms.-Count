@@ -129,9 +129,9 @@
 
     <ImageView
         android:id="@+id/primary_beat_length_image"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:srcCompat="@drawable/ic_dotted_quarter"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/ic_dotted_4th"
         app:layout_constraintTop_toTopOf="@+id/current_tempo_setting"
         android:layout_marginLeft="48dp"
         app:layout_constraintBottom_toBottomOf="@+id/current_tempo_setting"
@@ -143,13 +143,13 @@
         android:layout_height="wrap_content"
         android:text="="
         android:textSize="40dp"
-        android:textColor="@color/secondaryText"
+        android:textColor="@color/primaryText"
         app:layout_constraintTop_toTopOf="@+id/primary_beat_length_image"
         android:layout_marginTop="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/primary_beat_length_image"
         android:layout_marginBottom="0dp"
         app:layout_constraintLeft_toLeftOf="@+id/primary_beat_length_image"
-        android:layout_marginLeft="70dp"/>
+        android:layout_marginLeft="50dp"/>
 
 
 </android.support.constraint.ConstraintLayout>

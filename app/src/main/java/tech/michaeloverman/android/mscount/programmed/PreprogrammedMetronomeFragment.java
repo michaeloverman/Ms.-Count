@@ -273,25 +273,25 @@ public class PreprogrammedMetronomeFragment extends Fragment
     private int getNoteImageResource(int noteValue) {
         switch(noteValue) {
             case PieceOfMusic.SIXTEENTH:
-                return R.drawable.ic_sixteenth_note;
+                return R.drawable.ic_16thnote;
             case PieceOfMusic.DOTTED_SIXTEENTH:
-                return R.drawable.ic_dotted_sixteenth;
+                return R.drawable.ic_dotted16th;
             case PieceOfMusic.EIGHTH:
-                return R.drawable.ic_eighth_note;
+                return R.drawable.ic_8th;
             case PieceOfMusic.DOTTED_EIGHTH:
-                return R.drawable.ic_dotted_eighth;
+                return R.drawable.ic_dotted8th;
             case PieceOfMusic.QUARTER:
-                return R.drawable.ic_new_quarter_note;
+                return R.drawable.ic_quarter;
             case PieceOfMusic.DOTTED_QUARTER:
-                return R.drawable.ic_dotted_quarter;
+                return R.drawable.ic_dotted_4th;
             case PieceOfMusic.HALF:
-                return R.drawable.ic_half_note;
+                return R.drawable.ic_half;
             case PieceOfMusic.DOTTED_HALF:
-                return R.drawable.ic_dotted_half;
+                return R.drawable.ic_dotted_2th;
             case PieceOfMusic.WHOLE:
-                return R.drawable.ic_whole_note;
+                return R.drawable.ic_whole;
             default:
-                return R.drawable.ic_quarter_note;
+                return R.drawable.ic_quarter;
         }
     }
 

@@ -1,22 +1,20 @@
 package tech.michaeloverman.android.mscount;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import tech.michaeloverman.android.mscount.dataentry.MetaDataEntryFragment;
-import tech.michaeloverman.android.mscount.programmed.PreprogrammedMetronomeFragment;
+import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeActivity;
 
 /**
  * Created by Michael on 2/24/2017.
@@ -59,40 +57,28 @@ public class MetronomeSelectorFragment extends Fragment {
     }
 
     // R.id.sticking_patters_metronome_button,
-    @OnClick( { R.id.normal_metronome_button, R.id.create_new_program_button,
-             R.id.preprogrammed_metronome_button, R.id.odd_meter_loop_button })
+    @OnClick( { R.id.normal_metronome_button, R.id.preprogrammed_metronome_button,
+            R.id.odd_meter_metronome_button})
     public void buttonClicked(View button) {
         Log.d(TAG, "buttonClicked()");
-        Fragment fragment;
+        Intent intent;
         switch(button.getId()) {
             case R.id.normal_metronome_button:
-                fragment = NormalMetronomeFragment.newInstance();
+                intent = new Intent(getActivity(), NormalMetronomeActivity.class);
                 break;
-            case R.id.odd_meter_loop_button:
-                fragment = OddMeterLoopFragment.newInstance();
+            case R.id.odd_meter_metronome_button:
+                intent = new Intent(getActivity(), OddMeterMetronomeActivity.class);
                 break;
             case R.id.preprogrammed_metronome_button:
-                fragment = PreprogrammedMetronomeFragment.newInstance();
-                break;
-            case R.id.create_new_program_button:
-                if(((MsCountActivity)getActivity()).isUserAdmin()) {
-                    fragment = MetaDataEntryFragment.newInstance();
-                } else {
-                    Log.d(TAG, "unauthorized for writing to database");
-                    Toast.makeText(getContext(), "You are not authorized to write to the database.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                intent = new Intent(getActivity(), ProgrammedMetronomeActivity.class);
                 break;
             default:
-                fragment = null;
+                intent = null;
         }
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
+        if (intent != null) {
+            startActivity(intent);
+        }
     }
 
 

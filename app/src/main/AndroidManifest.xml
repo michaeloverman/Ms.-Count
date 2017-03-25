@@ -17,6 +17,15 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".NormalMetronomeActivity">
+        </activity>
+
+        <activity android:name=".OddMeterMetronomeActivity">
+        </activity>
+
+        <activity android:name=".programmed.ProgrammedMetronomeActivity">
+        </activity>
+
     </application>
 
 </manifest>

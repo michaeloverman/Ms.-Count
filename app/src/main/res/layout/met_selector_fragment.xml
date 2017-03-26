@@ -57,22 +57,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <Button
-        android:text="@string/create_edit_program"
-        android:id="@+id/create_new_program_button"
-        android:background="@drawable/roundcorner_primary"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/home_screen_button_height"
-        android:paddingLeft="@dimen/button_padding_rl"
-        android:paddingRight="@dimen/button_padding_rl"
-        android:paddingStart="@dimen/button_padding_rl"
-        android:paddingEnd="@dimen/button_padding_rl"
-        android:layout_marginTop="@dimen/home_screen_button_margin"
-        android:layout_marginBottom="@dimen/home_screen_button_margin"
-        app:layout_constraintTop_toBottomOf="@+id/preprogrammed_metronome_button"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="100dp"

@@ -48,9 +48,9 @@ public class Metronome {
      *
      * @param context
      */
-    public Metronome(Context context, MetronomeListener ml) {
+    public Metronome(Context context) {
         mAssets = context.getAssets();
-        mListener = ml;
+//        setMetronomeListener(ml);
         mClicking = false;
         SoundPool.Builder builder = new SoundPool.Builder()
                 .setAudioAttributes(new AudioAttributes.Builder()
@@ -68,10 +68,14 @@ public class Metronome {
         }
 
     }
-    public Metronome(Context context) {
-        this(context, null);
+
+    public void setMetronomeListener(MetronomeListener ml) {
+        mListener = ml;
     }
 
+    public boolean isRunning() {
+        return mClicking;
+    }
     /**
      * Simple metronome click: takes either int or float tempo marking, and number of
      * beats per measure, calculates delay between clicks in millis,

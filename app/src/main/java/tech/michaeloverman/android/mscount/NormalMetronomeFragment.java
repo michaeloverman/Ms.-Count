@@ -86,8 +86,10 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
     private GestureDetectorCompat mDetector;
 
-    public static Fragment newInstance() {
-        return new NormalMetronomeFragment();
+    public static Fragment newInstance(Metronome m) {
+        NormalMetronomeFragment fragment = new NormalMetronomeFragment();
+        fragment.setMetronome(m);
+        return fragment;
     }
 
     @Override
@@ -96,7 +98,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        mMetronome = new Metronome(getActivity(), this);
+//        mMetronome = new Metronome(getActivity(), this);
         mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -111,6 +113,11 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             mSubdivisionFloatVolumes[i] = MAX_FLOAT_VOLUME;
         }
         mSubdivisionFabColors = getContext().getResources().getIntArray(R.array.subdivision_colors);
+    }
+
+    private void setMetronome(Metronome m) {
+        mMetronome = m;
+        mMetronome.setMetronomeListener(this);
     }
 
     @Nullable

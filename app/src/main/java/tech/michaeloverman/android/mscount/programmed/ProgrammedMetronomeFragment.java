@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
+import tech.michaeloverman.android.mscount.dataentry.MetaDataEntryFragment;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
@@ -35,10 +37,10 @@ import tech.michaeloverman.android.mscount.utils.MetronomeListener;
  * Created by Michael on 2/24/2017.
  */
 
-public class PreprogrammedMetronomeFragment extends Fragment
+public class ProgrammedMetronomeFragment extends Fragment
         implements ProgramSelectFragment.ProgramCallback, MetronomeListener {
 
-    private static final String TAG = PreprogrammedMetronomeFragment.class.getSimpleName();
+    private static final String TAG = ProgrammedMetronomeFragment.class.getSimpleName();
     private static final boolean UP = true;
     private static final boolean DOWN = false;
     private static final int MAXIMUM_TEMPO = 350;
@@ -75,8 +77,15 @@ public class PreprogrammedMetronomeFragment extends Fragment
     private static final int ONE_LESS = INITIAL_TEMPO_CHANGE_DELAY - 2;
     private static final int MIN_TEMPO_CHANGE_DELAY = 20;
 
-    public static Fragment newInstance() {
-        return new PreprogrammedMetronomeFragment();
+    public static Fragment newInstance(Metronome m) {
+        ProgrammedMetronomeFragment fragment = new ProgrammedMetronomeFragment();
+        fragment.setMetronome(m);
+        return fragment;
+    }
+
+    private void setMetronome(Metronome m) {
+        mMetronome = m;
+        mMetronome.setMetronomeListener(this);
     }
 
     @Override
@@ -101,7 +110,7 @@ public class PreprogrammedMetronomeFragment extends Fragment
             }
         }
 
-        mMetronome = new Metronome(getActivity(), this);
+//        mMetronome = new Metronome(getActivity(), this);
         mMetronomeRunning = false;
 
         mRunnableHandler = new Handler();
@@ -340,5 +349,23 @@ public class PreprogrammedMetronomeFragment extends Fragment
 //        Log.d(TAG, "Subd: " + mCurrentPiece.getSubdivision() + "; CountoffSubs: " + mCurrentPiece.getCountOffSubdivision());
 
         updateGUI();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.create_new_program_option:
+                openProgramEditor();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    private void openProgramEditor() {
+        Fragment fragment = MetaDataEntryFragment.newInstance();
+        FragmentTransaction trans = getFragmentManager().beginTransaction();
+        trans.replace(R.id.fragment_container, fragment);
+        trans.addToBackStack(null);
+        trans.commit();
     }
 }

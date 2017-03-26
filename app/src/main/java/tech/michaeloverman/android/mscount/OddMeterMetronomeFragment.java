@@ -61,8 +61,10 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
 
     private GestureDetectorCompat mDetector;
 
-    public static Fragment newInstance() {
-        return new OddMeterMetronomeFragment();
+    public static Fragment newInstance(Metronome m) {
+        OddMeterMetronomeFragment fragment = new OddMeterMetronomeFragment();
+        fragment.setMetronome(m);
+        return fragment;
     }
 
     @Override
@@ -71,12 +73,17 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        mMetronome = new Metronome(getActivity(), this);
+//        mMetronome = new Metronome(getActivity(), this);
         mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
 
         mSubdivisionsList = new ArrayList<>();
         mSubdivisionViews = new ArrayList<>();
 
+    }
+
+    private void setMetronome(Metronome m) {
+        mMetronome = m;
+        mMetronome.setMetronomeListener(this);
     }
 
     @Nullable

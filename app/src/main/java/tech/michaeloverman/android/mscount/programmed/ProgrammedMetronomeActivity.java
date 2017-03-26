@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -21,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import tech.michaeloverman.android.mscount.BuildConfig;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.SingleFragmentActivity;
+import tech.michaeloverman.android.mscount.utils.Metronome;
 
 /**
  * Created by Michael on 3/24/2017.
@@ -34,9 +37,12 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
     private boolean userIsAdmin;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    protected Metronome mMetronome;
+
     @Override
     protected Fragment createFragment() {
-        return PreprogrammedMetronomeFragment.newInstance();
+        mMetronome = new Metronome(this);
+        return ProgrammedMetronomeFragment.newInstance(mMetronome);
     }
 
     @Override
@@ -71,6 +77,15 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
         }
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.programmed_menu, menu);
+        return true;
+    }
+
+
 
     private void checkAdmin() {
         FirebaseDatabase.getInstance().getReference().child("admin")
@@ -149,5 +164,13 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
     private void showSnackbar(int message) {
         String m = getString(message);
         Log.d(TAG, m);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(mMetronome.isRunning()) {
+            mMetronome.stop();
+        }
     }
 }

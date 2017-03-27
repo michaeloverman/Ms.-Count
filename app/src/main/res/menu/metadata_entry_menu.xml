@@ -2,9 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/create_new_program_option"
-          android:title="Create new program"
+    <item android:id="@+id/edit_existing_program_option"
+          android:title="Edit existing program"
           android:icon="@android:drawable/ic_menu_edit"
-          app:showAsAction="ifRoom"/>
-
+          app:showAsAction="never"/>
 </menu>

@@ -9,6 +9,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -73,6 +76,12 @@ public class MetaDataEntryFragment extends Fragment
         mPieceOfMusic = new PieceOfMusic();
 
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.metadata_entry_menu, menu);
+//        menu.removeItem(R.id.create_new_program_option);
     }
 
     @Override
@@ -169,8 +178,22 @@ public class MetaDataEntryFragment extends Fragment
         transaction.commit();
     }
 
-    @OnClick(R.id.load_program_button)
-    public void loadProgram() {
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+//            case R.id.create_new_program_option:
+//                enterBeatsClicked();
+//                return true;
+            case R.id.edit_existing_program_option:
+                loadProgram();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void loadProgram() {
         Fragment fragment = ProgramSelectFragment.newInstance(this, null);
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         trans.replace(R.id.fragment_container, fragment);

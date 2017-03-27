@@ -65,6 +65,11 @@ public class ProgramSelectFragment extends Fragment
         Log.d(TAG, "onCreate() Composer: " + mCurrentComposer);
     }
 
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        menu.removeItem(R.id.create_new_program_option);
+//    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

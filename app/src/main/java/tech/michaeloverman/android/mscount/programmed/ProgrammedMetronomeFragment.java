@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -186,6 +188,11 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.programmed_menu, menu);
+    }
+
+    @Override
     public void onPause() {
         if(mMetronomeRunning) metronomeStartStop();
         super.onPause();
@@ -357,6 +364,9 @@ public class ProgrammedMetronomeFragment extends Fragment
             case R.id.create_new_program_option:
                 openProgramEditor();
                 return true;
+//            case R.id.edit_existing_program_option:
+//                loadProgram();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -368,4 +378,12 @@ public class ProgrammedMetronomeFragment extends Fragment
         trans.addToBackStack(null);
         trans.commit();
     }
+
+//    private void loadProgram() {
+//        Fragment fragment = ProgramSelectFragment.newInstance(this, null);
+//        FragmentTransaction trans = getFragmentManager().beginTransaction();
+//        trans.replace(R.id.fragment_container, fragment);
+//        trans.addToBackStack(null);
+//        trans.commit();
+//    }
 }

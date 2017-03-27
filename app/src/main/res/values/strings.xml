@@ -24,4 +24,5 @@
     <string name="overwrite_data_confirmation" formatted="false">%s by %s already exists in the database. Are you sure you want to overwrite new data?</string>
     <string name="title_of_the_piece_dummy_data">Title Of the Piece</string>
     <string name="save">Save</string>
+    <string name="no_program_selected_instruction_toast">Select a program for metronome</string>
 </resources>

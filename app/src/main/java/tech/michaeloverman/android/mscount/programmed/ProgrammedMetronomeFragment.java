@@ -248,7 +248,8 @@ public class ProgrammedMetronomeFragment extends Fragment
         } else {
             Log.d(TAG, "metronomeStart() " + mCurrentPiece.getTitle());
             if(mCurrentPiece == null) {
-                Toast.makeText(this.getContext(), "Select a piece to program metronome", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.getContext(), R.string.no_program_selected_instruction_toast,
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
             mMetronomeRunning = true;
@@ -272,7 +273,6 @@ public class ProgrammedMetronomeFragment extends Fragment
 
         super.onSaveInstanceState(outState);
 
-
     }
 
     private void updateGUI() {
@@ -282,7 +282,6 @@ public class ProgrammedMetronomeFragment extends Fragment
         mTVCurrentComposer.setText(mCurrentComposer);
         mBeatLengthImage.setImageResource(getNoteImageResource
                 (mCurrentPiece.getBaselineNoteValue()));
-//        mCurrentProgramLabel.setText("Now isn't this fun.");
         updateTempoView();
     }
 
@@ -331,10 +330,6 @@ public class ProgrammedMetronomeFragment extends Fragment
                     }
                 });
 
-
-
-//        mCurrentProgramLabel.setText("A barrel of laughs");
-//        updateGUI();
     }
 
     private void updateVariables() {

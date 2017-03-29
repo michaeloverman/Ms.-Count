@@ -44,4 +44,8 @@ public class DataEntry {
         if(isBarline) mData++;
     }
 
+    @Override
+    public String toString() {
+        return mData + ";" + isBarline;
+    }
 }

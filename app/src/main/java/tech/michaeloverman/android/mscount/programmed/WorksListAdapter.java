@@ -1,6 +1,7 @@
 package tech.michaeloverman.android.mscount.programmed;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,12 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import tech.michaeloverman.android.mscount.R;
+import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.pojos.TitleKeyObject;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 2/25/2017.
@@ -35,7 +39,7 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
     }
 
     interface WorksListAdapterOnClickHandler {
-        void onClick(String title);
+        void onClick(int position, String title);
     }
 
     @Override
@@ -62,6 +66,31 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
         notifyDataSetChanged();
     }
 
+    public void newCursor(Cursor data) {
+        List<TitleKeyObject> titles = new ArrayList<>();
+        if(data == null) {
+            Log.d(TAG, "Null cursor...");
+//            Toast.makeText(mContext, "PROBLEM: No data in database!", Toast.LENGTH_SHORT).show();
+            mTitles = titles;
+            return;
+        }
+
+        Timber.d("newCursor() data.getCount() == " + data.getCount());
+
+        try {
+            data.moveToFirst();
+            while (!data.isAfterLast()) {
+                titles.add(new TitleKeyObject(
+                        data.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE),
+                        data.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID)));
+                data.moveToNext();
+            }
+        } finally {
+//            data.close();
+        }
+        setTitles(titles);
+    }
+
     class WorksViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.work_title)
@@ -79,7 +108,7 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
             Log.d(TAG, "WorksViewHolder onClick()");
             int position = getAdapterPosition();
             String key = mTitles.get(position).getKey();
-            mClickHandler.onClick(key);
+            mClickHandler.onClick(position, key);
         }
     }
 }

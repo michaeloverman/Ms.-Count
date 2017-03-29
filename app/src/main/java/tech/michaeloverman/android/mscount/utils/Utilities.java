@@ -1,9 +1,13 @@
 package tech.michaeloverman.android.mscount.utils;
 
+import android.content.ContentValues;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
+import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 
 /**
  * Created by Michael on 2/26/2017.
@@ -71,5 +75,21 @@ public class Utilities {
             }
         }
         return beats;
+    }
+
+    public static ContentValues getContentValuesFromPiece(PieceOfMusic piece) {
+        ContentValues values = new ContentValues();
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER, piece.getAuthor());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_TITLE, piece.getTitle());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_PRIMARY_SUBDIVISIONS, piece.getSubdivision());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_COUNTOFF_SUBDIVISIONS, piece.getCountOffSubdivision());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_DEFAULT_TEMPO, piece.getDefaultTempo());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_DEFAULT_RHYTHM, piece.getBaselineNoteValue());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_TEMPO_MULTIPLIER, piece.getTempoMultiplier());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_MEASURE_COUNT_OFFSET, piece.getMeasureCountOffset());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_DATA_ARRAY, piece.getRawDataAsString());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_FIREBASE_ID, piece.getFirebaseId());
+
+        return values;
     }
 }

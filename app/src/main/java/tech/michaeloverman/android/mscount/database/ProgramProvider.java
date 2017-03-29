@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import timber.log.Timber;
+
 /**
  * Created by Michael on 3/27/2017.
  */
@@ -24,6 +26,7 @@ public class ProgramProvider extends ContentProvider {
     private ProgramDatabaseHelper mHelper;
 
     public static UriMatcher buildUriMatcher() {
+        Timber.d("UriMatcher creation...");
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = ProgramDatabaseSchema.AUTHORITY;
 
@@ -38,6 +41,7 @@ public class ProgramProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mHelper = new ProgramDatabaseHelper(getContext());
+        Timber.d("onCreate()");
         return true;
     }
 
@@ -46,8 +50,11 @@ public class ProgramProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         Cursor cursor;
 
+        Timber.d("query()");
+
         switch(sUriMatcher.match(uri)) {
             case CODE_COMPOSER:
+                Timber.d("UriMatcher: CODE_COMPOSER");
                 String composer = uri.getLastPathSegment();
                 selectionArgs = new String[] { composer };
 
@@ -63,6 +70,7 @@ public class ProgramProvider extends ContentProvider {
                 break;
 
             case CODE_COMPOSER_WITH_PIECE:
+                Timber.d("UriMatcher: CODE_COMPOSER_WITH_PIECE");
                 String title = uri.getLastPathSegment();
                 selectionArgs = new String[] { title };
                 cursor = mHelper.getReadableDatabase().query(
@@ -76,6 +84,7 @@ public class ProgramProvider extends ContentProvider {
 
                 break;
             case CODE_ALL_OF_IT:
+                Timber.d("UriMatcher: CODE_ALL_OF_IT");
                 cursor = mHelper.getReadableDatabase().query(
                         ProgramDatabaseSchema.MetProgram.TABLE_NAME,
                         projection,
@@ -104,6 +113,7 @@ public class ProgramProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+        Timber.d("insert() ~~~!!!");
         SQLiteDatabase db = mHelper.getWritableDatabase();
         boolean success = true;
         Uri returnUri;
@@ -126,7 +136,7 @@ public class ProgramProvider extends ContentProvider {
                 }
 
                 if(!success) returnUri = null;
-                
+
             default:
                 Toast.makeText(getContext(), "Database request improperly formatted.", Toast.LENGTH_SHORT).show();
                 returnUri = null;
@@ -138,11 +148,13 @@ public class ProgramProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        Timber.d("delete()...");
         return 0;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+        Timber.d("update...()");
         return 0;
     }
 }

@@ -3,6 +3,8 @@ package tech.michaeloverman.android.mscount.database;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import timber.log.Timber;
+
 /**
  * Created by Michael on 3/27/2017.
  */
@@ -31,19 +33,20 @@ public class ProgramDatabaseSchema {
         public static final String COLUMN_DATA_ARRAY = "actual_data";
         public static final String COLUMN_FIREBASE_ID = "firebase_id";
 
-//        public static final int POSITION_ID = 0;
-//        public static final int POSITION_COMPOSER = 1;
-//        public static final int POSITION_TITLE = 2;
-//        public static final int POSITION_PRIMANY_SUBDIVISIONS = 3;
-//        public static final int POSITION_COUNOFF_SUBDIVISIONS = 4;
-//        public static final int POSITION_DEFAULT_TEMPO = 5;
-//        public static final int POSITION_DEFAULT_RHYTHM = 6;
-//        public static final int POSITION_TEMPO_MULTIPLIER = 7;
-//        public static final int POSITION_MEASURE_COUNTE_OFFSET = 8;
-//        public static final int POSITION_DATA_ARRAY = 9;
-//        public static final int POSITION_FIREBASE_ID = 10;
+        public static final int POSITION_ID = 0;
+        public static final int POSITION_COMPOSER = 1;
+        public static final int POSITION_TITLE = 2;
+        public static final int POSITION_PRIMANY_SUBDIVISIONS = 3;
+        public static final int POSITION_COUNOFF_SUBDIVISIONS = 4;
+        public static final int POSITION_DEFAULT_TEMPO = 5;
+        public static final int POSITION_DEFAULT_RHYTHM = 6;
+        public static final int POSITION_TEMPO_MULTIPLIER = 7;
+        public static final int POSITION_MEASURE_COUNTE_OFFSET = 8;
+        public static final int POSITION_DATA_ARRAY = 9;
+        public static final int POSITION_FIREBASE_ID = 10;
 
-        public static Uri buildMetProgramUriWithComposer(String composer) {
+        public static Uri buildUriWithComposer(String composer) {
+            Timber.d("buildUriWithComposer");
             return CONTENT_URI.buildUpon()
                     .appendPath(composer)
                     .build();

@@ -1,5 +1,7 @@
 package tech.michaeloverman.android.mscount.dataentry;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,10 +35,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
+import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.pojos.DataEntry;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.programmed.ProgramSelectFragment;
+import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeActivity;
 import tech.michaeloverman.android.mscount.utils.Metronome;
+import tech.michaeloverman.android.mscount.utils.Utilities;
+import timber.log.Timber;
 
 /**
  *
@@ -202,21 +208,24 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     @Override
-    public void newPiece(String pieceId) {
+    public void newPiece(PieceOfMusic piece) {
 
-        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
-                        updateGUI();
-                    }
+//        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
+//                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
+//                        updateGUI();
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+        mPieceOfMusic = piece;
+        updateGUI();
     }
 
     private void updateGUI() {
@@ -345,31 +354,37 @@ public class MetaDataEntryFragment extends Fragment
      */
     private void checkForExistingData() {
 
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
+        if(((ProgrammedMetronomeActivity) getActivity()).useFirebase) {
+            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+            final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
 
-        // Look for piece first, and if exists, get that key to update; otherwise push() to create
-        // new key for new piece.
-        final String composer = mPieceOfMusic.getAuthor();
-        final String title = mPieceOfMusic.getTitle();
-        mPiecesDatabaseReference.child("composers").child(composer).child(title)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) {
-                            overwriteDataAlertDialog(title, composer);
-                        } else {
-                            saveToDatabase(mPieceOfMusic);
+            // Look for piece first, and if exists, get that key to update; otherwise push() to create
+            // new key for new piece.
+            final String composer = mPieceOfMusic.getAuthor();
+            final String title = mPieceOfMusic.getTitle();
+            mPiecesDatabaseReference.child("composers").child(composer).child(title)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                overwriteDataAlertDialog(title, composer);
+                            } else {
+                                saveToDatabase(mPieceOfMusic);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getContext(), "Error: Database problem. Save canceled.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(getContext(), "Error: Database problem. Save canceled.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            Timber.d("checkForExistingData() THIS IS THE METHOD WHERE IT SHOULD CONNECT TO DB");
+            ContentValues contentValues = Utilities.getContentValuesFromPiece(mPieceOfMusic);
+            ContentResolver resolver = getContext().getContentResolver();
+            resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
+        }
     }
 
     /**

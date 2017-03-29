@@ -1,11 +1,15 @@
 package tech.michaeloverman.android.mscount.programmed;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -21,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import tech.michaeloverman.android.mscount.BuildConfig;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.SingleFragmentActivity;
+import tech.michaeloverman.android.mscount.database.ProgramDatabaseHelper;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 
 /**
@@ -34,6 +39,9 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
     private FirebaseAuth mAuth;
     private boolean userIsAdmin;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private SQLiteDatabase mLocalDatabase;
+
+    public boolean useFirebase;
 
     protected Metronome mMetronome;
 
@@ -46,6 +54,8 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        useFirebase = true;
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -60,28 +70,38 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
+                    useFirebase = false;
                 }
                 // ...
             }
         };
 
         if(mAuth.getCurrentUser() == null) {
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                            .build(),
-                    FIREBASE_SIGN_IN);
+            signInToFirebase();
         }
+
+        mLocalDatabase = new ProgramDatabaseHelper(this).getWritableDatabase();
 
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.programmed_menu, menu);
-//        return true;
-//    }
+    private void signInToFirebase() {
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                        .build(),
+                FIREBASE_SIGN_IN);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptionsMenu");
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.programmed_global_menu, menu);
+        MenuItem item = menu.findItem(R.id.firebase_local_database);
+        item.setTitle(useFirebase ? R.string.use_local_database : R.string.use_cloud_database);
+        return true;
+    }
 
 
 
@@ -121,6 +141,35 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.firebase_local_database:
+                useFirebase = !useFirebase;
+                if(useFirebase) {
+                    item.setTitle("Use local database");
+                    if(mAuth.getCurrentUser() == null) {
+                        signInToFirebase();
+                    }
+                } else {
+                    item.setTitle("Use cloud database");
+                }
+                updateData();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void updateData() {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if(f instanceof ProgramSelectFragment) {
+            ((ProgramSelectFragment) f).updateData();
+        } else if (f instanceof SelectComposerFragment) {
+            ((SelectComposerFragment) f).updateData();
         }
     }
 

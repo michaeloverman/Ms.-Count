@@ -38,6 +38,7 @@ public class PieceOfMusic {
     private int mBaselineNoteValue;
     private int mMeasureCountOffset;
     private List<DataEntry> mRawData;
+    private String mFirebaseId;
 
     public PieceOfMusic(String title) {
         Log.d(TAG, "PieceOfMusic constructor()");
@@ -123,6 +124,9 @@ public class PieceOfMusic {
         return mBeats;
     }
 
+    public String getFirebaseId() {
+        return mFirebaseId;
+    }
     /**
      * Accepts array of the length of each beat, by number of primary subdivisions,
      * combines that with a generated count off measure, and saves the entire array.
@@ -149,7 +153,14 @@ public class PieceOfMusic {
         return mRawData;
     }
 
-
+    public String getRawDataAsString() {
+        StringBuilder rawString = new StringBuilder();
+        for(DataEntry d : mRawData) {
+            rawString.append(d);
+            rawString.append("\n");
+        }
+        return rawString.toString();
+    }
 
     /** Uses the 'length' of first beat to generate count off measure */
     public void buildCountoff() {
@@ -202,6 +213,7 @@ public class PieceOfMusic {
         private double tempoMultiplier;
         private int baselineNoteValue;
         private int measureCountOffset;
+        private String firebaseId;
 
         public Builder() {
 
@@ -275,6 +287,19 @@ public class PieceOfMusic {
 
             return this;
         }
+        public Builder dataEntries(String data) {
+            String[] entries = data.split("\\n");
+            List<DataEntry> list = new ArrayList<>();
+            for(int i = 0; i < entries.length; i++) {
+                String[] entry = entries[i].split(";");
+                list.add(new DataEntry(Integer.parseInt(entry[0]), Boolean.parseBoolean(entry[1])));
+            }
+            return dataEntries(list);
+        }
+        public Builder firebaseId(String id) {
+            this.firebaseId = id;
+            return this;
+        }
         public PieceOfMusic build() {
             return new PieceOfMusic(this);
         }
@@ -292,6 +317,7 @@ public class PieceOfMusic {
         mTempoMultiplier = builder.tempoMultiplier == 0.0 ? 1.0 : builder.tempoMultiplier;
         mBaselineNoteValue = builder.baselineNoteValue == 0 ? QUARTER : builder.baselineNoteValue;
         mRawData = builder.rawData;
+        mFirebaseId = builder.firebaseId;
 
         buildCountoff();
     }

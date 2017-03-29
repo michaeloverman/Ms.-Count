@@ -3,24 +3,32 @@ package tech.michaeloverman.android.mscount.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import static tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema.*;
+import timber.log.Timber;
+
+import static tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema.MetProgram;
 
 /**
  * Created by Michael on 3/27/2017.
  */
 
 public class ProgramDatabaseHelper extends SQLiteOpenHelper {
+    private static final String TAG = ProgramDatabaseHelper.class.getSimpleName();
     private static final int VERSION = 1;
     private static final String DATABASE_NAME = "programDatabase.db";
 
 
     public ProgramDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
+//        Timber.d("ProgramDatabaseHelper constructor");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Timber.d("Database Helper onCreate()");
+        Log.d(TAG, "Database Helper onCreate()");
+
         final String SQL_BUILDER_STRING = "CREATE TABLE " + MetProgram.TABLE_NAME + " ("
                 + MetProgram._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MetProgram.COLUMN_COMPOSER + " TEXT NOT NULL, "

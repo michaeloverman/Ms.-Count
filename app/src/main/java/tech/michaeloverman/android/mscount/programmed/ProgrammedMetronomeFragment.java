@@ -21,11 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,6 +29,7 @@ import tech.michaeloverman.android.mscount.dataentry.MetaDataEntryFragment;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 2/24/2017.
@@ -107,9 +103,9 @@ public class ProgrammedMetronomeFragment extends Fragment
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             mCurrentPieceKey = prefs.getString(PREF_PIECE_KEY, null);
             mCurrentTempo = prefs.getInt(PREF_CURRENT_TEMPO, 120);
-            if(mCurrentPieceKey != null) {
-                newPiece(mCurrentPieceKey);
-            }
+//            if(mCurrentPieceKey != null) {
+//                newPiece(mCurrentPieceKey);
+//            }
         }
 
 //        mMetronome = new Metronome(getActivity(), this);
@@ -144,6 +140,8 @@ public class ProgrammedMetronomeFragment extends Fragment
         ButterKnife.bind(this, view);
 
         getActivity().setTitle(R.string.app_name);
+        Log.d(TAG, "useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
+        Timber.d("using firebase? " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
 
         mTempoDownButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -189,7 +187,13 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d(TAG, "onCreateOptionsMenu");
         inflater.inflate(R.menu.programmed_menu, menu);
+        Log.d(TAG, "useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
+
+//        MenuItem item = menu.findItem(R.id.firebase_local_database);
+//        item.setTitle(((ProgrammedMetronomeActivity)getActivity()).useFirebase ?
+//                R.string.use_local_database : R.string.use_cloud_database);
     }
 
     @Override
@@ -311,25 +315,28 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     @Override
-    public void newPiece(String pieceId) {
-
-        mCurrentPieceKey = pieceId;
-
-        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        mCurrentPiece = dataSnapshot.getValue(PieceOfMusic.class);
-                        updateVariables();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getContext(), "A database error occurred. Please try again.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+    public void newPiece(PieceOfMusic piece) {
+//        if(((ProgrammedMetronomeActivity) getActivity()).useFirebase) {
+//            mCurrentPieceKey = pieceId;
+//
+//            FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
+//                    .addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            mCurrentPiece = dataSnapshot.getValue(PieceOfMusic.class);
+//                            updateVariables();
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError databaseError) {
+//                            Toast.makeText(getContext(), "A database error occurred. Please try again.",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//        } else {
+//
+//        }
+        mCurrentPiece = piece;
     }
 
     private void updateVariables() {

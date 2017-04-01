@@ -3,7 +3,7 @@ package tech.michaeloverman.android.mscount.utils;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -52,15 +52,15 @@ public class Metronome {
         mAssets = context.getAssets();
 //        setMetronomeListener(ml);
         mClicking = false;
-        SoundPool.Builder builder = new SoundPool.Builder()
-                .setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_GAME)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .setFlags(AudioAttributes.FLAG_LOW_LATENCY)
-                        .build())
-                .setMaxStreams(5);
-//        mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        mSoundPool = builder.build();
+//        SoundPool.Builder builder = new SoundPool.Builder()
+//                .setAudioAttributes(new AudioAttributes.Builder()
+//                        .setUsage(AudioAttributes.USAGE_GAME)
+//                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+//                        .setFlags(AudioAttributes.FLAG_LOW_LATENCY)
+//                        .build())
+//                .setMaxStreams(5);
+        mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+//        mSoundPool = builder.build();
         loadSounds();
         mClickVolumes = new float[MAX_SUBDIVISIONS];
         for(int i = 0; i < MAX_SUBDIVISIONS; i++) {

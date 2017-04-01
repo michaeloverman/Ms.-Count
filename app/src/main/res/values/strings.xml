@@ -25,6 +25,6 @@
     <string name="title_of_the_piece_dummy_data">Title Of the Piece</string>
     <string name="save">Save</string>
     <string name="no_program_selected_instruction_toast">Select a program for metronome</string>
-    <string name="use_local_database">Use local database</string>
-    <string name="use_cloud_database">Use cloud database</string>
+    <string name="use_local_database">Access local database</string>
+    <string name="use_cloud_database">Access cloud database</string>
 </resources>

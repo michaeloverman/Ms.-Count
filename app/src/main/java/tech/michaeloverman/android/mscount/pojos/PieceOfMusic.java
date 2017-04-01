@@ -2,6 +2,7 @@ package tech.michaeloverman.android.mscount.pojos;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import tech.michaeloverman.android.mscount.utils.Utilities;
  * Created by Michael on 2/20/2017.
  */
 
-public class PieceOfMusic {
+public class PieceOfMusic implements Serializable {
     private static final String TAG = PieceOfMusic.class.getSimpleName();
     public static final int COUNTOFF_LENGTH = 4;
     public static final int SIXTEENTH = 1;

@@ -1,6 +1,8 @@
 package tech.michaeloverman.android.mscount.programmed;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -25,18 +27,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
+import tech.michaeloverman.android.mscount.database.LoadNewProgramActivity;
 import tech.michaeloverman.android.mscount.dataentry.MetaDataEntryFragment;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 import timber.log.Timber;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by Michael on 2/24/2017.
  */
 
 public class ProgrammedMetronomeFragment extends Fragment
-        implements ProgramSelectFragment.ProgramCallback, MetronomeListener {
+        implements MetronomeListener {
 
     private static final String TAG = ProgrammedMetronomeFragment.class.getSimpleName();
     private static final boolean UP = true;
@@ -48,6 +53,8 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final String CURRENT_COMPOSER_KEY = "current_composer_key";
     private static final String PREF_CURRENT_TEMPO = "programmable_tempo_key";
     private static final String PREF_PIECE_KEY = "programmable_piece_id";
+    private static final int REQUEST_NEW_PROGRAM = 44;
+    public static final String EXTRA_COMPOSER_NAME = "composer_name_extra";
 
     private PieceOfMusic mCurrentPiece;
     private String mCurrentPieceKey;
@@ -75,8 +82,12 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final int ONE_LESS = INITIAL_TEMPO_CHANGE_DELAY - 2;
     private static final int MIN_TEMPO_CHANGE_DELAY = 20;
 
-    public static Fragment newInstance(Metronome m) {
+    private static ProgrammedMetronomeActivity mActivity;
+    private static Cursor mCursor;
+
+    public static Fragment newInstance(Metronome m, ProgrammedMetronomeActivity a) {
         ProgrammedMetronomeFragment fragment = new ProgrammedMetronomeFragment();
+        mActivity = a;
         fragment.setMetronome(m);
         return fragment;
     }
@@ -139,9 +150,8 @@ public class ProgrammedMetronomeFragment extends Fragment
         View view = inflater.inflate(R.layout.programmed_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        getActivity().setTitle(R.string.app_name);
-        Log.d(TAG, "useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
-        Timber.d("using firebase? " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
+        mActivity.setTitle(R.string.app_name);
+//        Timber.d("using firebase? " + mActivity.useFirebase);
 
         mTempoDownButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -189,7 +199,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Log.d(TAG, "onCreateOptionsMenu");
         inflater.inflate(R.menu.programmed_menu, menu);
-        Log.d(TAG, "useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
+//        Log.d(TAG, "useFirebase = " + mActivity.useFirebase);
 
 //        MenuItem item = menu.findItem(R.id.firebase_local_database);
 //        item.setTitle(((ProgrammedMetronomeActivity)getActivity()).useFirebase ?
@@ -234,11 +244,33 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @OnClick( { R.id.current_composer_name, R.id.current_program_title } )
     public void selectNewProgram() {
-        Fragment fragment = ProgramSelectFragment.newInstance(this, mCurrentComposer);
-        FragmentTransaction trans = getFragmentManager().beginTransaction();
-        trans.replace(R.id.fragment_container, fragment);
-        trans.addToBackStack(null);
-        trans.commit();
+//        Fragment fragment = ProgramSelectFragment.newInstance(this, mCurrentComposer,
+//                mActivity, mActivity.mCursor);
+//        FragmentTransaction trans = getFragmentManager().beginTransaction();
+//        trans.replace(R.id.fragment_container, fragment);
+//        trans.addToBackStack(null);
+//        trans.commit();
+        // TODO Start Activity for Result: loadProgram
+        Intent intent = new Intent(getActivity(), LoadNewProgramActivity.class);
+        intent.putExtra(EXTRA_COMPOSER_NAME, mCurrentComposer);
+        startActivityForResult(intent, REQUEST_NEW_PROGRAM);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode != RESULT_OK) {
+            Toast.makeText(mActivity, "Problem with return result", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        switch(requestCode) {
+            case REQUEST_NEW_PROGRAM:
+                mCurrentPiece = (PieceOfMusic) data.getSerializableExtra(
+                        LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
+                updateGUI();
+                break;
+            default:
+        }
     }
 
     @OnClick(R.id.start_stop_fab)
@@ -269,12 +301,13 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "onSaveInstanceState() " + mCurrentPiece.getTitle() + " by " + mCurrentComposer);
-        Log.d(TAG, "..... Current Tempo: " + mCurrentTempo);
-        outState.putString(CURRENT_PIECE_KEY, mCurrentPiece.getTitle());
-        outState.putInt(CURRENT_TEMPO_KEY, mCurrentTempo);
-        outState.putString(CURRENT_COMPOSER_KEY, mCurrentComposer);
-
+        if(mCurrentPiece != null) {
+            Timber.d("onSaveInstanceState() " + mCurrentPiece.getTitle() + " by " + mCurrentComposer);
+            Timber.d("..... Current Tempo: " + mCurrentTempo);
+            outState.putString(CURRENT_PIECE_KEY, mCurrentPiece.getTitle());
+            outState.putInt(CURRENT_TEMPO_KEY, mCurrentTempo);
+            outState.putString(CURRENT_COMPOSER_KEY, mCurrentComposer);
+        }
         super.onSaveInstanceState(outState);
 
     }
@@ -314,30 +347,30 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
     }
 
-    @Override
-    public void newPiece(PieceOfMusic piece) {
-//        if(((ProgrammedMetronomeActivity) getActivity()).useFirebase) {
-//            mCurrentPieceKey = pieceId;
-//
-//            FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
-//                    .addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(DataSnapshot dataSnapshot) {
-//                            mCurrentPiece = dataSnapshot.getValue(PieceOfMusic.class);
-//                            updateVariables();
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(DatabaseError databaseError) {
-//                            Toast.makeText(getContext(), "A database error occurred. Please try again.",
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//        } else {
-//
-//        }
-        mCurrentPiece = piece;
-    }
+//    @Override
+//    public void newPiece(PieceOfMusic piece) {
+////        if(((ProgrammedMetronomeActivity) getActivity()).useFirebase) {
+////            mCurrentPieceKey = pieceId;
+////
+////            FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
+////                    .addListenerForSingleValueEvent(new ValueEventListener() {
+////                        @Override
+////                        public void onDataChange(DataSnapshot dataSnapshot) {
+////                            mCurrentPiece = dataSnapshot.getValue(PieceOfMusic.class);
+////                            updateVariables();
+////                        }
+////
+////                        @Override
+////                        public void onCancelled(DatabaseError databaseError) {
+////                            Toast.makeText(getContext(), "A database error occurred. Please try again.",
+////                                    Toast.LENGTH_SHORT).show();
+////                        }
+////                    });
+////        } else {
+////
+////        }
+//        mCurrentPiece = piece;
+//    }
 
     private void updateVariables() {
         if(mCurrentPiece == null) {
@@ -374,7 +407,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
     }
     private void openProgramEditor() {
-        Fragment fragment = MetaDataEntryFragment.newInstance();
+        Fragment fragment = MetaDataEntryFragment.newInstance(mActivity, mCursor);
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         trans.replace(R.id.fragment_container, fragment);
         trans.addToBackStack(null);

@@ -1,4 +1,4 @@
-package tech.michaeloverman.android.mscount.programmed;
+package tech.michaeloverman.android.mscount.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -16,7 +16,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import tech.michaeloverman.android.mscount.R;
-import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.pojos.TitleKeyObject;
 import timber.log.Timber;
 

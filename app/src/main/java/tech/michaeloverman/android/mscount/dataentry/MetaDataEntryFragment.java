@@ -3,6 +3,7 @@ package tech.michaeloverman.android.mscount.dataentry;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -35,10 +36,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
+import tech.michaeloverman.android.mscount.database.PieceSelectFragment;
 import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.pojos.DataEntry;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
-import tech.michaeloverman.android.mscount.programmed.ProgramSelectFragment;
 import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeActivity;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.Utilities;
@@ -48,7 +49,7 @@ import timber.log.Timber;
  *
  */
 public class MetaDataEntryFragment extends Fragment
-        implements DataEntryFragment.DataEntryCallback, ProgramSelectFragment.ProgramCallback {
+        implements DataEntryFragment.DataEntryCallback {
     private static final String TAG = MetaDataEntryFragment.class.getSimpleName();
 
     @BindView(R.id.composer_name_text_entry)
@@ -66,8 +67,13 @@ public class MetaDataEntryFragment extends Fragment
     private List<DataEntry> mDataEntries;
     private List<Integer> mDownBeats;
 
-    public static Fragment newInstance() {
+    private static ProgrammedMetronomeActivity mActivity;
+    private static Cursor mCursor;
+
+    public static Fragment newInstance(ProgrammedMetronomeActivity a, Cursor c) {
         Log.d(TAG, "newInstance()");
+        mActivity = a;
+        mCursor = c;
         return new MetaDataEntryFragment();
     }
 
@@ -200,14 +206,14 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private void loadProgram() {
-        Fragment fragment = ProgramSelectFragment.newInstance(this, null);
+        Fragment fragment = PieceSelectFragment.newInstance();
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         trans.replace(R.id.fragment_container, fragment);
         trans.addToBackStack(null);
         trans.commit();
     }
 
-    @Override
+//    @Override
     public void newPiece(PieceOfMusic piece) {
 
 //        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
@@ -354,7 +360,9 @@ public class MetaDataEntryFragment extends Fragment
      */
     private void checkForExistingData() {
 
-        if(((ProgrammedMetronomeActivity) getActivity()).useFirebase) {
+//        if(mActivity.useFirebase) {
+        // TODO this is not right - fix this before too long...
+        if(true) {
             FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
 

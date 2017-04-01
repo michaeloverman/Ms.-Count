@@ -1,4 +1,4 @@
-package tech.michaeloverman.android.mscount.programmed;
+package tech.michaeloverman.android.mscount.database;
 
 
 import android.database.Cursor;
@@ -33,21 +33,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
-import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.pojos.TitleKeyObject;
 import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ProgramSelectFragment#newInstance} factory method to
+ * Use the {@link PieceSelectFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProgramSelectFragment extends Fragment
+public class PieceSelectFragment extends Fragment
         implements WorksListAdapter.WorksListAdapterOnClickHandler,
-        SelectComposerFragment.ComposerCallback,
+        ComposerSelectFragment.ComposerCallback,
         LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = ProgramSelectFragment.class.getSimpleName();
+    private static final String TAG = PieceSelectFragment.class.getSimpleName();
     private static final int WORKS_LOADER_ID = 101;
     private static final int NO_DATA_ERROR_CODE = 41;
 
@@ -56,32 +55,37 @@ public class ProgramSelectFragment extends Fragment
     @BindView(R.id.error_view) TextView mErrorView;
     @BindView(R.id.program_select_progress_bar) ProgressBar mProgressSpinner;
 
-    private static String mCurrentComposer;
+    private String mCurrentComposer;
     private WorksListAdapter mAdapter;
     private List<TitleKeyObject> mTitlesList;
     private PieceOfMusic mPieceOfMusic;
-    private Cursor mCursor;
 
-    static ProgramCallback sProgramCallback = null;
+    private LoadNewProgramActivity mActivity;
 
 
-    public interface ProgramCallback {
-        void newPiece(PieceOfMusic piece);
-    }
+//
+//    public interface ProgramCallback {
+//        void newPiece(PieceOfMusic piece);
+//    }
 
-    public static Fragment newInstance(ProgramCallback pc, String composer) {
-        sProgramCallback = pc;
-        mCurrentComposer = composer;
-        return new ProgramSelectFragment();
+//    public static Fragment newInstance(String composer) {
+////        mCursor = c;
+////        sProgramCallback = pc;
+////        Timber.d("Just set sPragramCallback : " + sProgramCallback);
+//        mCurrentComposer = composer;
+//    }
+    public static Fragment newInstance() {
+        return new PieceSelectFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        Log.d(TAG, "useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
+//        Log.d(TAG, "useFirebase = " + mActivity.useFirebase);
 
-        Log.d(TAG, "onCreate() Composer: " + mCurrentComposer);
+        mActivity = (LoadNewProgramActivity) getActivity();
+
     }
 
     @Override
@@ -100,16 +104,18 @@ public class ProgramSelectFragment extends Fragment
         View view = inflater.inflate(R.layout.program_select_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        if(mCursor != null) {
-            getActivity().getSupportLoaderManager().restartLoader(WORKS_LOADER_ID, null, this);
-        }
+//        if(mCursor != null) {
+//            mActivity.getSupportLoaderManager().restartLoader(WORKS_LOADER_ID, null, this);
+//        }
 
         LinearLayoutManager manager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(manager);
         mAdapter = new WorksListAdapter(this.getContext(), mTitlesList, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        getActivity().setTitle(getString(R.string.select_piece_by));
+        mActivity.setTitle(getString(R.string.select_piece_by));
+        mCurrentComposer = mActivity.mCurrentComposer;
+        Timber.d("onCreate() Composer: " + mCurrentComposer);
 
         if(mCurrentComposer == null) {
             selectComposer();
@@ -117,36 +123,40 @@ public class ProgramSelectFragment extends Fragment
             composerSelected();
         }
 
+
         return view;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        sProgramCallback = null;
+        Timber.d("ProgramSelectFragment detaching - this is where sProgramCallback may be nullified...");
+//        sProgramCallback = null;
     }
 
     @OnClick( { R.id.select_composer_button, R.id.other_pieces_label } )
     public void selectComposer() {
 //        mCurrentPiece = null;
-        Fragment fragment = SelectComposerFragment.newInstance(this);
+        Fragment fragment = ComposerSelectFragment.newInstance(this);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+
     }
 
     @Override
     public void onClick(int position, String pieceId) {
-        Log.d(TAG, "ProgramSelect onClick() pieceId: " + pieceId);
-
-        if(((ProgrammedMetronomeActivity) getActivity()).useFirebase) {
+        Timber.d("ProgramSelect onClick() pieceId: " + pieceId);
+        progressSpinner(true);
+        if(mActivity.useFirebase) {
             FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
-                            sProgramCallback.newPiece(mPieceOfMusic);
+                            mActivity.setProgramResult(mPieceOfMusic);
+                            mActivity.finish();
                         }
 
                         @Override
@@ -156,30 +166,33 @@ public class ProgramSelectFragment extends Fragment
                         }
                     });
         } else {
-            mCursor.moveToPosition(position);
-            PieceOfMusic.Builder builder = new PieceOfMusic.Builder()
-                    .author(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER))
-                    .title(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE))
-                    .subdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_PRIMANY_SUBDIVISIONS))
-                    .countOffSubdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_COUNOFF_SUBDIVISIONS))
-                    .defaultTempo(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_TEMPO))
-                    .baselineNoteValue(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_RHYTHM))
-                    .tempoMultiplier(mCursor.getDouble(ProgramDatabaseSchema.MetProgram.POSITION_TEMPO_MULTIPLIER))
-                    .firstMeasureNumber(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_MEASURE_COUNTE_OFFSET))
-                    .dataEntries(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_DATA_ARRAY))
-                    .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID));
-            mCursor.close();
-            sProgramCallback.newPiece(builder.build());
+//            mCursor.moveToPosition(position);
+//            PieceOfMusic.Builder builder = new PieceOfMusic.Builder()
+//                    .author(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER))
+//                    .title(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE))
+//                    .subdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_PRIMANY_SUBDIVISIONS))
+//                    .countOffSubdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_COUNOFF_SUBDIVISIONS))
+//                    .defaultTempo(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_TEMPO))
+//                    .baselineNoteValue(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_RHYTHM))
+//                    .tempoMultiplier(mCursor.getDouble(ProgramDatabaseSchema.MetProgram.POSITION_TEMPO_MULTIPLIER))
+//                    .firstMeasureNumber(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_MEASURE_COUNTE_OFFSET))
+//                    .dataEntries(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_DATA_ARRAY))
+//                    .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID));
+////            mCursor.close();
+            //TODO call AsyncTask to access SQL Database for details.
+            //TODO build new piece
+            PieceOfMusic.Builder builder = new PieceOfMusic.Builder();
+            mActivity.setProgramResult(builder.build());
         }
 
-        getFragmentManager().popBackStackImmediate();
+//        getFragmentManager().popBackStackImmediate();
     }
 
     @Override
     public void newComposer(String name) {
         mCurrentComposer = name;
-        if(!((ProgrammedMetronomeActivity) getActivity()).useFirebase) {
-            getActivity().getSupportLoaderManager().restartLoader(WORKS_LOADER_ID, null, this);
+        if(!mActivity.useFirebase) {
+            mActivity.getSupportLoaderManager().restartLoader(WORKS_LOADER_ID, null, this);
         }
     }
 
@@ -187,7 +200,7 @@ public class ProgramSelectFragment extends Fragment
         progressSpinner(true);
         Timber.d("composerSelected() - " + mCurrentComposer);
 
-        if(((ProgrammedMetronomeActivity) getActivity()).useFirebase) {
+        if(mActivity.useFirebase) {
             Timber.d("Checking Firebase for composer " + mCurrentComposer);
             FirebaseDatabase.getInstance().getReference().child("composers").child(mCurrentComposer)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -252,9 +265,9 @@ public class ProgramSelectFragment extends Fragment
             mErrorView.setVisibility(View.VISIBLE);
             updateEmptyView(NO_DATA_ERROR_CODE);
         } else {
-            mCursor = data;
+//            mCursor = data;
             mErrorView.setVisibility(View.GONE);
-            mAdapter.newCursor(mCursor);
+//            mAdapter.newCursor(mCursor);
         }
     }
 

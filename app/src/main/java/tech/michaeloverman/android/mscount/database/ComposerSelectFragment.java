@@ -1,4 +1,4 @@
-package tech.michaeloverman.android.mscount.programmed;
+package tech.michaeloverman.android.mscount.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -32,7 +32,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import tech.michaeloverman.android.mscount.R;
-import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
+import timber.log.Timber;
 
 /**
  * This fragment gets the complete list of composer names from Firebase database, and
@@ -43,9 +43,9 @@ import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
  * Created by Michael on 2/26/2017.
  */
 
-public class SelectComposerFragment extends Fragment implements
+public class ComposerSelectFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = SelectComposerFragment.class.getSimpleName();
+    private static final String TAG = ComposerSelectFragment.class.getSimpleName();
     private static final int COMPOSER_LOADER_ID = 99;
     private static final int NO_DATA_ERROR_CODE = 42;
 
@@ -53,7 +53,8 @@ public class SelectComposerFragment extends Fragment implements
     @BindView(R.id.composer_select_progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.empty_data_view) TextView mErrorView;
     private ComposerListAdapter mAdapter;
-    private Cursor mCursor;
+    private static Cursor mCursor;
+    private LoadNewProgramActivity mActivity;
 
     /** Listener for returning selection to PreprogrammedMetronomeFragment */
     static ComposerCallback sComposerCallback = null;
@@ -72,15 +73,18 @@ public class SelectComposerFragment extends Fragment implements
      */
     public static Fragment newInstance(ComposerCallback cc) {
         Log.d(TAG, "newInstance()");
+//        mCursor = c;
         sComposerCallback = cc;
-        return new SelectComposerFragment();
+        return new ComposerSelectFragment();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate()");
-        Log.d(TAG, "useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
+        Timber.d("onCreate()");
+
+        mActivity = (LoadNewProgramActivity) getActivity();
+        Timber.d("useFirebase = " + mActivity.useFirebase);
 
         setRetainInstance(true);
         setHasOptionsMenu(true);
@@ -106,12 +110,12 @@ public class SelectComposerFragment extends Fragment implements
         ButterKnife.bind(this, view);
 
         if(mCursor != null) {
-            getActivity().getSupportLoaderManager().restartLoader(COMPOSER_LOADER_ID, null, this);
+            mActivity.getSupportLoaderManager().restartLoader(COMPOSER_LOADER_ID, null, this);
         }
 
-        getActivity().setTitle(getString(R.string.select_a_composer));
+        mActivity.setTitle(getString(R.string.select_a_composer));
 
-        LinearLayoutManager manager = new LinearLayoutManager(this.getActivity());
+        LinearLayoutManager manager = new LinearLayoutManager(mActivity);
         mRecyclerView.setLayoutManager(manager);
         mAdapter = new ComposerListAdapter(this.getContext());
         mRecyclerView.setAdapter(mAdapter);
@@ -134,7 +138,7 @@ public class SelectComposerFragment extends Fragment implements
     private void loadComposers() {
         Log.d(TAG, "loadComposers()");
         progressSpinner(true);
-        if(((ProgrammedMetronomeActivity)getActivity()).useFirebase) {
+        if(mActivity.useFirebase) {
             FirebaseDatabase.getInstance().getReference().child("composers")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -155,7 +159,7 @@ public class SelectComposerFragment extends Fragment implements
                         }
                     });
         } else {
-            getActivity().getSupportLoaderManager().initLoader(COMPOSER_LOADER_ID, null, this);
+            mActivity.getSupportLoaderManager().initLoader(COMPOSER_LOADER_ID, null, this);
         }
 
     }
@@ -289,7 +293,8 @@ public class SelectComposerFragment extends Fragment implements
                 String name = composers.get(position);
 
                 // send selected composer name to PreprogrammedMetronomeFragment via callback
-                sComposerCallback.newComposer(name);
+//                sComposerCallback.newComposer(name);
+                mActivity.mCurrentComposer = name;
 
                 // close this fragment and return
                 getFragmentManager().popBackStackImmediate();

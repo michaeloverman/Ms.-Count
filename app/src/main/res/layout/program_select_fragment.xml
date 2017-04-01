@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
                                              android:background="@color/colorPrimaryLight"
-             tools:context="tech.michaeloverman.android.mscount.programmed.ProgramSelectFragment">
+             tools:context="tech.michaeloverman.android.mscount.database.PieceSelectFragment">
 
     <TextView
         android:id="@+id/other_pieces_label"

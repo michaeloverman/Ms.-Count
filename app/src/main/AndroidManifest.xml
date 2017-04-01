@@ -26,6 +26,9 @@
         <activity android:name=".programmed.ProgrammedMetronomeActivity">
         </activity>
 
+        <activity android:name=".database.LoadNewProgramActivity">
+        </activity>
+
         <provider
             android:name=".database.ProgramProvider"
             android:authorities="tech.michaeloverman.android.mscount"

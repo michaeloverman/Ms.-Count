@@ -1,10 +1,12 @@
 package tech.michaeloverman.android.mscount.pojos;
 
+import java.io.Serializable;
+
 /**
  * Created by Michael on 3/13/2017.
  */
 
-public class DataEntry {
+public class DataEntry implements Serializable {
     private static int measureNumberCount;
     private int mData;
     private boolean isBarline;

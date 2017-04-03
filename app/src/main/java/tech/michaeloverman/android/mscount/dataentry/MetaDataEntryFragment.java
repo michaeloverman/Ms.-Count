@@ -3,6 +3,7 @@ package tech.michaeloverman.android.mscount.dataentry;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,7 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
-import tech.michaeloverman.android.mscount.database.PieceSelectFragment;
+import tech.michaeloverman.android.mscount.database.LoadNewProgramActivity;
 import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.pojos.DataEntry;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
@@ -45,15 +46,17 @@ import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.Utilities;
 import timber.log.Timber;
 
+import static android.app.Activity.RESULT_OK;
+import static com.facebook.GraphRequest.TAG;
+
 /**
  *
  */
 public class MetaDataEntryFragment extends Fragment
         implements DataEntryFragment.DataEntryCallback {
-    private static final String TAG = MetaDataEntryFragment.class.getSimpleName();
+    private static final int REQUEST_NEW_PROGRAM = 1984;
 
-    @BindView(R.id.composer_name_text_entry)
-    EditText mComposerEntry;
+    @BindView(R.id.composer_name_text_entry) EditText mComposerEntry;
     @BindView(R.id.title_text_entry) EditText mTitleEntry;
     @BindView(R.id.baseline_subdivision_entry) EditText mBaselineSubdivisionEntry;
     @BindView(R.id.countoff_subdivision_entry) EditText mCountoffSubdivisionEntry;
@@ -80,7 +83,7 @@ public class MetaDataEntryFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate()");
+        Timber.d("onCreate()");
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
@@ -98,7 +101,7 @@ public class MetaDataEntryFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView()");
+        Timber.d("onCreateView()");
         View view = inflater.inflate(R.layout.meta_data_input_layout, container, false);
         ButterKnife.bind(this, view);
 
@@ -158,7 +161,7 @@ public class MetaDataEntryFragment extends Fragment
 
     @OnClick(R.id.enter_beats_button)
     public void enterBeatsClicked() {
-        Log.d(TAG, "enterBeatsClicked()");
+        Timber.d("enterBeatsClicked()");
         String composer = mComposerEntry.getText().toString();
         if(composer.equals("")) {
             toastError();
@@ -206,33 +209,52 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private void loadProgram() {
-        Fragment fragment = PieceSelectFragment.newInstance();
-        FragmentTransaction trans = getFragmentManager().beginTransaction();
-        trans.replace(R.id.fragment_container, fragment);
-        trans.addToBackStack(null);
-        trans.commit();
+//        Fragment fragment = PieceSelectFragment.newInstance();
+//        FragmentTransaction trans = getFragmentManager().beginTransaction();
+//        trans.replace(R.id.fragment_container, fragment);
+//        trans.addToBackStack(null);
+//        trans.commit();
+        Intent intent = new Intent(mActivity, LoadNewProgramActivity.class);
+        startActivityForResult(intent, REQUEST_NEW_PROGRAM);
     }
 
-//    @Override
-    public void newPiece(PieceOfMusic piece) {
-
-//        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
-//                        updateGUI();
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                });
-
-        mPieceOfMusic = piece;
-        updateGUI();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode != RESULT_OK) {
+            Toast.makeText(mActivity, "Problem loading program.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        switch(requestCode) {
+            case REQUEST_NEW_PROGRAM:
+                mPieceOfMusic = (PieceOfMusic) data.getSerializableExtra(
+                        LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
+                updateGUI();
+                break;
+            default:
+        }
     }
+
+//    //    @Override
+//    public void newPiece(PieceOfMusic piece) {
+//
+////        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
+////                .addListenerForSingleValueEvent(new ValueEventListener() {
+////                    @Override
+////                    public void onDataChange(DataSnapshot dataSnapshot) {
+////                        mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
+////                        updateGUI();
+////                    }
+////
+////                    @Override
+////                    public void onCancelled(DatabaseError databaseError) {
+////
+////                    }
+////                });
+//
+//        mPieceOfMusic = piece;
+//        updateGUI();
+//    }
 
     private void updateGUI() {
         mComposerEntry.setText(mPieceOfMusic.getAuthor());
@@ -331,7 +353,7 @@ public class MetaDataEntryFragment extends Fragment
                 mBuilder.defaultTempo(tempoInt);
             }
         } catch (NumberFormatException nfe) {
-            Log.d(TAG, "You should not be here: should not be able to enter anything but numbers, and any numbers entered have already been checked for range.");
+            Timber.d("You should not be here: should not be able to enter anything but numbers, and any numbers entered have already been checked for range.");
         }
 
         // TODO redo the UI so this is not a raw data input, but a selection from various note values
@@ -341,7 +363,7 @@ public class MetaDataEntryFragment extends Fragment
                 mBuilder.baselineNoteValue(rhythmInt);
             }
         } catch (NumberFormatException nfe) {
-            Log.d(TAG, "You really shouldn't be here, with a NumberFormatException on the baseline rhythmic value.");
+            Timber.d("You really shouldn't be here, with a NumberFormatException on the baseline rhythmic value.");
         }
 
         // get other optional data entries, if present: tempo multiplier,
@@ -425,8 +447,8 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private void saveToDatabase(final PieceOfMusic p) {
-        Log.d(TAG, "Saving to local database, or to Firebase: " + p.getTitle() + " by " + p.getAuthor());
-        Log.d(TAG, "Pieces is " + p.getDownBeats().size() + " measures long.");
+        Timber.d("Saving to local database, or to Firebase: " + p.getTitle() + " by " + p.getAuthor());
+        Timber.d("Pieces is " + p.getDownBeats().size() + " measures long.");
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();

@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,7 +42,6 @@ import static android.app.Activity.RESULT_OK;
 public class ProgrammedMetronomeFragment extends Fragment
         implements MetronomeListener {
 
-    private static final String TAG = ProgrammedMetronomeFragment.class.getSimpleName();
     private static final boolean UP = true;
     private static final boolean DOWN = false;
     private static final int MAXIMUM_TEMPO = 350;
@@ -109,7 +107,7 @@ public class ProgrammedMetronomeFragment extends Fragment
             mCurrentTempo = savedInstanceState.getInt(CURRENT_TEMPO_KEY);
 //            mCurrentPiece = savedInstanceState.getString(CURRENT_PIECE_KEY);
             mCurrentComposer = savedInstanceState.getString(CURRENT_COMPOSER_KEY);
-            Log.d(TAG, "savedInstanceState retrieved: composer: " + mCurrentComposer);
+            Timber.d("savedInstanceState retrieved: composer: " + mCurrentComposer);
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             mCurrentPieceKey = prefs.getString(PREF_PIECE_KEY, null);
@@ -197,9 +195,9 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.d(TAG, "onCreateOptionsMenu");
+        Timber.d("onCreateOptionsMenu");
         inflater.inflate(R.menu.programmed_menu, menu);
-//        Log.d(TAG, "useFirebase = " + mActivity.useFirebase);
+//        Timber.d("useFirebase = " + mActivity.useFirebase);
 
 //        MenuItem item = menu.findItem(R.id.firebase_local_database);
 //        item.setTitle(((ProgrammedMetronomeActivity)getActivity()).useFirebase ?
@@ -250,8 +248,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 //        trans.replace(R.id.fragment_container, fragment);
 //        trans.addToBackStack(null);
 //        trans.commit();
-        // TODO Start Activity for Result: loadProgram
-        Intent intent = new Intent(getActivity(), LoadNewProgramActivity.class);
+        Intent intent = new Intent(mActivity, LoadNewProgramActivity.class);
         intent.putExtra(EXTRA_COMPOSER_NAME, mCurrentComposer);
         startActivityForResult(intent, REQUEST_NEW_PROGRAM);
     }
@@ -276,13 +273,13 @@ public class ProgrammedMetronomeFragment extends Fragment
     @OnClick(R.id.start_stop_fab)
     public void metronomeStartStop() {
         if(mMetronomeRunning) {
-            Log.d(TAG, "metronomeStop() " + mCurrentComposer);
+            Timber.d("metronomeStop() " + mCurrentComposer);
             mMetronome.stop();
             mMetronomeRunning = false;
             mStartStopButton.setImageResource(android.R.drawable.ic_media_play);
             mCurrentMeasureNumber.setText("--");
         } else {
-            Log.d(TAG, "metronomeStart() " + mCurrentPiece.getTitle());
+            Timber.d("metronomeStart() " + mCurrentPiece.getTitle());
             if(mCurrentPiece == null) {
                 Toast.makeText(this.getContext(), R.string.no_program_selected_instruction_toast,
                         Toast.LENGTH_SHORT).show();
@@ -314,7 +311,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     private void updateGUI() {
         // TODO set TitleViews etc
-        Log.d(TAG, "updateGUI() " + mCurrentPiece.getAuthor() + ": " + mCurrentPiece.getTitle());
+        Timber.d("updateGUI() " + mCurrentPiece.getAuthor() + ": " + mCurrentPiece.getTitle());
         mTVCurrentPiece.setText(mCurrentPiece.getTitle());
         mTVCurrentComposer.setText(mCurrentComposer);
         mBeatLengthImage.setImageResource(getNoteImageResource
@@ -378,8 +375,8 @@ public class ProgrammedMetronomeFragment extends Fragment
             return;
         }
 
-        Log.d(TAG, "newPiece() " + mCurrentPiece.getTitle());
-//        Log.d(TAG, "piece COsub: " + mCurrentPiece.getCountOffSubdivision() + "; mCurrentPiece COsub: " + mCurrentPiece.getCountOffSubdivision());
+        Timber.d("newPiece() " + mCurrentPiece.getTitle());
+//        Timber.d("piece COsub: " + mCurrentPiece.getCountOffSubdivision() + "; mCurrentPiece COsub: " + mCurrentPiece.getCountOffSubdivision());
 
         mCurrentComposer = mCurrentPiece.getAuthor();
         if(mCurrentPiece.getDefaultTempo() != 0) {
@@ -388,7 +385,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 
 
 
-//        Log.d(TAG, "Subd: " + mCurrentPiece.getSubdivision() + "; CountoffSubs: " + mCurrentPiece.getCountOffSubdivision());
+//        Timber.d("Subd: " + mCurrentPiece.getSubdivision() + "; CountoffSubs: " + mCurrentPiece.getCountOffSubdivision());
 
         updateGUI();
     }

@@ -16,6 +16,7 @@ import com.firebase.ui.auth.ResultCodes;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.SingleFragmentActivity;
 import tech.michaeloverman.android.mscount.utils.Metronome;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 3/24/2017.
@@ -61,6 +62,7 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.d("ACTIVITY: onOptionsItemSelected()");
         switch (item.getItemId()) {
 //            case R.id.firebase_local_database:
 //                useFirebase = !useFirebase;
@@ -82,6 +84,8 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        Timber.d("ACTIVITY: onActivityResult()");
 
         if(requestCode == FIREBASE_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);

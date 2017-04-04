@@ -256,6 +256,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Timber.d("FRAGMENT: onActivityResult()");
         if(resultCode != RESULT_OK) {
             Toast.makeText(mActivity, "Problem with return result", Toast.LENGTH_SHORT).show();
             return;
@@ -392,6 +393,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.d("FRAGMENT: onOptionsItemSelected()");
         switch (item.getItemId()) {
             case R.id.create_new_program_option:
                 openProgramEditor();
@@ -403,7 +405,7 @@ public class ProgrammedMetronomeFragment extends Fragment
                 return super.onOptionsItemSelected(item);
         }
     }
-    private void openProgramEditor() {
+    public void openProgramEditor() {
         Fragment fragment = MetaDataEntryFragment.newInstance(mActivity, mCursor);
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         trans.replace(R.id.fragment_container, fragment);

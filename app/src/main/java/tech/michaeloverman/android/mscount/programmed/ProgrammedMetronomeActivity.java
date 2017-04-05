@@ -3,33 +3,27 @@ package tech.michaeloverman.android.mscount.programmed;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 
 import tech.michaeloverman.android.mscount.R;
-import tech.michaeloverman.android.mscount.SingleFragmentActivity;
 import tech.michaeloverman.android.mscount.utils.Metronome;
-import tech.michaeloverman.android.mscount.utils.SettingsActivity;
+import tech.michaeloverman.android.mscount.utils.MetronomeActivity;
 import timber.log.Timber;
 
 /**
  * Created by Michael on 3/24/2017.
  */
 
-public class ProgrammedMetronomeActivity extends SingleFragmentActivity
-        implements ChangeClicksDialogFragment.ChangeClicksListener {
+public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
     private static final int FIREBASE_SIGN_IN = 456;
-
-    protected Metronome mMetronome;
 
     @Override
     protected Fragment createFragment() {
@@ -50,17 +44,13 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Timber.d("onCreateOptionsMenu");
+        super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.programmed_global_menu, menu);
-//        MenuItem item = menu.findItem(R.id.firebase_local_database);
-//        item.setTitle(useFirebase ? R.string.use_local_database : R.string.use_cloud_database);
+
         return true;
     }
-
-
-
-
-
+    
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -78,17 +68,10 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity
 //                }
 //                updateData();
 //                return true;
-            case R.id.settings:
-                goToSettings();
-                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void openClickChangeDialog() {
-        DialogFragment clickPicker = new ChangeClicksDialogFragment();
-        clickPicker.show(getSupportFragmentManager(), "ClickPickerFragment");
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -139,15 +122,6 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity
         if(mMetronome.isRunning()) {
             mMetronome.stop();
         }
-    }
-
-    @Override
-    public void onClicksChanged(int downBeatId, int innerBeatId) {
-        Toast.makeText(this, "new click ids received", Toast.LENGTH_SHORT).show();
-    }
-
-    public void goToSettings() {
-        startActivity(new Intent(this, SettingsActivity.class));
     }
 
 

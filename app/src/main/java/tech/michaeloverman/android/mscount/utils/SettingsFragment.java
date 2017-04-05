@@ -8,6 +8,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
 import tech.michaeloverman.android.mscount.R;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 4/4/2017.
@@ -16,11 +17,6 @@ import tech.michaeloverman.android.mscount.R;
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("down_beat_click")) {
-//            PrefUtils.resetDownBeatClick(getContext());
-        } else if (key.equals("inner_beat_click")) {
-//            PrefUtils.resetInnerBeatClick(getContext());
-        }
         Preference pref = findPreference(key);
         if(pref != null) {
             setPreferenceSummary(pref, sharedPreferences.getString(key, ""));
@@ -37,8 +33,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         for (int i = 0; i < count; i++) {
             Preference p = prefScreen.getPreference(i);
             String value = shPref.getString(p.getKey(), "");
+            if(p instanceof ListPreference) {
+                setEntriesAndValues(p);
+            }
             setPreferenceSummary(p, value);
         }
+
     }
 
     private void setPreferenceSummary(Preference preference, Object value) {
@@ -53,6 +53,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         } else {
             preference.setSummary(stringValue);
         }
+    }
+
+    private void setEntriesAndValues(Preference p) {
+        String[] entries = ((SettingsActivity)getActivity()).mEntries;
+        String[] values = ((SettingsActivity)getActivity()).mValues;
+
+        ListPreference lp = (ListPreference) p;
+        lp.setEntries(entries);
+        lp.setEntryValues(values);
     }
 
     @Override

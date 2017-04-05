@@ -39,10 +39,5 @@ public final class PrefUtils {
 
     // remove favorite()
 
-//    public static void resetDownBeatClick(Context context) {
-//        Toast.makeText(context, "DownBeat Click changed", Toast.LENGTH_SHORT).show();
-//    }
-//    public static void resetInnerBeatClick(Context context) {
-//        Toast.makeText(context, "InnerBeat Click changed", Toast.LENGTH_SHORT).show();
-//    }
+
 }

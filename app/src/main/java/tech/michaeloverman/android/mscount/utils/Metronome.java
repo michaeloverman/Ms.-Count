@@ -326,8 +326,10 @@ public class Metronome {
                 Timber.d("  Loaded: " + filename);
             } catch (IOException ioe) {
                 Timber.d("Could not load sound " + filename, ioe);
+                return;
             }
         }
+
     }
 
     private void load(Click click) throws IOException {
@@ -335,6 +337,7 @@ public class Metronome {
         int soundId = mSoundPool.load(afd, 1);
         click.setSoundId(soundId);
     }
+
 
     public List<Click> getClicks() {
         return mClicks;

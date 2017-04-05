@@ -197,11 +197,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Timber.d("onCreateOptionsMenu");
         inflater.inflate(R.menu.programmed_menu, menu);
-//        Timber.d("useFirebase = " + mActivity.useFirebase);
 
-//        MenuItem item = menu.findItem(R.id.firebase_local_database);
-//        item.setTitle(((ProgrammedMetronomeActivity)getActivity()).useFirebase ?
-//                R.string.use_local_database : R.string.use_cloud_database);
     }
 
     @Override
@@ -397,9 +393,7 @@ public class ProgrammedMetronomeFragment extends Fragment
             case R.id.create_new_program_option:
                 openProgramEditor();
                 return true;
-//            case R.id.edit_existing_program_option:
-//                loadProgram();
-//                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -412,11 +406,4 @@ public class ProgrammedMetronomeFragment extends Fragment
         trans.commit();
     }
 
-//    private void loadProgram() {
-//        Fragment fragment = ProgramSelectFragment.newInstance(this, null);
-//        FragmentTransaction trans = getFragmentManager().beginTransaction();
-//        trans.replace(R.id.fragment_container, fragment);
-//        trans.addToBackStack(null);
-//        trans.commit();
-//    }
 }

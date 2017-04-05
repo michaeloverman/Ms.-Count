@@ -5,9 +5,6 @@
     <item android:id="@+id/firebase_local_database"
           android:title="@string/use_local_database"
           app:showAsAction="never"/>
-    <item android:id="@+id/settings"
-          android:title="Settings"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+
 
 </menu>

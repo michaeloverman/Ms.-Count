@@ -147,6 +147,7 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                        .setTheme(R.style.AppTheme)
                         .build(),
                 FIREBASE_SIGN_IN);
     }

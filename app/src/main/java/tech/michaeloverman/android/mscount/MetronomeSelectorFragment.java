@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,4 +83,8 @@ public class MetronomeSelectorFragment extends Fragment {
     }
 
 
+    @OnClick(R.id.test_image_button)
+    public void testButtonClicked() {
+        Toast.makeText(getActivity(), "Test Button Clicked", Toast.LENGTH_SHORT).show();
+    }
 }

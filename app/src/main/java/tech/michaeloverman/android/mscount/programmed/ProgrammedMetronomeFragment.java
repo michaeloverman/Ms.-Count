@@ -273,6 +273,10 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @OnClick(R.id.start_stop_fab)
     public void metronomeStartStop() {
+        if(mCurrentPiece == null) {
+            Toast.makeText(mActivity, "Please select a program before starting metronome.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if(mMetronomeRunning) {
             Timber.d("metronomeStop() " + mCurrentComposer);
             mMetronome.stop();
@@ -281,11 +285,6 @@ public class ProgrammedMetronomeFragment extends Fragment
             mCurrentMeasureNumber.setText("--");
         } else {
             Timber.d("metronomeStart() " + mCurrentPiece.getTitle());
-            if(mCurrentPiece == null) {
-                Toast.makeText(this.getContext(), R.string.no_program_selected_instruction_toast,
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
             mMetronomeRunning = true;
             mStartStopButton.setImageResource(android.R.drawable.ic_media_pause);
             mMetronome.play(mCurrentPiece, mCurrentTempo);

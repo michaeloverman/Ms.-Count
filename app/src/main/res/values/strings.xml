@@ -12,7 +12,7 @@
     <string name="select_piece_by">Select a piece by…</string>
     <string name="select_a_composer">Select a composer:</string>
     <string name="normal_metronome">Normal Metronome</string>
-    <string name="pre_programmed_metronome">Pre-programmed Metronome</string>
+    <string name="pre_programmed_metronome">Ms. Count Metronome</string>
     <string name="create_edit_program">Create/Edit Program</string>
     <string name="whole_num_format">#</string>
     <string name="tenths_num_format">#.#</string>

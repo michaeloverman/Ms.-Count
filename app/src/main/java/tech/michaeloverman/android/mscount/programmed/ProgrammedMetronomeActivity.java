@@ -52,7 +52,7 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(TAG, "onCreateOptionsMenu");
+        Timber.d("onCreateOptionsMenu");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.programmed_global_menu, menu);
 //        MenuItem item = menu.findItem(R.id.firebase_local_database);

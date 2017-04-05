@@ -6,7 +6,6 @@ import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.CountDownTimer;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -90,23 +89,20 @@ public class Metronome {
      */
     public void play(int tempo, int beats) {
         getClicksFromSharedPrefs();
+        mDelay = 60000 / tempo;
         if(beats == 1) {
-            mDelay = 60000 / tempo;
             startClicking();
         } else {
-            mDelay = 60000 / tempo;
             playSubdivisions(beats);
         }
     }
     public void play(float tempo, int beats) {
         getClicksFromSharedPrefs();
+        float delay = 60000f / tempo;
+        mDelay = (int) delay;
         if(beats == 1) {
-            float delay = 60000f / tempo;
-            mDelay = (int) delay;
             startClicking();
         } else {
-            float delay = 60000f / tempo;
-            mDelay = (int) delay;
             playSubdivisions(beats);
         }
     }
@@ -115,7 +111,7 @@ public class Metronome {
      * Simple, single click metronome start
      */
     private void startClicking() {
-        Log.d(TAG, "int delay: "+ mDelay);
+        Timber.d("int delay: "+ mDelay);
 
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
             @Override
@@ -137,8 +133,8 @@ public class Metronome {
      * @param subs
      */
     private void playSubdivisions(final int subs) {
-        mDownBeatClickId = mClicks.get(1).getSoundId();
-        mInnerBeatClickId = mClicks.get(2).getSoundId();
+//        mDownBeatClickId = mClicks.get(1).getSoundId();
+//        mInnerBeatClickId = mClicks.get(2).getSoundId();
 
         logSubdivisionVolumes(subs);
 
@@ -257,11 +253,11 @@ public class Metronome {
      */
     public void play(int tempo, List<Integer> groupings) {
 
-        Log.d(TAG, "play an odd-meter loop");
+        Timber.d("play an odd-meter loop");
 
         final int[] beats = Utilities.integerListToArray(groupings);
 
-        Log.d(TAG, "beat loop length: " + beats.length);
+        Timber.d("beat loop length: " + beats.length);
 
         mDelay = 60000 / tempo;
 

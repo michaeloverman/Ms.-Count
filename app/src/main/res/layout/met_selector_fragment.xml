@@ -25,7 +25,7 @@
     />
 
     <Button
-        android:text="Odd-meter Loop"
+        android:text="Odd Metronome"
         android:id="@+id/odd_meter_metronome_button"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/home_screen_button_height"
@@ -57,47 +57,47 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:srcCompat="@drawable/ic_test_icon_512x512"
-        app:layout_constraintLeft_toRightOf="@+id/normal_metronome_button"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/imageView2"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--app:srcCompat="@drawable/ic_test_icon_512x512"-->
+        <!--app:layout_constraintLeft_toRightOf="@+id/normal_metronome_button"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--app:layout_constraintRight_toRightOf="parent"/>-->
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        app:srcCompat="@drawable/ic_test_icon_512x512x"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/preprogrammed_metronome_button"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/imageView3"-->
+        <!--android:layout_width="140dp"-->
+        <!--android:layout_height="140dp"-->
+        <!--app:srcCompat="@drawable/ic_test_icon_512x512x"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/preprogrammed_metronome_button"/>-->
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/preprogrammed_metronome_button"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteX="235dp"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/imageView4"-->
+        <!--android:layout_width="140dp"-->
+        <!--android:layout_height="140dp"-->
+        <!--app:srcCompat="@mipmap/ic_launcher"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/preprogrammed_metronome_button"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--tools:layout_editor_absoluteX="235dp"/>-->
 
-    <ImageButton
-        android:id="@+id/test_image_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_noback_icon_test"
-        android:backgroundTint="@color/colorPrimary"
-        android:layout_marginTop="33dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        app:layout_constraintRight_toLeftOf="@+id/odd_meter_metronome_button"
-        android:layout_marginRight="0dp"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/test_image_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:srcCompat="@mipmap/ic_noback_icon_test"-->
+        <!--android:backgroundTint="@color/colorPrimary"-->
+        <!--android:layout_marginTop="33dp"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/imageView3"-->
+        <!--app:layout_constraintRight_toLeftOf="@+id/odd_meter_metronome_button"-->
+        <!--android:layout_marginRight="0dp"/>-->
 </android.support.constraint.ConstraintLayout>

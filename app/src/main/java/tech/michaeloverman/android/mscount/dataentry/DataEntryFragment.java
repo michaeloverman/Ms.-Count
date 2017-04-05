@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,13 @@ import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.pojos.DataEntry;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 3/12/2017.
  */
 
 public class DataEntryFragment extends Fragment {
-    private static final String TAG = DataEntryFragment.class.getSimpleName();
 
     private PieceOfMusic.Builder mBuilder;
 //    private PieceOfMusic mPieceOfMusic;
@@ -52,7 +51,7 @@ public class DataEntryFragment extends Fragment {
     }
 
     public static Fragment newInstance(String title, DataEntryCallback callback, PieceOfMusic.Builder builder) {
-        Log.d(TAG, "newInstance()");
+        Timber.d("newInstance()");
         DataEntryFragment fragment = new DataEntryFragment();
         fragment.mTitle = title;
         fragment.mBuilder = builder;
@@ -150,7 +149,7 @@ public class DataEntryFragment extends Fragment {
      */
     @OnClick(R.id.data_save_button)
     public void saveData() {
-        Log.d(TAG, "saveData()");
+        Timber.d("saveData()");
 //        mBuilder.dataEntries(mDataList);
 //        mPieceOfMusic.setDataBeats(mDataList);
 
@@ -195,7 +194,7 @@ public class DataEntryFragment extends Fragment {
                 break;
 
         }
-        Log.d(TAG, value + " subdivisions in next beat");
+        Timber.d(value + " subdivisions in next beat");
         mAdapter.notifyDataSetChanged();
         if(!mDataItemSelected) mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
     }

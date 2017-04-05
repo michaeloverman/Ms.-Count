@@ -17,7 +17,6 @@ import tech.michaeloverman.android.mscount.utils.SettingsActivity;
 
 public class OddMeterMetronomeActivity extends SingleFragmentActivity {
 
-    private static final String TAG = OddMeterMetronomeActivity.class.getSimpleName();
     protected Metronome mMetronome;
 
     @Override

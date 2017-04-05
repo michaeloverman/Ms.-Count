@@ -11,7 +11,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +44,7 @@ import timber.log.Timber;
 
 public class ComposerSelectFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = ComposerSelectFragment.class.getSimpleName();
+
     private static final int COMPOSER_LOADER_ID = 99;
     private static final int NO_DATA_ERROR_CODE = 42;
 
@@ -72,7 +71,7 @@ public class ComposerSelectFragment extends Fragment implements
      * @return
      */
     public static Fragment newInstance(ComposerCallback cc) {
-        Log.d(TAG, "newInstance()");
+        Timber.d("newInstance()");
 //        mCursor = c;
         sComposerCallback = cc;
         return new ComposerSelectFragment();
@@ -92,11 +91,11 @@ public class ComposerSelectFragment extends Fragment implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.d(TAG, "onCreateOptionsMenu");
+        Timber.d("onCreateOptionsMenu");
 //        inflater.inflate(R.menu.metadata_entry_menu, menu);
 //        menu.removeItem(R.id.create_new_program_option);
 //        MenuItem item = menu.findItem(R.id.firebase_local_database);
-//        Log.d(TAG, "useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
+//        Timber.d("useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
 //
 //        item.setTitle(((ProgrammedMetronomeActivity)getActivity()).useFirebase ?
 //                R.string.use_local_database : R.string.use_cloud_database);
@@ -105,7 +104,7 @@ public class ComposerSelectFragment extends Fragment implements
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView()");
+        Timber.d("onCreateView()");
         View view = inflater.inflate(R.layout.select_composer_layout, container, false);
         ButterKnife.bind(this, view);
 
@@ -136,7 +135,7 @@ public class ComposerSelectFragment extends Fragment implements
      * recycler viewing
      */
     private void loadComposers() {
-        Log.d(TAG, "loadComposers()");
+        Timber.d("loadComposers()");
         progressSpinner(true);
         if(mActivity.useFirebase) {
             FirebaseDatabase.getInstance().getReference().child("composers")
@@ -165,7 +164,7 @@ public class ComposerSelectFragment extends Fragment implements
     }
 
     public void updateData() {
-        Log.d(TAG, "updateData()");
+        Timber.d("updateData()");
         loadComposers();
     }
 
@@ -205,7 +204,7 @@ public class ComposerSelectFragment extends Fragment implements
     }
 
     private void updateEmptyView(int code) {
-        Log.d(TAG, "updateEmptyView(code = " + code);
+        Timber.d("updateEmptyView(code = " + code);
         String message;
         switch(code) {
             case NO_DATA_ERROR_CODE:
@@ -230,19 +229,19 @@ public class ComposerSelectFragment extends Fragment implements
         private List<String> composers;
 
         public ComposerListAdapter(Context context) {
-            Log.d(TAG, "ComposerListAdapter constructor");
+            Timber.d("ComposerListAdapter constructor");
             mContext = context;
         }
         @Override
         public ComposerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            Log.d(TAG, "onCreateViewHolder");
+            Timber.d("onCreateViewHolder");
             View item =LayoutInflater.from(mContext).inflate(R.layout.list_item_composer, parent, false);
             return new ComposerViewHolder(item);
         }
 
         @Override
         public void onBindViewHolder(ComposerViewHolder holder, int position) {
-            Log.d(TAG, "onBindViewHolder()");
+            Timber.d("onBindViewHolder()");
             holder.composerName.setText(composers.get(position));
         }
 
@@ -282,7 +281,7 @@ public class ComposerSelectFragment extends Fragment implements
 
             public ComposerViewHolder(View itemView) {
                 super(itemView);
-                Log.d(TAG, "ComposerViewHolder constructor");
+                Timber.d("ComposerViewHolder constructor");
                 ButterKnife.bind(this, itemView);
                 itemView.setOnClickListener(this);
             }

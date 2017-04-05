@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,7 +46,6 @@ import tech.michaeloverman.android.mscount.utils.Utilities;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
-import static com.facebook.GraphRequest.TAG;
 
 /**
  *
@@ -74,7 +72,7 @@ public class MetaDataEntryFragment extends Fragment
     private static Cursor mCursor;
 
     public static Fragment newInstance(ProgrammedMetronomeActivity a, Cursor c) {
-        Log.d(TAG, "newInstance()");
+        Timber.d("newInstance()");
         mActivity = a;
         mCursor = c;
         return new MetaDataEntryFragment();

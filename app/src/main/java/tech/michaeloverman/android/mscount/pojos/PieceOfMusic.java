@@ -1,19 +1,18 @@
 package tech.michaeloverman.android.mscount.pojos;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import tech.michaeloverman.android.mscount.utils.Utilities;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 2/20/2017.
  */
 
 public class PieceOfMusic implements Serializable {
-    private static final String TAG = PieceOfMusic.class.getSimpleName();
+
     public static final int COUNTOFF_LENGTH = 4;
     public static final int SIXTEENTH = 1;
     public static final int DOTTED_SIXTEENTH = 5;
@@ -42,7 +41,7 @@ public class PieceOfMusic implements Serializable {
     private String mFirebaseId;
 
     public PieceOfMusic(String title) {
-        Log.d(TAG, "PieceOfMusic constructor()");
+        Timber.d("PieceOfMusic constructor()");
         mTitle = title;
     }
 
@@ -54,7 +53,7 @@ public class PieceOfMusic implements Serializable {
 
     public void setTitle(String title) {
         mTitle = title;
-//        Log.d(TAG, "setTitle()" + title);
+//        Timber.d("setTitle()" + title);
     }
 
     public String getAuthor() {
@@ -63,7 +62,7 @@ public class PieceOfMusic implements Serializable {
 
     public void setAuthor(String author) {
         mAuthor = author;
-//        Log.d(TAG, "setAuthor()" + author);
+//        Timber.d("setAuthor()" + author);
     }
 
     public int getSubdivision() {
@@ -73,7 +72,7 @@ public class PieceOfMusic implements Serializable {
     public void setSubdivision(int subdivision) {
         mSubdivision = subdivision;
 //        mCountOffSubdivision = mSubdivision;
-//        Log.d(TAG, "setSubdivision()" + subdivision + " COsub: " + mCountOffSubdivision);
+//        Timber.d("setSubdivision()" + subdivision + " COsub: " + mCountOffSubdivision);
     }
 
     public int getCountOffSubdivision() {
@@ -82,7 +81,7 @@ public class PieceOfMusic implements Serializable {
 
     public void setCountOffSubdivision(int countOffSubdivision) {
         mCountOffSubdivision = countOffSubdivision;
-//        Log.d(TAG, "setCountOffSubdivision()" + countOffSubdivision + " sub: " + mSubdivision);
+//        Timber.d("setCountOffSubdivision()" + countOffSubdivision + " sub: " + mSubdivision);
     }
 
     public int getDefaultTempo() {
@@ -91,7 +90,7 @@ public class PieceOfMusic implements Serializable {
 
     public void setDefaultTempo(int defaultTempo) {
         mDefaultTempo = defaultTempo;
-//        Log.d(TAG, "setDefaultTempo()" + defaultTempo);
+//        Timber.d("setDefaultTempo()" + defaultTempo);
     }
 
     public double getTempoMultiplier() {
@@ -100,7 +99,7 @@ public class PieceOfMusic implements Serializable {
 
     public void setTempoMultiplier(double tempoMultiplier) {
         mTempoMultiplier = tempoMultiplier;
-//        Log.d(TAG, "setTempoMultiplier" + tempoMultiplier);
+//        Timber.d("setTempoMultiplier" + tempoMultiplier);
     }
 
     public int getBaselineNoteValue() {
@@ -109,7 +108,7 @@ public class PieceOfMusic implements Serializable {
 
     public void setBaselineNoteValue(int baselineNoteValue) {
         mBaselineNoteValue = baselineNoteValue;
-//        Log.d(TAG, "setBaselineNoteValue() " + baselineNoteValue);
+//        Timber.d("setBaselineNoteValue() " + baselineNoteValue);
     }
 
     public int getMeasureCountOffset() {
@@ -118,7 +117,7 @@ public class PieceOfMusic implements Serializable {
 
     public void setMeasureCountOffset(int measureCountOffset) {
         mMeasureCountOffset = measureCountOffset;
-//        Log.d(TAG, "setMeasureCountOffset()" +measureCountOffset);
+//        Timber.d("setMeasureCountOffset()" +measureCountOffset);
     }
 
     public List<Integer> getBeats() {

@@ -3,7 +3,6 @@ package tech.michaeloverman.android.mscount.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import timber.log.Timber;
 
@@ -27,7 +26,6 @@ public class ProgramDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Timber.d("Database Helper onCreate()");
-        Log.d(TAG, "Database Helper onCreate()");
 
         final String SQL_BUILDER_STRING = "CREATE TABLE " + MetProgram.TABLE_NAME + " ("
                 + MetProgram._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "

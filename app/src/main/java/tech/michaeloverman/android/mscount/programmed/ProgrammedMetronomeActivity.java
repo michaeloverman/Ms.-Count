@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +16,6 @@ import com.firebase.ui.auth.ResultCodes;
 
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.SingleFragmentActivity;
-import tech.michaeloverman.android.mscount.utils.ChangeClicksDialogFragment;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.SettingsActivity;
 import timber.log.Timber;
@@ -28,9 +26,8 @@ import timber.log.Timber;
 
 public class ProgrammedMetronomeActivity extends SingleFragmentActivity
         implements ChangeClicksDialogFragment.ChangeClicksListener {
-    private static final String TAG = ProgrammedMetronomeActivity.class.getSimpleName();
-    private static final int FIREBASE_SIGN_IN = 456;
 
+    private static final int FIREBASE_SIGN_IN = 456;
 
     protected Metronome mMetronome;
 
@@ -106,7 +103,7 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity
             if (resultCode == ResultCodes.OK) {
 //                startActivity(SignedInActivity.createIntent(this, response));
 //                finish();
-                Log.d(TAG, "signed into Firebase");
+                Timber.d("signed into Firebase");
                 return;
             } else {
                 // Sign in failed
@@ -133,7 +130,7 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity
 
     private void showSnackbar(int message) {
         String m = getString(message);
-        Log.d(TAG, m);
+        Timber.d(m);
     }
 
     @Override

@@ -194,10 +194,10 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
 //                    @Override
 //                    public void onDataChange(DataSnapshot dataSnapshot) {
 //                        if(dataSnapshot == null) {
-//                            Log.d(TAG, "user is NOT admin");
+//                            Timber.d("user is NOT admin");
 //                            userIsAdmin = false;
 //                        } else {
-//                            Log.d(TAG, "user IS admin");
+//                            Timber.d("user IS admin");
 //                            userIsAdmin = true;
 //                        }
 //                    }

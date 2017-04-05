@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import timber.log.Timber;
 
 import static android.view.MotionEvent.ACTION_UP;
 
@@ -35,7 +35,6 @@ import static android.view.MotionEvent.ACTION_UP;
  */
 
 public class NormalMetronomeFragment extends Fragment implements MetronomeListener {
-    private static final String TAG = NormalMetronomeFragment.class.getSimpleName();
 
     private static final int MAX_SUBDIVISIONS = Metronome.MAX_SUBDIVISIONS;
     private static final int MAX_TEMPO_BPM_INT = Metronome.MAX_TEMPO;
@@ -377,7 +376,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         mSubdivisionFloatVolumes[id] += volumeChange;
         if(mSubdivisionFloatVolumes[id] > MAX_FLOAT_VOLUME) mSubdivisionFloatVolumes[id] = MAX_FLOAT_VOLUME;
         else if(mSubdivisionFloatVolumes[id] < MIN_FLOAT_VOLUME) mSubdivisionFloatVolumes[id] = MIN_FLOAT_VOLUME;
-        Log.d(TAG, "float volume measured: " + mSubdivisionFloatVolumes[id]);
+        Timber.d("float volume measured: " + mSubdivisionFloatVolumes[id]);
 
         mSubdivisionVolumes[id] = (int) (mSubdivisionFloatVolumes[id] / FLOAT_VOLUME_DIVIDER);
 

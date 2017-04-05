@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import timber.log.Timber;
  */
 
 public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.WorksViewHolder> {
-    private static final String TAG = WorksListAdapter.class.getSimpleName();
 
     private final Context mContext;
     private List<TitleKeyObject> mTitles;
@@ -43,14 +41,14 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
 
     @Override
     public WorksViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder()");
+        Timber.d("onCreateViewHolder()");
         View item = LayoutInflater.from(mContext).inflate(R.layout.list_item_work, parent, false);
         return new WorksViewHolder(item);
     }
 
     @Override
     public void onBindViewHolder(WorksViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder()");
+        Timber.d("onBindViewHolder()");
         holder.title.setText(mTitles.get(position).getTitle());
     }
 
@@ -61,14 +59,14 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
 
     public void setTitles(List<TitleKeyObject> titles) {
         mTitles = titles;
-        Log.d(TAG, "setTitles() - " + mTitles.size() + " titles...");
+        Timber.d("setTitles() - " + mTitles.size() + " titles...");
         notifyDataSetChanged();
     }
 
     public void newCursor(Cursor data) {
         List<TitleKeyObject> titles = new ArrayList<>();
         if(data == null) {
-            Log.d(TAG, "Null cursor...");
+            Timber.d("Null cursor...");
 //            Toast.makeText(mContext, "PROBLEM: No data in database!", Toast.LENGTH_SHORT).show();
             mTitles = titles;
             return;
@@ -97,14 +95,14 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
 
         WorksViewHolder(View itemView) {
             super(itemView);
-            Log.d(TAG, "WorksViewHolder constructor()");
+            Timber.d("WorksViewHolder constructor()");
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "WorksViewHolder onClick()");
+            Timber.d("WorksViewHolder onClick()");
             int position = getAdapterPosition();
             String key = mTitles.get(position).getKey();
             mClickHandler.onClick(position, key);

@@ -8,7 +8,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,14 +25,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 3/14/2017.
  */
 
 public class OddMeterMetronomeFragment extends Fragment implements MetronomeListener {
-    private static final String TAG = OddMeterMetronomeFragment.class.getSimpleName();
-
+    
     private static final float MAX_TEMPO_BPM = Metronome.MAX_TEMPO;
     private static final float MIN_TEMPO_BPM = Metronome.MIN_TEMPO;
     private static final float SUBDIVISION_DISPLAY_SIZE = 40;
@@ -155,7 +154,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
 
     @OnClick(R.id.other_subs_button)
     public void addUnusualSubdivision() {
-        Log.d(TAG, "add a different length of subdivision");
+        Timber.d("add a different length of subdivision");
         if(mOtherButtons.isShown()) {
             mOtherButtons.setVisibility(View.GONE);
         } else {
@@ -165,7 +164,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
 
     @OnClick(R.id.delete_button)
     public void deleteSubdivision() {
-        Log.d(TAG, "remove a subdivision");
+        Timber.d("remove a subdivision");
         if(mSubdivisionsList.size() == 0) return;
         boolean wasRunning = false;
         if(mMetronomeRunning) {
@@ -210,7 +209,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
     @Override
     @OnClick(R.id.oddmeter_start_stop_fab)
     public void metronomeStartStop() {
-        Log.d(TAG, "Loop length: " + mSubdivisionsList.size() + ", view size: " + mSubdivisionViews.size());
+        Timber.d("Loop length: " + mSubdivisionsList.size() + ", view size: " + mSubdivisionViews.size());
         if(mMetronomeRunning) {
             mMetronome.stop();
             mMetronomeRunning = false;

@@ -11,7 +11,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,7 +45,7 @@ public class PieceSelectFragment extends Fragment
         implements WorksListAdapter.WorksListAdapterOnClickHandler,
         ComposerSelectFragment.ComposerCallback,
         LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = PieceSelectFragment.class.getSimpleName();
+
     private static final int WORKS_LOADER_ID = 101;
     private static final int NO_DATA_ERROR_CODE = 41;
 
@@ -82,7 +81,7 @@ public class PieceSelectFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-//        Log.d(TAG, "useFirebase = " + mActivity.useFirebase);
+//        Timber.d("useFirebase = " + mActivity.useFirebase);
 
         mActivity = (LoadNewProgramActivity) getActivity();
 
@@ -90,10 +89,10 @@ public class PieceSelectFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.d(TAG, "onCreateOptionsMenu");
+        Timber.d("onCreateOptionsMenu");
 //        menu.removeItem(R.id.create_new_program_option);
 //        MenuItem item = menu.findItem(R.id.firebase_local_database);
-//        Log.d(TAG, "useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
+//        Log.d(TAG, "useFirebase =Timber.d(rammedMetronomeActivity)getActivity()).useFirebase);
 //        item.setTitle(((ProgrammedMetronomeActivity)getActivity()).useFirebase ?
 //                R.string.use_local_database : R.string.use_cloud_database);
     }

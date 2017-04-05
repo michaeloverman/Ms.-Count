@@ -16,7 +16,6 @@ import tech.michaeloverman.android.mscount.utils.SettingsActivity;
  */
 
 public class NormalMetronomeActivity extends SingleFragmentActivity {
-    private static final String TAG = NormalMetronomeActivity.class.getSimpleName();
 
     protected Metronome mMetronome;
 

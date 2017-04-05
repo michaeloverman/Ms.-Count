@@ -1,20 +1,19 @@
 package tech.michaeloverman.android.mscount.utils;
 
 import android.content.ContentValues;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 2/26/2017.
  */
 
 public class Utilities {
-    public static final String TAG = Utilities.class.getSimpleName();
 
     /**
      * Used to turn beat length data, in List, from database, into int[] for actual use by metronome.
@@ -48,11 +47,11 @@ public class Utilities {
         for (int i = 0; i < array.length; i++) {
             sb.append(array[i] + ", ");
         }
-        Log.d(TAG, sb.toString());
+        Timber.d(sb.toString());
     }
 
     public static int[] combine(int[] countoff, int[] beats) {
-        Log.d(TAG, "combine() arrays...");
+        Timber.d("combine() arrays...");
         int[] combination = new int[countoff.length + beats.length];
         System.arraycopy(countoff, 0, combination, 0, countoff.length);
         System.arraycopy(beats, 0, combination, countoff.length, beats.length);

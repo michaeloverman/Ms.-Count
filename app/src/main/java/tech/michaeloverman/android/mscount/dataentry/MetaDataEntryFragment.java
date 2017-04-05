@@ -208,7 +208,7 @@ public class MetaDataEntryFragment extends Fragment
         }
     }
 
-    public void loadProgram() {
+    private void loadProgram() {
 //        Fragment fragment = PieceSelectFragment.newInstance();
 //        FragmentTransaction trans = getFragmentManager().beginTransaction();
 //        trans.replace(R.id.fragment_container, fragment);

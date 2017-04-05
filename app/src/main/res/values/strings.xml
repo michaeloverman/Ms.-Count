@@ -27,4 +27,13 @@
     <string name="no_program_selected_instruction_toast">Select a program for metronome</string>
     <string name="use_local_database">Access local database</string>
     <string name="use_cloud_database">Access cloud database</string>
+    <string name="change_clicks">Change Click Sounds</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <string name="down_beat_click_key">down_beat_click</string>
+    <string name="inner_beat_click_key">inner_beat_click</string>
+
+
+
 </resources>

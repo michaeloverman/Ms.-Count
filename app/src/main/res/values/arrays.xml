@@ -13,4 +13,22 @@
         <item>@color/colorSubdivisionIndicator9</item>
         <item>@color/colorSubdivisionIndicator10</item>
     </array>
+
+    <string-array name="pref_click_options">
+        <item>Tone1</item>
+        <item>Tone2</item>
+        <item>Tone3</item>
+        <item>Tone4</item>
+        <item>Tone5</item>
+        <item>SawSine</item>
+    </string-array>
+    <string-array name="pref_click_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+
+    </string-array>
 </resources>

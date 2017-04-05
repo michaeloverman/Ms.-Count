@@ -3,11 +3,13 @@ package tech.michaeloverman.android.mscount.programmed;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -15,14 +17,17 @@ import com.firebase.ui.auth.ResultCodes;
 
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.SingleFragmentActivity;
+import tech.michaeloverman.android.mscount.utils.ChangeClicksDialogFragment;
 import tech.michaeloverman.android.mscount.utils.Metronome;
+import tech.michaeloverman.android.mscount.utils.SettingsActivity;
 import timber.log.Timber;
 
 /**
  * Created by Michael on 3/24/2017.
  */
 
-public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
+public class ProgrammedMetronomeActivity extends SingleFragmentActivity
+        implements ChangeClicksDialogFragment.ChangeClicksListener {
     private static final String TAG = ProgrammedMetronomeActivity.class.getSimpleName();
     private static final int FIREBASE_SIGN_IN = 456;
 
@@ -76,11 +81,18 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
 //                }
 //                updateData();
 //                return true;
+            case R.id.settings:
+                goToSettings();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void openClickChangeDialog() {
+        DialogFragment clickPicker = new ChangeClicksDialogFragment();
+        clickPicker.show(getSupportFragmentManager(), "ClickPickerFragment");
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -131,4 +143,15 @@ public class ProgrammedMetronomeActivity extends SingleFragmentActivity {
             mMetronome.stop();
         }
     }
+
+    @Override
+    public void onClicksChanged(int downBeatId, int innerBeatId) {
+        Toast.makeText(this, "new click ids received", Toast.LENGTH_SHORT).show();
+    }
+
+    public void goToSettings() {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
+
 }

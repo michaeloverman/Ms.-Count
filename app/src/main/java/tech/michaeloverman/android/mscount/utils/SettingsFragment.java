@@ -8,7 +8,6 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
 import tech.michaeloverman.android.mscount.R;
-import timber.log.Timber;
 
 /**
  * Created by Michael on 4/4/2017.
@@ -32,15 +31,21 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         int count = prefScreen.getPreferenceCount();
         for (int i = 0; i < count; i++) {
             Preference p = prefScreen.getPreference(i);
-            String value = shPref.getString(p.getKey(), "");
             if(p instanceof ListPreference) {
+                // get list of available clicks, insert in settings
                 setEntriesAndValues(p);
             }
+            String value = shPref.getString(p.getKey(), "");
             setPreferenceSummary(p, value);
         }
 
     }
 
+    /**
+     * Sets the summary description of the setting variable
+     * @param preference
+     * @param value
+     */
     private void setPreferenceSummary(Preference preference, Object value) {
         String stringValue = value.toString();
 
@@ -55,6 +60,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         }
     }
 
+    /**
+     * Pulls list of available click sounds from SettingsActivity, inserts into settings item
+     * @param p
+     */
     private void setEntriesAndValues(Preference p) {
         String[] entries = ((SettingsActivity)getActivity()).mEntries;
         String[] values = ((SettingsActivity)getActivity()).mValues;

@@ -37,6 +37,10 @@ public abstract class MetronomeActivity extends SingleFragmentActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    /**
+     * Attaches click file names to Settings intent for setting menu
+     */
     private void gotoSettings() {
         List<Click> list = mMetronome.getClicks();
         int size = list.size();

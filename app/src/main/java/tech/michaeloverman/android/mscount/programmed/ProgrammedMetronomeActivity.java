@@ -50,7 +50,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
         return true;
     }
-    
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

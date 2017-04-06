@@ -117,7 +117,6 @@ public class ProgrammedMetronomeFragment extends Fragment
 //            }
         }
 
-//        mMetronome = new Metronome(getActivity(), this);
         mMetronomeRunning = false;
 
         mRunnableHandler = new Handler();
@@ -261,7 +260,7 @@ public class ProgrammedMetronomeFragment extends Fragment
             case REQUEST_NEW_PROGRAM:
                 mCurrentPiece = (PieceOfMusic) data.getSerializableExtra(
                         LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
-                updateGUI();
+                updateVariables();
                 break;
             default:
         }

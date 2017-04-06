@@ -21,6 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // get setting list file names from originating intent
         Intent intent = getIntent();
         mEntries = intent.getStringArrayExtra(MetronomeActivity.EXTRA_ENTRIES);
         mValues = intent.getStringArrayExtra(MetronomeActivity.EXTRA_VALUES);

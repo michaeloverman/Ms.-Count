@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -38,7 +39,6 @@ import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Michael on 2/24/2017.
@@ -202,7 +202,12 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Timber.d("onCreateOptionsMenu");
         inflater.inflate(R.menu.programmed_menu, menu);
-
+        MenuItem item = menu.findItem(R.id.mark_as_favorite_menu);
+        if(mIsCurrentFavorite) {
+            fillMenuItem(item);
+        } else {
+            unfillMenuItem(item);
+        }
     }
 
     @Override
@@ -345,31 +350,6 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
     }
 
-//    @Override
-//    public void newPiece(PieceOfMusic piece) {
-////        if(((ProgrammedMetronomeActivity) getActivity()).useFirebase) {
-////            mCurrentPieceKey = pieceId;
-////
-////            FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
-////                    .addListenerForSingleValueEvent(new ValueEventListener() {
-////                        @Override
-////                        public void onDataChange(DataSnapshot dataSnapshot) {
-////                            mCurrentPiece = dataSnapshot.getValue(PieceOfMusic.class);
-////                            updateVariables();
-////                        }
-////
-////                        @Override
-////                        public void onCancelled(DatabaseError databaseError) {
-////                            Toast.makeText(getContext(), "A database error occurred. Please try again.",
-////                                    Toast.LENGTH_SHORT).show();
-////                        }
-////                    });
-////        } else {
-////
-////        }
-//        mCurrentPiece = piece;
-//    }
-
     private void updateVariables() {
         if(mCurrentPiece == null) {
             selectNewProgram();
@@ -377,18 +357,16 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
 
         Timber.d("newPiece() " + mCurrentPiece.getTitle());
-//        Timber.d("piece COsub: " + mCurrentPiece.getCountOffSubdivision() + "; mCurrentPiece COsub: " + mCurrentPiece.getCountOffSubdivision());
 
         mCurrentComposer = mCurrentPiece.getAuthor();
         if(mCurrentPiece.getDefaultTempo() != 0) {
             mCurrentTempo = mCurrentPiece.getDefaultTempo();
         }
 
-
-
-//        Timber.d("Subd: " + mCurrentPiece.getSubdivision() + "; CountoffSubs: " + mCurrentPiece.getCountOffSubdivision());
-
         updateGUI();
+
+        new CheckIfFavoriteTask().execute(mCurrentPiece.getFirebaseId());
+
     }
 
     @Override
@@ -436,22 +414,42 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void makePieceFavorite() {
-        Timber.d("Adding piece to database id - id: " + mCurrentPiece.getFirebaseId());
-        final SQLiteDatabase db = new FavoritesDBHelper(getApplicationContext()).getWritableDatabase();
-
+        final SQLiteDatabase db = new FavoritesDBHelper(mActivity).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(FavoritesContract.FavoriteEntry.COLUMN_PIECE_ID, mCurrentPiece.getFirebaseId());
-
         db.insert(FavoritesContract.FavoriteEntry.TABLE_NAME, null, values);
         db.close();
     }
     private void makePieceUnfavorite() {
-        Timber.d("Removing piece from database id - id: " + mCurrentPiece.getFirebaseId());
-        // TODO remove from local database
-        final SQLiteDatabase db = new FavoritesDBHelper(getApplicationContext()).getWritableDatabase();
+        final SQLiteDatabase db = new FavoritesDBHelper(mActivity).getWritableDatabase();
         String selection = FavoritesContract.FavoriteEntry.COLUMN_PIECE_ID + " LIKE ?";
         String[] selectionArgs = { mCurrentPiece.getFirebaseId() };
         db.delete(FavoritesContract.FavoriteEntry.TABLE_NAME, selection, selectionArgs);
         db.close();
+    }
+
+    private class CheckIfFavoriteTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            Timber.d("CheckIfFavoriteTask running in background!!");
+            SQLiteDatabase db = new FavoritesDBHelper(mActivity).getReadableDatabase();
+            Cursor cursor = db.query(FavoritesContract.FavoriteEntry.TABLE_NAME,
+                    null,
+                    FavoritesContract.FavoriteEntry.COLUMN_PIECE_ID + " =?",
+                    params,
+                    null, null, null);
+            boolean exists = (cursor.getCount() > 0);
+            cursor.close();
+            db.close();
+            return exists;
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            mIsCurrentFavorite = aBoolean;
+            mActivity.invalidateOptionsMenu();
+        }
     }
 }

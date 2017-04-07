@@ -154,6 +154,7 @@ public class PieceSelectFragment extends Fragment
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
+                            mPieceOfMusic.setFirebaseId(dataSnapshot.getKey());
                             mActivity.setProgramResult(mPieceOfMusic);
                             mActivity.finish();
                         }

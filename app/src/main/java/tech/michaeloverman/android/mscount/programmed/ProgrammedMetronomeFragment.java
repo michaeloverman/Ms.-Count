@@ -1,8 +1,10 @@
 package tech.michaeloverman.android.mscount.programmed;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -28,12 +30,15 @@ import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.database.LoadNewProgramActivity;
 import tech.michaeloverman.android.mscount.dataentry.MetaDataEntryFragment;
+import tech.michaeloverman.android.mscount.favorites.FavoritesContract;
+import tech.michaeloverman.android.mscount.favorites.FavoritesDBHelper;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Michael on 2/24/2017.
@@ -58,6 +63,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     private String mCurrentPieceKey;
     private int mCurrentTempo;
     private String mCurrentComposer;
+    private boolean mIsCurrentFavorite;
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
 
@@ -392,11 +398,25 @@ public class ProgrammedMetronomeFragment extends Fragment
             case R.id.create_new_program_option:
                 openProgramEditor();
                 return true;
-
+            case R.id.mark_as_favorite_menu:
+                if(mCurrentPiece == null) {
+                    Toast.makeText(mActivity, "You must have a program loaded to mark it as favorite.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                mIsCurrentFavorite = !mIsCurrentFavorite;
+                if(mIsCurrentFavorite) {
+                    fillMenuItem(item);
+                    makePieceFavorite();
+                } else {
+                    unfillMenuItem(item);
+                    makePieceUnfavorite();
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
     public void openProgramEditor() {
         Fragment fragment = MetaDataEntryFragment.newInstance(mActivity, mCursor);
         FragmentTransaction trans = getFragmentManager().beginTransaction();
@@ -405,4 +425,33 @@ public class ProgrammedMetronomeFragment extends Fragment
         trans.commit();
     }
 
+    private void fillMenuItem(MenuItem item) {
+        item.setIcon(R.drawable.ic_heart);
+        item.setTitle(getString(R.string.mark_as_unfavorite_menu));
+    }
+
+    private void unfillMenuItem(MenuItem item) {
+        item.setIcon(R.drawable.ic_heart_outline);
+        item.setTitle(getString(R.string.mark_as_favorite_menu));
+    }
+
+    private void makePieceFavorite() {
+        Timber.d("Adding piece to database id - id: " + mCurrentPiece.getFirebaseId());
+        final SQLiteDatabase db = new FavoritesDBHelper(getApplicationContext()).getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(FavoritesContract.FavoriteEntry.COLUMN_PIECE_ID, mCurrentPiece.getFirebaseId());
+
+        db.insert(FavoritesContract.FavoriteEntry.TABLE_NAME, null, values);
+        db.close();
+    }
+    private void makePieceUnfavorite() {
+        Timber.d("Removing piece from database id - id: " + mCurrentPiece.getFirebaseId());
+        // TODO remove from local database
+        final SQLiteDatabase db = new FavoritesDBHelper(getApplicationContext()).getWritableDatabase();
+        String selection = FavoritesContract.FavoriteEntry.COLUMN_PIECE_ID + " LIKE ?";
+        String[] selectionArgs = { mCurrentPiece.getFirebaseId() };
+        db.delete(FavoritesContract.FavoriteEntry.TABLE_NAME, selection, selectionArgs);
+        db.close();
+    }
 }

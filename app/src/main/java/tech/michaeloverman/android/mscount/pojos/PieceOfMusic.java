@@ -127,6 +127,10 @@ public class PieceOfMusic implements Serializable {
     public String getFirebaseId() {
         return mFirebaseId;
     }
+
+    public void setFirebaseId(String id) {
+        mFirebaseId = id;
+    }
     /**
      * Accepts array of the length of each beat, by number of primary subdivisions,
      * combines that with a generated count off measure, and saves the entire array.

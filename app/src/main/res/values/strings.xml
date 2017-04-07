@@ -34,6 +34,8 @@
     <string name="down_beat_click_key">down_beat_click</string>
     <string name="inner_beat_click_key">inner_beat_click</string>
 
+    <string name="mark_as_favorite_menu">Mark as favorite</string>
+    <string name="mark_as_unfavorite_menu">Unmark as favorite</string>
 
 
 </resources>

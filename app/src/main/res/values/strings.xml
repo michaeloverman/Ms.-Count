@@ -36,6 +36,7 @@
 
     <string name="mark_as_favorite_menu">Mark as favorite</string>
     <string name="mark_as_unfavorite_menu">Unmark as favorite</string>
+    <string name="need_program_before_favorite">You must have a program loaded to mark it as favorite.</string>
 
 
 </resources>

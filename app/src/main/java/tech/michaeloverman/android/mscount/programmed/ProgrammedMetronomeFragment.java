@@ -25,6 +25,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -110,17 +115,21 @@ public class ProgrammedMetronomeFragment extends Fragment
         getActivity().setTitle(getString(R.string.app_name));
 
         if(savedInstanceState != null) {
-            mCurrentTempo = savedInstanceState.getInt(CURRENT_TEMPO_KEY);
-//            mCurrentPiece = savedInstanceState.getString(CURRENT_PIECE_KEY);
-            mCurrentComposer = savedInstanceState.getString(CURRENT_COMPOSER_KEY);
+            Timber.d("found savedInstanceState");
+//            mCurrentTempo = savedInstanceState.getInt(CURRENT_TEMPO_KEY);
+            mCurrentPieceKey = savedInstanceState.getString(CURRENT_PIECE_KEY);
+//            mCurrentComposer = savedInstanceState.getString(CURRENT_COMPOSER_KEY);
             Timber.d("savedInstanceState retrieved: composer: " + mCurrentComposer);
+            getPieceFromKey();
         } else {
+            Timber.d("savedInstanceState not found - looking to SharedPrefs");
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             mCurrentPieceKey = prefs.getString(PREF_PIECE_KEY, null);
+            if(mCurrentPieceKey != null) {
+                Timber.d("getting saved piece from Firebase");
+                getPieceFromKey();
+            }
             mCurrentTempo = prefs.getInt(PREF_CURRENT_TEMPO, 120);
-//            if(mCurrentPieceKey != null) {
-//                newPiece(mCurrentPieceKey);
-//            }
         }
 
         mMetronomeRunning = false;
@@ -145,6 +154,23 @@ public class ProgrammedMetronomeFragment extends Fragment
                 mRunnableHandler.postDelayed(this, mTempoChangeDelay -= RATE_OF_DELAY_CHANGE);
             }
         };
+    }
+
+    private void getPieceFromKey() {
+        FirebaseDatabase.getInstance().getReference().child("pieces").child(mCurrentPieceKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mCurrentPiece = dataSnapshot.getValue(PieceOfMusic.class);
+                        updateVariables();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getContext(), "A database error occurred. Please try again.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Nullable
@@ -218,11 +244,14 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @Override
     public void onDestroy() {
+        Timber.d("onDestroy() saving prefs....");
         SharedPreferences.Editor prefs = PreferenceManager
                 .getDefaultSharedPreferences(getContext()).edit();
         prefs.putString(PREF_PIECE_KEY, mCurrentPieceKey);
         prefs.putInt(PREF_CURRENT_TEMPO, mCurrentTempo);
         prefs.commit();
+
+        Timber.d("Should have just saved " + mCurrentPieceKey + " at " + mCurrentTempo + " BPM");
 
         super.onDestroy();
     }
@@ -248,12 +277,6 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @OnClick( { R.id.current_composer_name, R.id.current_program_title } )
     public void selectNewProgram() {
-//        Fragment fragment = ProgramSelectFragment.newInstance(this, mCurrentComposer,
-//                mActivity, mActivity.mCursor);
-//        FragmentTransaction trans = getFragmentManager().beginTransaction();
-//        trans.replace(R.id.fragment_container, fragment);
-//        trans.addToBackStack(null);
-//        trans.commit();
         Intent intent = new Intent(mActivity, LoadNewProgramActivity.class);
         intent.putExtra(EXTRA_COMPOSER_NAME, mCurrentComposer);
         startActivityForResult(intent, REQUEST_NEW_PROGRAM);
@@ -271,6 +294,9 @@ public class ProgrammedMetronomeFragment extends Fragment
             case REQUEST_NEW_PROGRAM:
                 mCurrentPiece = (PieceOfMusic) data.getSerializableExtra(
                         LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
+                mCurrentPieceKey = mCurrentPiece.getFirebaseId();
+                mCurrentTempo = mCurrentPiece.getDefaultTempo();
+                Timber.d("New Piece loaded. FirebaseId: " + mCurrentPiece.getFirebaseId());
                 updateVariables();
                 break;
             default:
@@ -315,16 +341,6 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     }
 
-    private void updateGUI() {
-        // TODO set TitleViews etc
-        Timber.d("updateGUI() " + mCurrentPiece.getAuthor() + ": " + mCurrentPiece.getTitle());
-        mTVCurrentPiece.setText(mCurrentPiece.getTitle());
-        mTVCurrentComposer.setText(mCurrentComposer);
-        mBeatLengthImage.setImageResource(getNoteImageResource
-                (mCurrentPiece.getBaselineNoteValue()));
-        updateTempoView();
-    }
-
     private int getNoteImageResource(int noteValue) {
         switch(noteValue) {
             case PieceOfMusic.SIXTEENTH:
@@ -359,14 +375,24 @@ public class ProgrammedMetronomeFragment extends Fragment
         Timber.d("newPiece() " + mCurrentPiece.getTitle());
 
         mCurrentComposer = mCurrentPiece.getAuthor();
-        if(mCurrentPiece.getDefaultTempo() != 0) {
-            mCurrentTempo = mCurrentPiece.getDefaultTempo();
-        }
+//        if(mCurrentPiece.getDefaultTempo() != 0) {
+//            mCurrentTempo = mCurrentPiece.getDefaultTempo();
+//        }
+//        mCurrentPieceKey = mCurrentPiece.getFirebaseId();
 
         updateGUI();
 
-        new CheckIfFavoriteTask().execute(mCurrentPiece.getFirebaseId());
+        new CheckIfFavoriteTask().execute(mCurrentPieceKey);
 
+    }
+
+    private void updateGUI() {
+        Timber.d("updateGUI() " + mCurrentPiece.getAuthor() + ": " + mCurrentPiece.getTitle());
+        mTVCurrentPiece.setText(mCurrentPiece.getTitle());
+        mTVCurrentComposer.setText(mCurrentComposer);
+        mBeatLengthImage.setImageResource(getNoteImageResource
+                (mCurrentPiece.getBaselineNoteValue()));
+        updateTempoView();
     }
 
     @Override
@@ -378,7 +404,8 @@ public class ProgrammedMetronomeFragment extends Fragment
                 return true;
             case R.id.mark_as_favorite_menu:
                 if(mCurrentPiece == null) {
-                    Toast.makeText(mActivity, "You must have a program loaded to mark it as favorite.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, R.string.need_program_before_favorite,
+                            Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 mIsCurrentFavorite = !mIsCurrentFavorite;
@@ -395,7 +422,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
     }
 
-    public void openProgramEditor() {
+    private void openProgramEditor() {
         Fragment fragment = MetaDataEntryFragment.newInstance(mActivity, mCursor);
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         trans.replace(R.id.fragment_container, fragment);
@@ -443,7 +470,6 @@ public class ProgrammedMetronomeFragment extends Fragment
             cursor.close();
             db.close();
             return exists;
-
         }
 
         @Override

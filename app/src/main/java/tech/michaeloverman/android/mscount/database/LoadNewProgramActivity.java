@@ -211,4 +211,5 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
 //    public boolean isUserAdmin() {
 //        return userIsAdmin;
 //    }
+
 }

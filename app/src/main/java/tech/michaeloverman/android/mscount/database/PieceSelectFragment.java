@@ -145,7 +145,7 @@ public class PieceSelectFragment extends Fragment
     }
 
     @Override
-    public void onClick(int position, String pieceId) {
+    public void onClick(int position, final String pieceId) {
         Timber.d("ProgramSelect onClick() pieceId: " + pieceId);
         progressSpinner(true);
         if(mActivity.useFirebase) {
@@ -154,7 +154,8 @@ public class PieceSelectFragment extends Fragment
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
-                            mPieceOfMusic.setFirebaseId(dataSnapshot.getKey());
+                            mPieceOfMusic.setFirebaseId(pieceId);
+                            Timber.d("Just loaded piece from Firebase. Id: " + pieceId);
                             mActivity.setProgramResult(mPieceOfMusic);
                             mActivity.finish();
                         }

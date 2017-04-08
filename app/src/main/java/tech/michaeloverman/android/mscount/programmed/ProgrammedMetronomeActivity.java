@@ -27,7 +27,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
     @Override
     protected Fragment createFragment() {
-        mMetronome = new Metronome(this);
+        mMetronome = Metronome.getInstance();
         return ProgrammedMetronomeFragment.newInstance(mMetronome, this);
     }
 

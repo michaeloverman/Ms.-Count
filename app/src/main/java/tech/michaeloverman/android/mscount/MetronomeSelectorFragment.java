@@ -8,9 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
@@ -24,10 +22,8 @@ public class MetronomeSelectorFragment extends Fragment {
 
     private static final String TAG = MetronomeSelectorFragment.class.getSimpleName();
 
-
-    @BindView(R.id.normal_metronome_button) Button mNormalMetButton;
-//    @BindView(R.id.sticking_patters_metronome_button) Button mStickingPatternsButton;
-    @BindView(R.id.preprogrammed_metronome_button) Button mPreprogrammedMetButton;
+//    @BindView(R.id.normal_metronome_button) Button mNormalMetButton;
+//    @BindView(R.id.preprogrammed_metronome_button) Button mPreprogrammedMetButton;
     private Unbinder mUnbinder;
 
     public static Fragment newInstance() {
@@ -39,7 +35,6 @@ public class MetronomeSelectorFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
     @Override

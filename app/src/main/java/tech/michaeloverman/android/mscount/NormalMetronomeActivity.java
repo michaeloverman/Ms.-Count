@@ -15,7 +15,7 @@ public class NormalMetronomeActivity extends MetronomeActivity {
 
     @Override
     protected Fragment createFragment() {
-        mMetronome = new Metronome(this);
+        mMetronome = Metronome.getInstance();
         return NormalMetronomeFragment.newInstance(mMetronome);
     }
 

@@ -3,12 +3,12 @@ package tech.michaeloverman.android.mscount;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import tech.michaeloverman.android.mscount.utils.Metronome;
 import timber.log.Timber;
 
 public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleFragmentActivity {
 
-    public static int sClickSound;
-
+    public Metronome mMetronome;
 
     @Override
     protected Fragment createFragment() {
@@ -21,8 +21,8 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
         super.onCreate(savedInstanceState);
         Timber.d("MsCountActivity onCreate()");
 
-        sClickSound = 4;
-
+        mMetronome = Metronome.getInstance();
+        mMetronome.setContext(this);
     }
 
 

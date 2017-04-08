@@ -56,7 +56,7 @@ public abstract class MetronomeActivity extends SingleFragmentActivity {
         startActivity(intent);
     }
 
-    public Metronome getMetronome() {
-        return mMetronome;
-    }
+//    public Metronome getMetronome() {
+//        return mMetronome;
+//    }
 }

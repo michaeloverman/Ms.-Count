@@ -49,32 +49,32 @@ public class Metronome {
      *
      * @param context
      */
-    public Metronome(Context context) {
-        mContext = context;
-        mAssets = mContext.getAssets();
+    private static final Metronome instance = new Metronome();
+
+    public static Metronome getInstance() {
+        return instance;
+    }
+    private Metronome() {
+//        mContext = context;
+//        mAssets = mContext.getAssets();
 //        setMetronomeListener(ml);
         mClicking = false;
-//        SoundPool.Builder builder = new SoundPool.Builder()
-//                .setAudioAttributes(new AudioAttributes.Builder()
-//                        .setUsage(AudioAttributes.USAGE_GAME)
-//                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-//                        .setFlags(AudioAttributes.FLAG_LOW_LATENCY)
-//                        .build())
-//                .setMaxStreams(5);
+
         mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 //        mSoundPool = builder.build();
-        loadSounds();
+//        loadSounds();
         mClickVolumes = new float[MAX_SUBDIVISIONS];
         for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
             mClickVolumes[i] = 1.0f;
         }
 
-
-
-
-
     }
 
+    public void setContext(Context context) {
+        mContext = context;
+        mAssets = mContext.getAssets();
+        loadSounds();
+    }
     public void setMetronomeListener(MetronomeListener ml) {
         mListener = ml;
     }
@@ -133,9 +133,6 @@ public class Metronome {
      * @param subs
      */
     private void playSubdivisions(final int subs) {
-//        mDownBeatClickId = mClicks.get(1).getSoundId();
-//        mInnerBeatClickId = mClicks.get(2).getSoundId();
-
         logSubdivisionVolumes(subs);
 
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
@@ -179,6 +176,7 @@ public class Metronome {
      * @param tempo
      */
     public void play(PieceOfMusic p, int tempo) {
+        getClicksFromSharedPrefs();
         logClickIds();
         Timber.d("metronome play()");
         if(p.getTempoMultiplier() != 0) {
@@ -186,13 +184,12 @@ public class Metronome {
             tempo *= p.getTempoMultiplier();
         }
         mDelay = 60000 / p.getSubdivision() / tempo;
-        Timber.d(p.toString());
+//        Timber.d(p.toString());
         final int[] beats = Utilities.integerListToArray(p.getBeats());
         final int[] downBeats = Utilities.integerListToArray(p.getDownBeats());
         final int countOffSubs = p.getCountOffSubdivision();
         final int measureNumberOffset = p.getMeasureCountOffset();
 
-        getClicksFromSharedPrefs();
 
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
             int nextClick = 0;  // number of subdivisions in 'this' beat, before next click
@@ -252,6 +249,7 @@ public class Metronome {
      * @param groupings
      */
     public void play(int tempo, List<Integer> groupings) {
+        getClicksFromSharedPrefs();
 
         Timber.d("play an odd-meter loop");
 
@@ -261,7 +259,6 @@ public class Metronome {
 
         mDelay = 60000 / tempo;
 
-        getClicksFromSharedPrefs();
 
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
             int nextClick = 0;  // number of subdivisions in 'this' beat, before next click

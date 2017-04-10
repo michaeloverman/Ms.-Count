@@ -39,6 +39,7 @@ public class PieceOfMusic implements Serializable {
     private int mMeasureCountOffset;
     private List<DataEntry> mRawData;
     private String mFirebaseId;
+    private String mCreatorId;
 
     public PieceOfMusic(String title) {
         Timber.d("PieceOfMusic constructor()");
@@ -47,6 +48,13 @@ public class PieceOfMusic implements Serializable {
 
     public PieceOfMusic() { }
 
+    public String getCreatorId() {
+        return mCreatorId;
+    }
+
+    public void setCreatorId(String id) {
+        mCreatorId = id;
+    }
     public String getTitle() {
         return mTitle;
     }
@@ -157,7 +165,7 @@ public class PieceOfMusic implements Serializable {
         return mRawData;
     }
 
-    public String getRawDataAsString() {
+    public String rawDataAsString() {
         StringBuilder rawString = new StringBuilder();
         for(DataEntry d : mRawData) {
             rawString.append(d);
@@ -235,6 +243,7 @@ public class PieceOfMusic implements Serializable {
         private int baselineNoteValue;
         private int measureCountOffset;
         private String firebaseId;
+        private String creatorId;
 
         public Builder() {
 
@@ -321,6 +330,10 @@ public class PieceOfMusic implements Serializable {
             this.firebaseId = id;
             return this;
         }
+        public Builder creatorId(String id) {
+            this.creatorId = id;
+            return this;
+        }
         public PieceOfMusic build() {
             return new PieceOfMusic(this);
         }
@@ -339,6 +352,7 @@ public class PieceOfMusic implements Serializable {
         mBaselineNoteValue = builder.baselineNoteValue == 0 ? QUARTER : builder.baselineNoteValue;
         mRawData = builder.rawData;
         mFirebaseId = builder.firebaseId;
+        mCreatorId = builder.creatorId;
 
         buildCountoff();
     }

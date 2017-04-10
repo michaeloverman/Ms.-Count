@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -88,7 +89,31 @@ public class MetaDataEntryFragment extends Fragment
         mBuilder = new PieceOfMusic.Builder();
         mPieceOfMusic = new PieceOfMusic();
 
+//        rewriteAllProgramsWithCreatorId();
 
+    }
+
+    private void rewriteAllProgramsWithCreatorId() {
+        final DatabaseReference dRef = FirebaseDatabase.getInstance().getReference();
+        dRef.child("pieces")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Iterable<DataSnapshot> programs = dataSnapshot.getChildren();
+                        for(DataSnapshot snap : programs) {
+                            PieceOfMusic p = snap.getValue(PieceOfMusic.class);
+                            p.setCreatorId("dvM60nH1mHYBYjuBAxminpA4Zve2");
+                            Map<String, Object> update = new HashMap<>();
+                            update.put("/pieces/" + snap.getKey(), p);
+                            dRef.updateChildren(update);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     @Override
@@ -365,10 +390,19 @@ public class MetaDataEntryFragment extends Fragment
 
         // get other optional data entries, if present: tempo multiplier,
 
-
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if(auth != null) {
+            String creator = auth.getCurrentUser().getUid();
+            mBuilder.creatorId(creator);
+        }
 
         mPieceOfMusic = mBuilder.build();
 
+//        if(!userAuthorizedToSaveToFirebase()) {
+//            Toast.makeText(mActivity, "You are not the creator of this program. You may only save locally.", Toast.LENGTH_SHORT).show();
+//            // TODO change from using Firebase to something else;
+//            return;
+//        }
         checkForExistingData();
 
     }
@@ -395,21 +429,24 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private void checkFirebaseForExistence() {
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference();
 
         // Look for piece first, and if exists, get that key to update; otherwise push() to create
         // new key for new piece.
         final String composer = mPieceOfMusic.getAuthor();
         final String title = mPieceOfMusic.getTitle();
-        mPiecesDatabaseReference.child("composers").child(composer).child(title)
+        databaseReference.child("composers").child(composer).child(title)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            overwriteDataAlertDialog(title, composer);
+                            String key = dataSnapshot.getValue().toString();
+                            checkIfAuthorizedCreator(key);
+
+
                         } else {
-                            saveToDatabase(mPieceOfMusic);
+                            saveToFirebase(mPieceOfMusic);
                         }
                     }
 
@@ -417,6 +454,29 @@ public class MetaDataEntryFragment extends Fragment
                     public void onCancelled(DatabaseError databaseError) {
                         Toast.makeText(getContext(), "Error: Database problem. Save canceled.",
                                 Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void checkIfAuthorizedCreator(String key) {
+        FirebaseDatabase.getInstance().getReference().child("pieces").child(key)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        PieceOfMusic pieceFromFirebase = dataSnapshot.getValue(PieceOfMusic.class);
+                        Timber.d("mPiece: " + mPieceOfMusic.getCreatorId());
+                        Timber.d("firePi: " + pieceFromFirebase.getCreatorId());
+                        if(pieceFromFirebase.getCreatorId().equals(mPieceOfMusic.getCreatorId())) {
+                            overwriteDataAlertDialog(mPieceOfMusic.getTitle(), mPieceOfMusic.getAuthor());
+                        } else {
+                            Toast.makeText(mActivity, R.string.not_authorized_save_local,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
                     }
                 });
     }
@@ -436,7 +496,7 @@ public class MetaDataEntryFragment extends Fragment
         dialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        saveToDatabase(mPieceOfMusic);
+                        saveToFirebase(mPieceOfMusic);
                     }
                 })
                 .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
@@ -450,9 +510,9 @@ public class MetaDataEntryFragment extends Fragment
         alert.show();
     }
 
-    private void saveToDatabase(final PieceOfMusic p) {
+    private void saveToFirebase(final PieceOfMusic p) {
         Timber.d("Saving to local database, or to Firebase: " + p.getTitle() + " by " + p.getAuthor());
-        Timber.d("Pieces is " + p.getDownBeats().size() + " measures long.");
+//        Timber.d("Pieces is " + p.getDownBeats().size() + " measures long.");
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();

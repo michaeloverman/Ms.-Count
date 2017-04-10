@@ -37,6 +37,7 @@
     <string name="mark_as_favorite_menu">Mark as favorite</string>
     <string name="mark_as_unfavorite_menu">Unmark as favorite</string>
     <string name="need_program_before_favorite">You must have a program loaded to mark it as favorite.</string>
+    <string name="not_authorized_save_local">You are not authorized to overwrite this program. Please save locally.</string>
 
 
 </resources>

@@ -86,7 +86,7 @@ public class Utilities {
         values.put(ProgramDatabaseSchema.MetProgram.COLUMN_DEFAULT_RHYTHM, piece.getBaselineNoteValue());
         values.put(ProgramDatabaseSchema.MetProgram.COLUMN_TEMPO_MULTIPLIER, piece.getTempoMultiplier());
         values.put(ProgramDatabaseSchema.MetProgram.COLUMN_MEASURE_COUNT_OFFSET, piece.getMeasureCountOffset());
-        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_DATA_ARRAY, piece.getRawDataAsString());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_DATA_ARRAY, piece.rawDataAsString());
         values.put(ProgramDatabaseSchema.MetProgram.COLUMN_FIREBASE_ID, piece.getFirebaseId());
 
         return values;

@@ -1,14 +1,9 @@
 package tech.michaeloverman.android.mscount.database;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -42,17 +37,16 @@ import timber.log.Timber;
  * Created by Michael on 2/26/2017.
  */
 
-public class ComposerSelectFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+public class ComposerSelectFragment extends Fragment {
 
-    private static final int COMPOSER_LOADER_ID = 99;
+//    private static final int COMPOSER_LOADER_ID = 99;
     private static final int NO_DATA_ERROR_CODE = 42;
 
     @BindView(R.id.composer_recycler_view) RecyclerView mRecyclerView;
     @BindView(R.id.composer_select_progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.empty_data_view) TextView mErrorView;
     private ComposerListAdapter mAdapter;
-    private static Cursor mCursor;
+//    private static Cursor mCursor;
     private LoadNewProgramActivity mActivity;
 
     /** Listener for returning selection to PreprogrammedMetronomeFragment */
@@ -108,9 +102,9 @@ public class ComposerSelectFragment extends Fragment implements
         View view = inflater.inflate(R.layout.select_composer_layout, container, false);
         ButterKnife.bind(this, view);
 
-        if(mCursor != null) {
-            mActivity.getSupportLoaderManager().restartLoader(COMPOSER_LOADER_ID, null, this);
-        }
+//        if(mCursor != null) {
+//            mActivity.getSupportLoaderManager().restartLoader(COMPOSER_LOADER_ID, null, this);
+//        }
 
         mActivity.setTitle(getString(R.string.select_a_composer));
 
@@ -137,7 +131,7 @@ public class ComposerSelectFragment extends Fragment implements
     private void loadComposers() {
         Timber.d("loadComposers()");
         progressSpinner(true);
-        if(mActivity.useFirebase) {
+//        if(mActivity.useFirebase) {
             FirebaseDatabase.getInstance().getReference().child("composers")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -157,9 +151,9 @@ public class ComposerSelectFragment extends Fragment implements
 
                         }
                     });
-        } else {
-            mActivity.getSupportLoaderManager().initLoader(COMPOSER_LOADER_ID, null, this);
-        }
+//        } else {
+//            mActivity.getSupportLoaderManager().initLoader(COMPOSER_LOADER_ID, null, this);
+//        }
 
     }
 
@@ -168,40 +162,40 @@ public class ComposerSelectFragment extends Fragment implements
         loadComposers();
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//        String[] projection = new String[] {ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER };
-
-        switch(id) {
-            case COMPOSER_LOADER_ID:
-                Uri queryUri = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
-                String sortOrder = ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER + " ASC";
-
-                return new CursorLoader(getContext(),
-                        queryUri,
-//                        projection,
-                        null,
-                        null,
-                        null,
-                        sortOrder);
-
-            default:
-                throw new RuntimeException("Loader not Implemented: " + id);
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        progressSpinner(false);
-        if(data == null || data.getCount() == 0) {
-            mErrorView.setVisibility(View.VISIBLE);
-            updateEmptyView(NO_DATA_ERROR_CODE);
-        } else {
-            mCursor = data;
-            mErrorView.setVisibility(View.GONE);
-            mAdapter.newCursor(mCursor);
-        }
-    }
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+////        String[] projection = new String[] {ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER };
+//
+//        switch(id) {
+//            case COMPOSER_LOADER_ID:
+//                Uri queryUri = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
+//                String sortOrder = ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER + " ASC";
+//
+//                return new CursorLoader(getContext(),
+//                        queryUri,
+////                        projection,
+//                        null,
+//                        null,
+//                        null,
+//                        sortOrder);
+//
+//            default:
+//                throw new RuntimeException("Loader not Implemented: " + id);
+//        }
+//    }
+//
+//    @Override
+//    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//        progressSpinner(false);
+//        if(data == null || data.getCount() == 0) {
+//            mErrorView.setVisibility(View.VISIBLE);
+//            updateEmptyView(NO_DATA_ERROR_CODE);
+//        } else {
+//            mCursor = data;
+//            mErrorView.setVisibility(View.GONE);
+//            mAdapter.newCursor(mCursor);
+//        }
+//    }
 
     private void updateEmptyView(int code) {
         Timber.d("updateEmptyView(code = " + code);
@@ -216,10 +210,10 @@ public class ComposerSelectFragment extends Fragment implements
         mErrorView.setText(message);
     }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.newCursor(null);
-    }
+//    @Override
+//    public void onLoaderReset(Loader<Cursor> loader) {
+//        mAdapter.newCursor(null);
+//    }
     /**
      * Adapter class to handle recycler view, listing composer names
      */
@@ -255,25 +249,25 @@ public class ComposerSelectFragment extends Fragment implements
             notifyDataSetChanged();
         }
 
-        public void newCursor(Cursor data) {
-            List<String> list = new ArrayList<>();
-            if(data == null) {
-                composers = list;
-                return;
-            }
-
-            try {
-                data.moveToFirst();
-                while (!data.isAfterLast()) {
-                    list.add(data.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER));
-                    data.moveToNext();
-                }
-            } finally {
-                data.close();
-            }
-
-            setComposers(list);
-        }
+//        public void newCursor(Cursor data) {
+//            List<String> list = new ArrayList<>();
+//            if(data == null) {
+//                composers = list;
+//                return;
+//            }
+//
+//            try {
+//                data.moveToFirst();
+//                while (!data.isAfterLast()) {
+//                    list.add(data.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER));
+//                    data.moveToNext();
+//                }
+//            } finally {
+//                data.close();
+//            }
+//
+//            setComposers(list);
+//        }
 
         class ComposerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             @BindView(R.id.composer_name_tv)

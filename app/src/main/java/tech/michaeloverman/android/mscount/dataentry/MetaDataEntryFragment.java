@@ -207,11 +207,7 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private void loadProgram() {
-//        Fragment fragment = PieceSelectFragment.newInstance();
-//        FragmentTransaction trans = getFragmentManager().beginTransaction();
-//        trans.replace(R.id.fragment_container, fragment);
-//        trans.addToBackStack(null);
-//        trans.commit();
+
         Intent intent = new Intent(mActivity, LoadNewProgramActivity.class);
         startActivityForResult(intent, REQUEST_NEW_PROGRAM);
     }
@@ -227,6 +223,9 @@ public class MetaDataEntryFragment extends Fragment
             case REQUEST_NEW_PROGRAM:
                 mPieceOfMusic = (PieceOfMusic) data.getSerializableExtra(
                         LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
+                if(mPieceOfMusic.getRawData() == null) {
+                    mPieceOfMusic.constructRawData();
+                }
                 updateGUI();
                 break;
             default:
@@ -381,38 +380,45 @@ public class MetaDataEntryFragment extends Fragment
     private void checkForExistingData() {
 
 //        if(mActivity.useFirebase) {
-        // TODO this is not right - fix this before too long...
         if(true) {
-            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
-
-            // Look for piece first, and if exists, get that key to update; otherwise push() to create
-            // new key for new piece.
-            final String composer = mPieceOfMusic.getAuthor();
-            final String title = mPieceOfMusic.getTitle();
-            mPiecesDatabaseReference.child("composers").child(composer).child(title)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                overwriteDataAlertDialog(title, composer);
-                            } else {
-                                saveToDatabase(mPieceOfMusic);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Toast.makeText(getContext(), "Error: Database problem. Save canceled.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            checkFirebaseForExistence();
         } else {
-            Timber.d("checkForExistingData() THIS IS THE METHOD WHERE IT SHOULD CONNECT TO DB");
-            ContentValues contentValues = Utilities.getContentValuesFromPiece(mPieceOfMusic);
-            ContentResolver resolver = getContext().getContentResolver();
-            resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
+            saveToSql();
         }
+    }
+
+    private void saveToSql() {
+        Timber.d("checkForExistingData() THIS IS THE METHOD WHERE IT SHOULD CONNECT TO DB");
+        ContentValues contentValues = Utilities.getContentValuesFromPiece(mPieceOfMusic);
+        ContentResolver resolver = getContext().getContentResolver();
+        resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
+    }
+
+    private void checkFirebaseForExistence() {
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
+
+        // Look for piece first, and if exists, get that key to update; otherwise push() to create
+        // new key for new piece.
+        final String composer = mPieceOfMusic.getAuthor();
+        final String title = mPieceOfMusic.getTitle();
+        mPiecesDatabaseReference.child("composers").child(composer).child(title)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            overwriteDataAlertDialog(title, composer);
+                        } else {
+                            saveToDatabase(mPieceOfMusic);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getContext(), "Error: Database problem. Save canceled.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**

@@ -46,7 +46,7 @@ public class PieceSelectFragment extends Fragment
         ComposerSelectFragment.ComposerCallback,
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int WORKS_LOADER_ID = 101;
+    private static final int ID_PROGRAM_LOADER = 432;
     private static final int NO_DATA_ERROR_CODE = 41;
 
     @BindView(R.id.piece_list_recycler_view) RecyclerView mRecyclerView;
@@ -57,6 +57,7 @@ public class PieceSelectFragment extends Fragment
     private String mCurrentComposer;
     private WorksListAdapter mAdapter;
     private List<TitleKeyObject> mTitlesList;
+    private Cursor mCursor;
     private PieceOfMusic mPieceOfMusic;
 
     private LoadNewProgramActivity mActivity;
@@ -84,6 +85,9 @@ public class PieceSelectFragment extends Fragment
 //        Timber.d("useFirebase = " + mActivity.useFirebase);
 
         mActivity = (LoadNewProgramActivity) getActivity();
+
+
+//        mActivity.getSupportLoaderManager().initLoader(ID_PROGRAM_LOADER, null, this);
 
     }
 
@@ -193,7 +197,7 @@ public class PieceSelectFragment extends Fragment
     public void newComposer(String name) {
         mCurrentComposer = name;
         if(!mActivity.useFirebase) {
-            mActivity.getSupportLoaderManager().restartLoader(WORKS_LOADER_ID, null, this);
+            mActivity.getSupportLoaderManager().restartLoader(ID_PROGRAM_LOADER, null, this);
         }
     }
 
@@ -225,7 +229,7 @@ public class PieceSelectFragment extends Fragment
                     });
         } else {
             Timber.d("Checking SQL for composer " + mCurrentComposer);
-            getActivity().getSupportLoaderManager().initLoader(WORKS_LOADER_ID, null, this);
+            getActivity().getSupportLoaderManager().initLoader(ID_PROGRAM_LOADER, null, this);
         }
     }
 
@@ -233,15 +237,13 @@ public class PieceSelectFragment extends Fragment
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-//        String[] projection = new String[] { ProgramDatabaseSchema.MetProgram.COLUMN_TITLE,
-//                                             ProgramDatabaseSchema.MetProgram.COLUMN_FIREBASE_ID };
         switch(id) {
-            case WORKS_LOADER_ID:
+            case ID_PROGRAM_LOADER:
                 Uri composerQueryUri = ProgramDatabaseSchema.MetProgram.buildUriWithComposer(mCurrentComposer);
                 Timber.d("onCreateLoader() composerQueryUri: " + composerQueryUri);
                 String sortOrder = ProgramDatabaseSchema.MetProgram.COLUMN_TITLE + " ASC";
 
-                return new CursorLoader(getContext(),
+                return new CursorLoader(mActivity,
                         composerQueryUri,
 //                        projection,
                         null,
@@ -266,9 +268,9 @@ public class PieceSelectFragment extends Fragment
             mErrorView.setVisibility(View.VISIBLE);
             updateEmptyView(NO_DATA_ERROR_CODE);
         } else {
-//            mCursor = data;
+            mCursor = data;
             mErrorView.setVisibility(View.GONE);
-//            mAdapter.newCursor(mCursor);
+            mAdapter.newCursor(mCursor);
         }
     }
 

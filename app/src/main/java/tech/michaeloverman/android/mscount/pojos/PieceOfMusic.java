@@ -205,6 +205,23 @@ public class PieceOfMusic implements Serializable {
         mDownBeats = downBeats;
     }
 
+    public void constructRawData() {
+        if(mRawData != null) {
+            return;
+        }
+        mRawData = new ArrayList<>();
+        int currentBeatCount = mDownBeats.get(0);
+        for(int i = 1; i < mDownBeats.size(); i++) {
+            mRawData.add(new DataEntry(i, true));
+            for(int j = 0; j < mDownBeats.get(i); j++) {
+                if(currentBeatCount >= mBeats.size()) {
+                    mBeats.add(mSubdivision);
+                }
+                mRawData.add(new DataEntry(mBeats.get(currentBeatCount++), false));
+            }
+        }
+    }
+
     public static class Builder {
         private String title;
         private String author;

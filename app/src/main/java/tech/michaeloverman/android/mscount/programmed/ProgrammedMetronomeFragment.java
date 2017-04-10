@@ -1,5 +1,6 @@
 package tech.michaeloverman.android.mscount.programmed;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,12 +36,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.database.LoadNewProgramActivity;
+import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.dataentry.MetaDataEntryFragment;
 import tech.michaeloverman.android.mscount.favorites.FavoritesContract;
 import tech.michaeloverman.android.mscount.favorites.FavoritesDBHelper;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import tech.michaeloverman.android.mscount.utils.Utilities;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
@@ -412,9 +415,11 @@ public class ProgrammedMetronomeFragment extends Fragment
                 if(mIsCurrentFavorite) {
                     fillMenuItem(item);
                     makePieceFavorite();
+                    saveToSql();
                 } else {
                     unfillMenuItem(item);
                     makePieceUnfavorite();
+                    deleteFromSql();
                 }
                 return true;
             default:
@@ -453,6 +458,16 @@ public class ProgrammedMetronomeFragment extends Fragment
         String[] selectionArgs = { mCurrentPiece.getFirebaseId() };
         db.delete(FavoritesContract.FavoriteEntry.TABLE_NAME, selection, selectionArgs);
         db.close();
+    }
+
+    private void saveToSql() {
+        Timber.d("checkForExistingData() THIS IS THE METHOD WHERE IT SHOULD CONNECT TO DB");
+        ContentValues contentValues = Utilities.getContentValuesFromPiece(mCurrentPiece);
+        ContentResolver resolver = getContext().getContentResolver();
+        resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
+    }
+    private void deleteFromSql() {
+
     }
 
     private class CheckIfFavoriteTask extends AsyncTask<String, Void, Boolean> {

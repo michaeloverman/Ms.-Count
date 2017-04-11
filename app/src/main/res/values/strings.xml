@@ -47,6 +47,7 @@
     <string name="error_no_title_message">Error: Please enter a title.</string>
     <string name="error_no_subdivision_message">Error: Please enter a baseline subdivision.</string>
     <string name="error_no_countoff_message">Error: Please enter a countoff subdivision.</string>
+    <string name="select_a_piece">Select a piece...</string>
 
 
 </resources>

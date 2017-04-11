@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,9 +51,10 @@ public class PieceSelectFragment extends Fragment
     private static final int NO_DATA_ERROR_CODE = 41;
 
     @BindView(R.id.piece_list_recycler_view) RecyclerView mRecyclerView;
-    @BindView(R.id.other_pieces_label) TextView mWorksListTitle;
+    @BindView(R.id.composers_name_label) TextView mComposersNameView;
     @BindView(R.id.error_view) TextView mErrorView;
     @BindView(R.id.program_select_progress_bar) ProgressBar mProgressSpinner;
+    @BindView(R.id.select_composer_button) Button mSelectComposerButton;
 
     private String mCurrentComposer;
     private WorksListAdapter mAdapter;
@@ -107,6 +109,8 @@ public class PieceSelectFragment extends Fragment
         View view = inflater.inflate(R.layout.program_select_fragment, container, false);
         ButterKnife.bind(this, view);
 
+        Timber.d("onCreateView useFirebase: " + mActivity.useFirebase);
+
 //        if(mCursor != null) {
 //            mActivity.getSupportLoaderManager().restartLoader(WORKS_LOADER_ID, null, this);
 //        }
@@ -116,16 +120,21 @@ public class PieceSelectFragment extends Fragment
         mAdapter = new WorksListAdapter(this.getContext(), mTitlesList, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        mActivity.setTitle(getString(R.string.select_piece_by));
         mCurrentComposer = mActivity.mCurrentComposer;
         Timber.d("onCreate() Composer: " + mCurrentComposer);
 
-        if(mCurrentComposer == null) {
+        if(mActivity.useFirebase) {
+            mActivity.setTitle(getString(R.string.select_piece_by));
+        } else {
+            mActivity.setTitle(getString(R.string.select_a_piece));
+            makeComposerRelatedViewsInvisible();
+        }
+
+        if (mActivity.useFirebase && mCurrentComposer == null) {
             selectComposer();
         } else {
             composerSelected();
         }
-
 
         return view;
     }
@@ -137,7 +146,7 @@ public class PieceSelectFragment extends Fragment
 //        sProgramCallback = null;
     }
 
-    @OnClick( { R.id.select_composer_button, R.id.other_pieces_label } )
+    @OnClick( { R.id.select_composer_button, R.id.composers_name_label} )
     public void selectComposer() {
 //        mCurrentPiece = null;
         Fragment fragment = ComposerSelectFragment.newInstance(this);
@@ -145,7 +154,6 @@ public class PieceSelectFragment extends Fragment
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
-
     }
 
     @Override
@@ -171,23 +179,22 @@ public class PieceSelectFragment extends Fragment
                         }
                     });
         } else {
-//            mCursor.moveToPosition(position);
-//            PieceOfMusic.Builder builder = new PieceOfMusic.Builder()
-//                    .author(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER))
-//                    .title(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE))
-//                    .subdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_PRIMANY_SUBDIVISIONS))
-//                    .countOffSubdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_COUNOFF_SUBDIVISIONS))
-//                    .defaultTempo(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_TEMPO))
-//                    .baselineNoteValue(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_RHYTHM))
-//                    .tempoMultiplier(mCursor.getDouble(ProgramDatabaseSchema.MetProgram.POSITION_TEMPO_MULTIPLIER))
-//                    .firstMeasureNumber(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_MEASURE_COUNTE_OFFSET))
-//                    .dataEntries(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_DATA_ARRAY))
-//                    .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID));
-////            mCursor.close();
-            //TODO call AsyncTask to access SQL Database for details.
-            //TODO build new piece
-            PieceOfMusic.Builder builder = new PieceOfMusic.Builder();
+            mCursor.moveToPosition(position);
+            PieceOfMusic.Builder builder = new PieceOfMusic.Builder()
+                    .author(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER))
+                    .title(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE))
+                    .subdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_PRIMANY_SUBDIVISIONS))
+                    .countOffSubdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_COUNOFF_SUBDIVISIONS))
+                    .defaultTempo(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_TEMPO))
+                    .baselineNoteValue(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_RHYTHM))
+                    .tempoMultiplier(mCursor.getDouble(ProgramDatabaseSchema.MetProgram.POSITION_TEMPO_MULTIPLIER))
+                    .firstMeasureNumber(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_MEASURE_COUNTE_OFFSET))
+                    .dataEntries(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_DATA_ARRAY))
+                    .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID));
+            mCursor.close();
+
             mActivity.setProgramResult(builder.build());
+            mActivity.finish();
         }
 
 //        getFragmentManager().popBackStackImmediate();
@@ -217,9 +224,8 @@ public class PieceSelectFragment extends Fragment
                                 list.add(new TitleKeyObject(snap.getKey(), snap.getValue().toString()));
                             }
                             mAdapter.setTitles(list);
-                            mWorksListTitle.setText(mCurrentComposer);
+                            mComposersNameView.setText(mCurrentComposer);
                             progressSpinner(false);
-//                        onClick(list.get(0).getKey());
                         }
 
                         @Override
@@ -228,7 +234,7 @@ public class PieceSelectFragment extends Fragment
                         }
                     });
         } else {
-            Timber.d("Checking SQL for composer " + mCurrentComposer);
+            Timber.d("Checking SQL for pieces ");
             getActivity().getSupportLoaderManager().initLoader(ID_PROGRAM_LOADER, null, this);
         }
     }
@@ -239,12 +245,12 @@ public class PieceSelectFragment extends Fragment
 
         switch(id) {
             case ID_PROGRAM_LOADER:
-                Uri composerQueryUri = ProgramDatabaseSchema.MetProgram.buildUriWithComposer(mCurrentComposer);
-                Timber.d("onCreateLoader() composerQueryUri: " + composerQueryUri);
+                Uri queryUri = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
+                Timber.d("onCreateLoader() queryUri: " + queryUri);
                 String sortOrder = ProgramDatabaseSchema.MetProgram.COLUMN_TITLE + " ASC";
 
                 return new CursorLoader(mActivity,
-                        composerQueryUri,
+                        queryUri,
 //                        projection,
                         null,
                         null,
@@ -275,7 +281,27 @@ public class PieceSelectFragment extends Fragment
     }
 
     public void updateData() {
-        selectComposer();
+        if(mActivity.useFirebase) {
+            makeComposerRelatedViewsVisible();
+            selectComposer();
+        } else {
+            mCurrentComposer = null;
+            makeComposerRelatedViewsInvisible();
+            composerSelected();
+        }
+    }
+
+    private void makeComposerRelatedViewsVisible() {
+        Timber.d("showing views");
+        mSelectComposerButton.setVisibility(View.VISIBLE);
+        mComposersNameView.setVisibility(View.VISIBLE);
+        mActivity.setTitle(getString(R.string.select_piece_by));
+    }
+    private void makeComposerRelatedViewsInvisible() {
+        Timber.d("removing views");
+        mSelectComposerButton.setVisibility(View.GONE);
+        mComposersNameView.setVisibility(View.GONE);
+        mActivity.setTitle(getString(R.string.select_a_piece));
     }
 
     private void updateEmptyView(int code) {
@@ -297,10 +323,10 @@ public class PieceSelectFragment extends Fragment
 
     private void progressSpinner(boolean on) {
         if(on) {
-            mWorksListTitle.setVisibility(View.INVISIBLE);
+            mComposersNameView.setVisibility(View.INVISIBLE);
             mProgressSpinner.setVisibility(View.VISIBLE);
         } else {
-            mWorksListTitle.setVisibility(View.VISIBLE);
+            mComposersNameView.setVisibility(View.VISIBLE);
             mProgressSpinner.setVisibility(View.INVISIBLE);
         }
     }

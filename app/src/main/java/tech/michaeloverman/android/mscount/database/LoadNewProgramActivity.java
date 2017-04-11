@@ -53,8 +53,11 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         } else {
             mCurrentComposer = null;
         }
+        if(intent.hasExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE)) {
+            useFirebase = intent.getBooleanExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE, true);
+            Timber.d("useFirebase received from intent: " + useFirebase);
+        }
 
-        useFirebase = true;
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -63,7 +66,7 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
                 if (user != null) {
                     // User is signed in
                     Timber.d("onAuthStateChanged:signed_in:" + user.getUid());
-                    useFirebase = true;
+//                    useFirebase = true;
                 } else {
                     // User is signed out
                     Timber.d("onAuthStateChanged:signed_out");
@@ -86,18 +89,21 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         }
         Intent data = new Intent();
         data.putExtra(EXTRA_NEW_PROGRAM, piece);
+        data.putExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE, useFirebase);
         setResult(RESULT_OK, data);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Timber.d("onStart useFirebase: " + useFirebase);
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        Timber.d("onStop useFirebase: " + useFirebase);
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
@@ -187,6 +193,7 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         }
     }
 //TODO this method is needed when by the save data method someplace else
+    // MAYBE NOT anymore - using userId to validate specific program access
 //    private void checkAdmin() {
 //        FirebaseDatabase.getInstance().getReference().child("admin")
 //                .child(mAuth.getCurrentUser().getUid())

@@ -66,6 +66,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final String PREF_PIECE_KEY = "programmable_piece_id";
     private static final int REQUEST_NEW_PROGRAM = 44;
     public static final String EXTRA_COMPOSER_NAME = "composer_name_extra";
+    public static final String EXTRA_USE_FIREBASE = "program_database_option";
 
     private PieceOfMusic mCurrentPiece;
     private String mCurrentPieceKey;
@@ -282,6 +283,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void selectNewProgram() {
         Intent intent = new Intent(mActivity, LoadNewProgramActivity.class);
         intent.putExtra(EXTRA_COMPOSER_NAME, mCurrentComposer);
+        intent.putExtra(EXTRA_USE_FIREBASE, mActivity.useFirebase);
         startActivityForResult(intent, REQUEST_NEW_PROGRAM);
     }
 
@@ -299,6 +301,7 @@ public class ProgrammedMetronomeFragment extends Fragment
                         LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
                 mCurrentPieceKey = mCurrentPiece.getFirebaseId();
                 mCurrentTempo = mCurrentPiece.getDefaultTempo();
+                mActivity.useFirebase = data.getBooleanExtra(EXTRA_USE_FIREBASE, true);
                 Timber.d("New Piece loaded. FirebaseId: " + mCurrentPiece.getFirebaseId());
                 updateVariables();
                 break;
@@ -385,8 +388,9 @@ public class ProgrammedMetronomeFragment extends Fragment
 
         updateGUI();
 
-        new CheckIfFavoriteTask().execute(mCurrentPieceKey);
-
+        if(mCurrentPieceKey != null) {
+            new CheckIfFavoriteTask().execute(mCurrentPieceKey);
+        }
     }
 
     private void updateGUI() {

@@ -67,6 +67,7 @@ public class MetaDataEntryFragment extends Fragment
 
     private PieceOfMusic mPieceOfMusic;
     private PieceOfMusic.Builder mBuilder;
+    private String mFirebaseId;
     private List<DataEntry> mDataEntries;
     private List<Integer> mDownBeats;
 
@@ -247,6 +248,7 @@ public class MetaDataEntryFragment extends Fragment
                 if(mPieceOfMusic.getRawData() == null) {
                     mPieceOfMusic.constructRawData();
                 }
+                mFirebaseId = mPieceOfMusic.getFirebaseId();
                 updateGUI();
                 break;
             default:
@@ -271,23 +273,25 @@ public class MetaDataEntryFragment extends Fragment
         // get all the metadata fields
         if (!validateMetaDataEntries()) return;
 
-        getFirebaseAuthId();
+        mBuilder.firebaseId(mFirebaseId);
+
+        mBuilder.creatorId(getFirebaseAuthId());
 
         mPieceOfMusic = mBuilder.build();
 
-        if(mActivity.useFirebase()) {
+        if(mActivity.useFirebase) {
             checkFirebaseForExistingData(); // beginning of method chain to save to cloud
         } else {
             saveToSqlDatabase();
         }
     }
 
-    private void getFirebaseAuthId() {
+    private String getFirebaseAuthId() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if(auth != null) {
-            String creator = auth.getCurrentUser().getUid();
-            mBuilder.creatorId(creator);
+            return auth.getCurrentUser().getUid();
         }
+        return null;
     }
 
     private boolean validateMetaDataEntries() {

@@ -30,9 +30,10 @@ import timber.log.Timber;
 public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
     private static final int FIREBASE_SIGN_IN = 456;
+    private static final String KEY_USE_FIREBASE = "use_firebase_key";
     protected FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private boolean useFirebase;
+    public boolean useFirebase;
 
     @Override
     protected Fragment createFragment() {
@@ -43,7 +44,10 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        useFirebase = true;
+        if(savedInstanceState != null) {
+            useFirebase = savedInstanceState.getBoolean(KEY_USE_FIREBASE);
+        }
+
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -52,7 +56,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
                 if (user != null) {
                     // User is signed in
                     Timber.d("onAuthStateChanged:signed_in:" + user.getUid());
-                    useFirebase = true;
+//                    useFirebase = true;
                 } else {
                     // User is signed out
                     Timber.d("onAuthStateChanged:signed_out");
@@ -74,6 +78,12 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_USE_FIREBASE, useFirebase);
     }
 
     @Override
@@ -179,8 +189,5 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         }
     }
 
-    public boolean useFirebase() {
-        return useFirebase;
-    }
 
 }

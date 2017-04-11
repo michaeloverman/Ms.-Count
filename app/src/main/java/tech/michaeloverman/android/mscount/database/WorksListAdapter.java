@@ -41,14 +41,14 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
 
     @Override
     public WorksViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Timber.d("onCreateViewHolder()");
+//        Timber.d("onCreateViewHolder()");
         View item = LayoutInflater.from(mContext).inflate(R.layout.list_item_work, parent, false);
         return new WorksViewHolder(item);
     }
 
     @Override
     public void onBindViewHolder(WorksViewHolder holder, int position) {
-        Timber.d("onBindViewHolder()");
+//        Timber.d("onBindViewHolder()");
         holder.title.setText(mTitles.get(position).getTitle());
     }
 
@@ -67,7 +67,6 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
         List<TitleKeyObject> titles = new ArrayList<>();
         if(data == null) {
             Timber.d("Null cursor...");
-//            Toast.makeText(mContext, "PROBLEM: No data in database!", Toast.LENGTH_SHORT).show();
             mTitles = titles;
             return;
         }
@@ -95,7 +94,7 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
 
         WorksViewHolder(View itemView) {
             super(itemView);
-            Timber.d("WorksViewHolder constructor()");
+//            Timber.d("WorksViewHolder constructor()");
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }

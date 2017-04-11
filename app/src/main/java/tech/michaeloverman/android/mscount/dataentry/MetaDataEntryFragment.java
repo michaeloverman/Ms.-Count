@@ -89,32 +89,30 @@ public class MetaDataEntryFragment extends Fragment
         mBuilder = new PieceOfMusic.Builder();
         mPieceOfMusic = new PieceOfMusic();
 
-//        rewriteAllProgramsWithCreatorId();
-
     }
 
-    private void rewriteAllProgramsWithCreatorId() {
-        final DatabaseReference dRef = FirebaseDatabase.getInstance().getReference();
-        dRef.child("pieces")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Iterable<DataSnapshot> programs = dataSnapshot.getChildren();
-                        for(DataSnapshot snap : programs) {
-                            PieceOfMusic p = snap.getValue(PieceOfMusic.class);
-                            p.setCreatorId("dvM60nH1mHYBYjuBAxminpA4Zve2");
-                            Map<String, Object> update = new HashMap<>();
-                            update.put("/pieces/" + snap.getKey(), p);
-                            dRef.updateChildren(update);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-    }
+//    private void rewriteAllProgramsWithCreatorId() {
+//        final DatabaseReference dRef = FirebaseDatabase.getInstance().getReference();
+//        dRef.child("pieces")
+//                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        Iterable<DataSnapshot> programs = dataSnapshot.getChildren();
+//                        for(DataSnapshot snap : programs) {
+//                            PieceOfMusic p = snap.getValue(PieceOfMusic.class);
+//                            p.setCreatorId("dvM60nH1mHYBYjuBAxminpA4Zve2");
+//                            Map<String, Object> update = new HashMap<>();
+//                            update.put("/pieces/" + snap.getKey(), p);
+//                            dRef.updateChildren(update);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -147,7 +145,7 @@ public class MetaDataEntryFragment extends Fragment
                     int countoff = Integer.parseInt(s.toString());
                     if(primary % countoff != 0) {
                         Toast.makeText(getContext(),
-                                "Countoff subdivisions must divide evenly into baseline subdivisions.",
+                                R.string.countoff_must_fit_subdivisions,
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -166,13 +164,14 @@ public class MetaDataEntryFragment extends Fragment
                         int tempo = Integer.parseInt(mDefaultTempoEntry.getText().toString());
                         if(tempo < Metronome.MIN_TEMPO || tempo > Metronome.MAX_TEMPO) {
                             Toast.makeText(getContext(), String.format(
-                                    "Tempo must be between %d and %d", Metronome.MIN_TEMPO, Metronome.MAX_TEMPO),
+                                    getString(R.string.tempo_between_min_max),
+                                            Metronome.MIN_TEMPO, Metronome.MAX_TEMPO),
                                     Toast.LENGTH_SHORT).show();
                             mDefaultTempoEntry.setText("");
                             return;
                         }
                     } catch (NumberFormatException n) {
-                        Toast.makeText(getContext(), "Tempo must be an integer.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.tempo_must_be_integer, Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
@@ -220,9 +219,6 @@ public class MetaDataEntryFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.create_new_program_option:
-//                enterBeatsClicked();
-//                return true;
             case R.id.edit_existing_program_option:
                 loadProgram();
                 return true;
@@ -232,7 +228,6 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private void loadProgram() {
-
         Intent intent = new Intent(mActivity, LoadNewProgramActivity.class);
         startActivityForResult(intent, REQUEST_NEW_PROGRAM);
     }
@@ -241,7 +236,7 @@ public class MetaDataEntryFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode != RESULT_OK) {
-            Toast.makeText(mActivity, "Problem loading program.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, R.string.problem_loading, Toast.LENGTH_SHORT).show();
             return;
         }
         switch(requestCode) {
@@ -257,27 +252,6 @@ public class MetaDataEntryFragment extends Fragment
         }
     }
 
-//    //    @Override
-//    public void newPiece(PieceOfMusic piece) {
-//
-////        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
-////                .addListenerForSingleValueEvent(new ValueEventListener() {
-////                    @Override
-////                    public void onDataChange(DataSnapshot dataSnapshot) {
-////                        mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
-////                        updateGUI();
-////                    }
-////
-////                    @Override
-////                    public void onCancelled(DatabaseError databaseError) {
-////
-////                    }
-////                });
-//
-//        mPieceOfMusic = piece;
-//        updateGUI();
-//    }
-
     private void updateGUI() {
         mComposerEntry.setText(mPieceOfMusic.getAuthor());
         mTitleEntry.setText(mPieceOfMusic.getTitle());
@@ -291,14 +265,31 @@ public class MetaDataEntryFragment extends Fragment
     @OnClick(R.id.save_program_button)
     public void saveProgram() {
 
-        if(mDataEntries == null || mDataEntries.size() == 0) {
-            Toast.makeText(getContext(), "Error: Please Click \"Program Beats\" to enter your program.",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        mBuilder.dataEntries(mDataEntries);
+        if (!validateDataEntries()) return;
 
         // get all the metadata fields
+        if (!validateMetaDataEntries()) return;
+
+        getFirebaseAuthId();
+
+        mPieceOfMusic = mBuilder.build();
+
+        if(mActivity.useFirebase()) {
+            checkFirebaseForExistingData(); // beginning of method chain to save to cloud
+        } else {
+            saveToSql();
+        }
+    }
+
+    private void getFirebaseAuthId() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if(auth != null) {
+            String creator = auth.getCurrentUser().getUid();
+            mBuilder.creatorId(creator);
+        }
+    }
+
+    private boolean validateMetaDataEntries() {
         String composer = mComposerEntry.getText().toString();
         String title = mTitleEntry.getText().toString();
         String subd = mBaselineSubdivisionEntry.getText().toString();
@@ -307,31 +298,31 @@ public class MetaDataEntryFragment extends Fragment
         String rhythm = mBaselineRhythmicValueEntry.getText().toString();
 
         if(composer.equals("")) {
-            Toast.makeText(getContext(), "Error: Please enter a composer's name.",
+            Toast.makeText(getContext(), R.string.error_no_composer_message,
                     Toast.LENGTH_SHORT).show();
             mComposerEntry.requestFocus();
-            return;
+            return false;
         }
 
         if(title.equals("")) {
-            Toast.makeText(getContext(), "Error: Please enter a title.",
+            Toast.makeText(getContext(), R.string.error_no_title_message,
                     Toast.LENGTH_SHORT).show();
             mTitleEntry.requestFocus();
-            return;
+            return false;
         }
 
         if(subd.equals("")) {
-            Toast.makeText(getContext(), "Error: Please enter a baseline subdivision.",
+            Toast.makeText(getContext(), R.string.error_no_subdivision_message,
                     Toast.LENGTH_SHORT).show();
             mBaselineSubdivisionEntry.requestFocus();
-            return;
+            return false;
         }
 
         if(countoff.equals("")) {
-            Toast.makeText(getContext(), "Error: Please enter a countoff subdivision.",
+            Toast.makeText(getContext(), R.string.error_no_countoff_message,
                     Toast.LENGTH_SHORT).show();
             mCountoffSubdivisionEntry.requestFocus();
-            return;
+            return false;
         }
 
         int subdInt, countoffInt;
@@ -345,7 +336,7 @@ public class MetaDataEntryFragment extends Fragment
         } catch (NumberFormatException nfe) {
             Toast.makeText(getContext(), "Please enter only numbers for subdivisions.", Toast.LENGTH_SHORT).show();
             mBaselineSubdivisionEntry.requestFocus();
-            return;
+            return false;
         }
 
         try {
@@ -355,12 +346,12 @@ public class MetaDataEntryFragment extends Fragment
                         "Countoff subdivisions must be an even divisor of the baseline subdivisions.",
                         Toast.LENGTH_SHORT).show();
                 mCountoffSubdivisionEntry.requestFocus();
-                return;
+                return false;
             }
         } catch (NumberFormatException nfe) {
             Toast.makeText(getContext(), "Please enter only numbers for countoff.", Toast.LENGTH_SHORT).show();
             mBaselineSubdivisionEntry.requestFocus();
-            return;
+            return false;
         }
 
 
@@ -388,47 +379,42 @@ public class MetaDataEntryFragment extends Fragment
             Timber.d("You really shouldn't be here, with a NumberFormatException on the baseline rhythmic value.");
         }
 
-        // get other optional data entries, if present: tempo multiplier,
+        // TODO Get other meta data entries: tempo multiplier, etc.
+        return true;
+    }
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if(auth != null) {
-            String creator = auth.getCurrentUser().getUid();
-            mBuilder.creatorId(creator);
+    private boolean validateDataEntries() {
+        if(mDataEntries == null || mDataEntries.size() == 0) {
+            Toast.makeText(getContext(), R.string.enter_data_before_saving,
+                    Toast.LENGTH_SHORT).show();
+            return false;
         }
-
-        mPieceOfMusic = mBuilder.build();
-
-//        if(!userAuthorizedToSaveToFirebase()) {
-//            Toast.makeText(mActivity, "You are not the creator of this program. You may only save locally.", Toast.LENGTH_SHORT).show();
-//            // TODO change from using Firebase to something else;
-//            return;
-//        }
-        checkForExistingData();
-
+        mBuilder.dataEntries(mDataEntries);
+        return true;
     }
 
     /**
      * Checks database for existence same title by same composer. If it doesn't exist,
      * goes ahead and saves. If it does exists, call on a dialog to confirm before saving.
      */
-    private void checkForExistingData() {
-
-//        if(mActivity.useFirebase) {
-        if(true) {
-            checkFirebaseForExistence();
-        } else {
-            saveToSql();
-        }
-    }
+//    private void checkFirebaseForExistingData() {
+//
+////        if(mActivity.useFirebase) {
+//        if(true) {
+//            checkFirebaseForExistence();
+//        } else {
+//            saveToSql();
+//        }
+//    }
 
     private void saveToSql() {
-        Timber.d("checkForExistingData() THIS IS THE METHOD WHERE IT SHOULD CONNECT TO DB");
+        Timber.d("this where it should be saving to sql");
         ContentValues contentValues = Utilities.getContentValuesFromPiece(mPieceOfMusic);
         ContentResolver resolver = getContext().getContentResolver();
         resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
     }
 
-    private void checkFirebaseForExistence() {
+    private void checkFirebaseForExistingData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference();
 

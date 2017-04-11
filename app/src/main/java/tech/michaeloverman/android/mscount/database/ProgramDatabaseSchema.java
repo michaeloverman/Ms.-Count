@@ -32,6 +32,7 @@ public class ProgramDatabaseSchema {
         public static final String COLUMN_MEASURE_COUNT_OFFSET = "measure_count_offset";
         public static final String COLUMN_DATA_ARRAY = "actual_data";
         public static final String COLUMN_FIREBASE_ID = "firebase_id";
+        public static final String COLUMN_CREATOR_ID = "creator_id";
 
         public static final int POSITION_ID = 0;
         public static final int POSITION_COMPOSER = 1;
@@ -44,6 +45,7 @@ public class ProgramDatabaseSchema {
         public static final int POSITION_MEASURE_COUNTE_OFFSET = 8;
         public static final int POSITION_DATA_ARRAY = 9;
         public static final int POSITION_FIREBASE_ID = 10;
+        public static final int POSITION_CREATOR_ID = 11;
 
         public static Uri buildUriWithComposer(String composer) {
             Timber.d("buildUriWithComposer");
@@ -51,7 +53,6 @@ public class ProgramDatabaseSchema {
                     .appendPath(composer)
                     .build();
         }
-
 
     }
 }

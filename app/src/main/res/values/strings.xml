@@ -38,6 +38,15 @@
     <string name="mark_as_unfavorite_menu">Unmark as favorite</string>
     <string name="need_program_before_favorite">You must have a program loaded to mark it as favorite.</string>
     <string name="not_authorized_save_local">You are not authorized to overwrite this program. Please save locally.</string>
+    <string name="problem_loading">Problem loading program.</string>
+    <string name="countoff_must_fit_subdivisions">Countoff subdivisions must divide evenly into baseline subdivisions.</string>
+    <string name="tempo_between_min_max" formatted="false">Tempo must be between %d and %d</string>
+    <string name="tempo_must_be_integer">Tempo must be an integer.</string>
+    <string name="enter_data_before_saving">Error: Please Click \"Program Beats\" to enter your program.</string>
+    <string name="error_no_composer_message">Error: Please enter a composer\'s name.</string>
+    <string name="error_no_title_message">Error: Please enter a title.</string>
+    <string name="error_no_subdivision_message">Error: Please enter a baseline subdivision.</string>
+    <string name="error_no_countoff_message">Error: Please enter a countoff subdivision.</string>
 
 
 </resources>

@@ -38,7 +38,8 @@ public class ProgramDatabaseHelper extends SQLiteOpenHelper {
                 + MetProgram.COLUMN_TEMPO_MULTIPLIER + " REAL, "
                 + MetProgram.COLUMN_MEASURE_COUNT_OFFSET + " INTEGER, "
                 + MetProgram.COLUMN_DATA_ARRAY + " TEXT NOT NULL, "
-                + MetProgram.COLUMN_FIREBASE_ID + " TEXT);";
+                + MetProgram.COLUMN_FIREBASE_ID + " TEXT, "
+                + MetProgram.COLUMN_CREATOR_ID + " TEXT);";
 
         db.execSQL(SQL_BUILDER_STRING);
     }

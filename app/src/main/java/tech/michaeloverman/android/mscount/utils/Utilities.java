@@ -88,6 +88,7 @@ public class Utilities {
         values.put(ProgramDatabaseSchema.MetProgram.COLUMN_MEASURE_COUNT_OFFSET, piece.getMeasureCountOffset());
         values.put(ProgramDatabaseSchema.MetProgram.COLUMN_DATA_ARRAY, piece.rawDataAsString());
         values.put(ProgramDatabaseSchema.MetProgram.COLUMN_FIREBASE_ID, piece.getFirebaseId());
+        values.put(ProgramDatabaseSchema.MetProgram.COLUMN_CREATOR_ID, piece.getCreatorId());
 
         return values;
     }

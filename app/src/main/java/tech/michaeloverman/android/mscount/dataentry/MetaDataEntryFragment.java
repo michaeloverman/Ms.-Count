@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -277,7 +278,7 @@ public class MetaDataEntryFragment extends Fragment
         if(mActivity.useFirebase()) {
             checkFirebaseForExistingData(); // beginning of method chain to save to cloud
         } else {
-            saveToSql();
+            saveToSqlDatabase();
         }
     }
 
@@ -403,15 +404,20 @@ public class MetaDataEntryFragment extends Fragment
 //        if(true) {
 //            checkFirebaseForExistence();
 //        } else {
-//            saveToSql();
+//            saveToSqlDatabase();
 //        }
 //    }
 
-    private void saveToSql() {
+    private void saveToSqlDatabase() {
         Timber.d("this where it should be saving to sql");
         ContentValues contentValues = Utilities.getContentValuesFromPiece(mPieceOfMusic);
         ContentResolver resolver = getContext().getContentResolver();
-        resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
+        Uri returnUri = resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
+        if(returnUri != null) {
+            getFragmentManager().popBackStackImmediate();
+        } else {
+            databaseSaveErrorStayHere();
+        }
     }
 
     private void checkFirebaseForExistingData() {
@@ -429,8 +435,6 @@ public class MetaDataEntryFragment extends Fragment
                         if (dataSnapshot.exists()) {
                             String key = dataSnapshot.getValue().toString();
                             checkIfAuthorizedCreator(key);
-
-
                         } else {
                             saveToFirebase(mPieceOfMusic);
                         }
@@ -450,10 +454,10 @@ public class MetaDataEntryFragment extends Fragment
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         PieceOfMusic pieceFromFirebase = dataSnapshot.getValue(PieceOfMusic.class);
-                        Timber.d("mPiece: " + mPieceOfMusic.getCreatorId());
-                        Timber.d("firePi: " + pieceFromFirebase.getCreatorId());
+//                        Timber.d("mPiece: " + mPieceOfMusic.getCreatorId());
+//                        Timber.d("firePi: " + pieceFromFirebase.getCreatorId());
                         if(pieceFromFirebase.getCreatorId().equals(mPieceOfMusic.getCreatorId())) {
-                            overwriteDataAlertDialog(mPieceOfMusic.getTitle(), mPieceOfMusic.getAuthor());
+                            overwriteFirebaseDataAlertDialog(mPieceOfMusic.getTitle(), mPieceOfMusic.getAuthor());
                         } else {
                             Toast.makeText(mActivity, R.string.not_authorized_save_local,
                                     Toast.LENGTH_SHORT).show();
@@ -474,7 +478,7 @@ public class MetaDataEntryFragment extends Fragment
      * @param title
      * @param composer
      */
-    private void overwriteDataAlertDialog(final String title, final String composer) {
+    private void overwriteFirebaseDataAlertDialog(final String title, final String composer) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setCancelable(false);
         dialog.setTitle("Overwrite Data?");

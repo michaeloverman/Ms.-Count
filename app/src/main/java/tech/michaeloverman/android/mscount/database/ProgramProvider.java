@@ -115,35 +115,60 @@ public class ProgramProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         Timber.d("insert() ~~~!!!");
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        boolean success = true;
         Uri returnUri;
 
+        Timber.d("switch(sUriMatcher.match(uri) " + sUriMatcher.match(uri) );
         switch(sUriMatcher.match(uri)) {
             case CODE_ALL_OF_IT:
+                Timber.d("case CODE_ALL_OF_IT");
                 db.beginTransaction();
                 try {
-                    long _id = db.insert(ProgramDatabaseSchema.MetProgram.TABLE_NAME, null, values);
-                    if(_id == -1) {
+                    int lineNumber = getLineNumberInDatabase(db,
+                            values.get(ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER).toString(),
+                            values.get(ProgramDatabaseSchema.MetProgram.COLUMN_TITLE).toString());
+                    long _id;
+                    if(lineNumber == -1) {
+                        _id = db.insert(ProgramDatabaseSchema.MetProgram.TABLE_NAME,
+                                null, values);
+                    } else {
+
+                        _id = db.update(ProgramDatabaseSchema.MetProgram.TABLE_NAME, values,
+                                "_id=?", new String[]{ Integer.toString(lineNumber) });
+                    }
+                    Timber.d("long returned = " + _id);
+                    if (_id == -1) {
                         Toast.makeText(getContext(), "Problem saving to database!!", Toast.LENGTH_SHORT).show();
-                        success = false;
+                        returnUri = null;
                     } else {
                         db.setTransactionSuccessful();
                         returnUri = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
                         getContext().getContentResolver().notifyChange(uri, null);
                     }
+
                 } finally {
                     db.endTransaction();
                 }
 
-                if(!success) returnUri = null;
-
+                break;
             default:
+                Timber.d("switch DEFAULT");
                 Toast.makeText(getContext(), "Database request improperly formatted.", Toast.LENGTH_SHORT).show();
                 returnUri = null;
 
         }
 
         return returnUri;
+    }
+
+    public int getLineNumberInDatabase(SQLiteDatabase db, String composer, String title) {
+        Cursor c = db.query(ProgramDatabaseSchema.MetProgram.TABLE_NAME,
+                new String[]{"_id"}, ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER + "=? AND "
+                + ProgramDatabaseSchema.MetProgram.COLUMN_TITLE + "=?", new String[]{composer, title},
+                null,null,null,null);
+        if (c.moveToFirst()) {
+            return c.getInt(ProgramDatabaseSchema.MetProgram.POSITION_ID);
+        }
+        return -1;
     }
 
     @Override

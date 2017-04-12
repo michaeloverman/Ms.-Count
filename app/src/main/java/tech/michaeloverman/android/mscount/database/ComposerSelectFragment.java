@@ -37,7 +37,7 @@ import timber.log.Timber;
  * Created by Michael on 2/26/2017.
  */
 
-public class ComposerSelectFragment extends Fragment {
+public class ComposerSelectFragment extends DatabaseAccessFragment {
 
 //    private static final int COMPOSER_LOADER_ID = 99;
     private static final int NO_DATA_ERROR_CODE = 42;
@@ -157,6 +157,7 @@ public class ComposerSelectFragment extends Fragment {
 
     }
 
+    @Override
     public void updateData() {
         Timber.d("updateData()");
         loadComposers();
@@ -223,19 +224,19 @@ public class ComposerSelectFragment extends Fragment {
         private List<String> composers;
 
         public ComposerListAdapter(Context context) {
-            Timber.d("ComposerListAdapter constructor");
+//            Timber.d("ComposerListAdapter constructor");
             mContext = context;
         }
         @Override
         public ComposerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            Timber.d("onCreateViewHolder");
+//            Timber.d("onCreateViewHolder");
             View item =LayoutInflater.from(mContext).inflate(R.layout.list_item_composer, parent, false);
             return new ComposerViewHolder(item);
         }
 
         @Override
         public void onBindViewHolder(ComposerViewHolder holder, int position) {
-            Timber.d("onBindViewHolder()");
+//            Timber.d("onBindViewHolder()");
             holder.composerName.setText(composers.get(position));
         }
 
@@ -275,7 +276,7 @@ public class ComposerSelectFragment extends Fragment {
 
             public ComposerViewHolder(View itemView) {
                 super(itemView);
-                Timber.d("ComposerViewHolder constructor");
+//                Timber.d("ComposerViewHolder constructor");
                 ButterKnife.bind(this, itemView);
                 itemView.setOnClickListener(this);
             }

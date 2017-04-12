@@ -140,11 +140,14 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
     }
 
     private void updateData() {
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if(f instanceof PieceSelectFragment) {
-            ((PieceSelectFragment) f).updateData();
-        } else if (f instanceof ComposerSelectFragment) {
-            ((ComposerSelectFragment) f).updateData();
+        DatabaseAccessFragment f = (DatabaseAccessFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        if (!useFirebase && f instanceof ComposerSelectFragment) {
+//            Timber.d("popping......");
+            f.getFragmentManager().popBackStackImmediate();
+        } else {
+//            Timber.d("switching to cloud");
+            f.updateData();
         }
     }
 

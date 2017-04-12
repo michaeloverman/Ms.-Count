@@ -42,7 +42,7 @@ import timber.log.Timber;
  * Use the {@link PieceSelectFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PieceSelectFragment extends Fragment
+public class PieceSelectFragment extends DatabaseAccessFragment
         implements WorksListAdapter.WorksListAdapterOnClickHandler,
         ComposerSelectFragment.ComposerCallback,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -136,6 +136,7 @@ public class PieceSelectFragment extends Fragment
             composerSelected();
         }
 
+        Timber.d("Returning completed view....!!!");
         return view;
     }
 
@@ -268,11 +269,11 @@ public class PieceSelectFragment extends Fragment
         if(data == null) {
             Timber.d("data == null");
             mErrorView.setVisibility(View.VISIBLE);
-            updateEmptyView(NO_DATA_ERROR_CODE);
+            updateEmptyProgramList(NO_DATA_ERROR_CODE);
         } else if (data.getCount() == 0) {
             Timber.d("data.getCount() == 0");
             mErrorView.setVisibility(View.VISIBLE);
-            updateEmptyView(NO_DATA_ERROR_CODE);
+            updateEmptyProgramList(NO_DATA_ERROR_CODE);
         } else {
             mCursor = data;
             mErrorView.setVisibility(View.GONE);
@@ -280,7 +281,14 @@ public class PieceSelectFragment extends Fragment
         }
     }
 
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.newCursor(null);
+    }
+
+    @Override
     public void updateData() {
+        Timber.d("updateData()");
         if(mActivity.useFirebase) {
             makeComposerRelatedViewsVisible();
             selectComposer();
@@ -294,17 +302,17 @@ public class PieceSelectFragment extends Fragment
     private void makeComposerRelatedViewsVisible() {
         Timber.d("showing views");
         mSelectComposerButton.setVisibility(View.VISIBLE);
-        mComposersNameView.setVisibility(View.VISIBLE);
+        mComposersNameView.setText(mCurrentComposer);
         mActivity.setTitle(getString(R.string.select_piece_by));
     }
     private void makeComposerRelatedViewsInvisible() {
         Timber.d("removing views");
+        mComposersNameView.setText(R.string.local_database_label);
         mSelectComposerButton.setVisibility(View.GONE);
-        mComposersNameView.setVisibility(View.GONE);
         mActivity.setTitle(getString(R.string.select_a_piece));
     }
 
-    private void updateEmptyView(int code) {
+    private void updateEmptyProgramList(int code) {
         String message;
         switch(code) {
             case NO_DATA_ERROR_CODE:
@@ -314,11 +322,6 @@ public class PieceSelectFragment extends Fragment
                 message = "Unknown error occurred...";
         }
         mErrorView.setText(message);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.newCursor(null);
     }
 
     private void progressSpinner(boolean on) {

@@ -49,6 +49,12 @@
     <string name="error_no_countoff_message">Error: Please enter a countoff subdivision.</string>
     <string name="select_a_piece">Select a piece...</string>
     <string name="local_database_label">Local Database:</string>
+    <string name="delete_program">Delete Program</string>
+    <string name="cancel_delete">Cancel delete</string>
+    <string name="select_to_delete">Select Program to Delete...</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_confirmation_question">Are you sure you want to delete this program</string>
+    <string name="delete_program_dialog_title">Delete Program?</string>
 
 
 </resources>

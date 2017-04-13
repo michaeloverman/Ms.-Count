@@ -1,6 +1,7 @@
 package tech.michaeloverman.android.mscount.database;
 
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,11 +10,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -96,11 +99,45 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Timber.d("onCreateOptionsMenu");
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.delete_menu_item, menu);
 //        menu.removeItem(R.id.create_new_program_option);
 //        MenuItem item = menu.findItem(R.id.firebase_local_database);
 //        Log.d(TAG, "useFirebase =Timber.d(rammedMetronomeActivity)getActivity()).useFirebase);
 //        item.setTitle(((ProgrammedMetronomeActivity)getActivity()).useFirebase ?
 //                R.string.use_local_database : R.string.use_cloud_database);
+    }
+
+    private boolean deleteFlag;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.delete_program_menu_item:
+                if(!deleteFlag) {
+                    toastDeleteInstructions();
+                    deleteFlag = true;
+                    menuItemToCancelDelete(item);
+                } else {
+                    deleteFlag = false;
+                    menuItemToDelete(item);
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void toastDeleteInstructions() {
+        Toast.makeText(mActivity, R.string.select_to_delete, Toast.LENGTH_SHORT).show();
+    }
+
+    private void menuItemToCancelDelete(MenuItem item) {
+        item.setTitle(R.string.cancel_delete);
+    }
+
+    private void menuItemToDelete(MenuItem item) {
+        item.setTitle(R.string.delete_program);
     }
 
     @Override
@@ -161,44 +198,90 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     public void onClick(int position, final String pieceId) {
         Timber.d("ProgramSelect onClick() pieceId: " + pieceId);
         progressSpinner(true);
-        if(mActivity.useFirebase) {
-            FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
-                            mPieceOfMusic.setFirebaseId(pieceId);
-                            Timber.d("Just loaded piece from Firebase. Id: " + pieceId);
-                            mActivity.setProgramResult(mPieceOfMusic);
-                            mActivity.finish();
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Toast.makeText(getContext(), "A database error occurred. Please try again.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+        if(!deleteFlag) {
+            if(mActivity.useFirebase) {
+                getPieceFromFirebase(pieceId);
+            } else {
+                getPieceFromSql(position);
+            }
         } else {
-            mCursor.moveToPosition(position);
-            PieceOfMusic.Builder builder = new PieceOfMusic.Builder()
-                    .author(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER))
-                    .title(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE))
-                    .subdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_PRIMANY_SUBDIVISIONS))
-                    .countOffSubdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_COUNOFF_SUBDIVISIONS))
-                    .defaultTempo(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_TEMPO))
-                    .baselineNoteValue(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_RHYTHM))
-                    .tempoMultiplier(mCursor.getDouble(ProgramDatabaseSchema.MetProgram.POSITION_TEMPO_MULTIPLIER))
-                    .firstMeasureNumber(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_MEASURE_COUNTE_OFFSET))
-                    .dataEntries(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_DATA_ARRAY))
-                    .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID));
-            mCursor.close();
-
-            mActivity.setProgramResult(builder.build());
-            mActivity.finish();
+            dialogDeleteConfirmation(position, pieceId);
+            deleteFlag = false;
         }
+    }
 
-//        getFragmentManager().popBackStackImmediate();
+    private void getPieceFromSql(int position) {
+        mCursor.moveToPosition(position);
+        PieceOfMusic.Builder builder = new PieceOfMusic.Builder()
+                .author(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER))
+                .title(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE))
+                .subdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_PRIMANY_SUBDIVISIONS))
+                .countOffSubdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_COUNOFF_SUBDIVISIONS))
+                .defaultTempo(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_TEMPO))
+                .baselineNoteValue(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_RHYTHM))
+                .tempoMultiplier(mCursor.getDouble(ProgramDatabaseSchema.MetProgram.POSITION_TEMPO_MULTIPLIER))
+                .firstMeasureNumber(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_MEASURE_COUNTE_OFFSET))
+                .dataEntries(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_DATA_ARRAY))
+                .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID));
+        mCursor.close();
+
+        mActivity.setProgramResult(builder.build());
+        mActivity.finish();
+    }
+
+    private void dialogDeleteConfirmation(final int position, final String pieceId) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
+        dialog.setCancelable(false)
+                .setTitle(R.string.delete_program_dialog_title)
+                .setMessage(R.string.delete_confirmation_question)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(mActivity.useFirebase) {
+                            deletePieceFromFirebase(pieceId);
+                        } else {
+                            deletePieceFromSql(position);
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        dialog.create().show();
+    }
+
+    private void deletePieceFromSql(int position) {
+        mCursor.moveToPosition(position);
+        int id = mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_ID);
+
+    }
+
+    private void deletePieceFromFirebase(String id) {
+        
+    }
+
+    private void getPieceFromFirebase(final String pieceId) {
+        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
+                        mPieceOfMusic.setFirebaseId(pieceId);
+                        Timber.d("Just loaded piece from Firebase. Id: " + pieceId);
+                        mActivity.setProgramResult(mPieceOfMusic);
+                        mActivity.finish();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getContext(), "A database error occurred. Please try again.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
@@ -252,7 +335,6 @@ public class PieceSelectFragment extends DatabaseAccessFragment
 
                 return new CursorLoader(mActivity,
                         queryUri,
-//                        projection,
                         null,
                         null,
                         null,

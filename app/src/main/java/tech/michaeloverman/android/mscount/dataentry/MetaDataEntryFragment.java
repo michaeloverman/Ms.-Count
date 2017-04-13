@@ -483,7 +483,7 @@ public class MetaDataEntryFragment extends Fragment
      * @param composer
      */
     private void overwriteFirebaseDataAlertDialog(final String title, final String composer) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
         dialog.setCancelable(false);
         dialog.setTitle("Overwrite Data?");
         dialog.setMessage(String.format(getResources().getString(R.string.overwrite_data_confirmation), title, composer));
@@ -493,7 +493,7 @@ public class MetaDataEntryFragment extends Fragment
                         saveToFirebase(mPieceOfMusic);
                     }
                 })
-                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //Action for "Cancel".

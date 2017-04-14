@@ -423,7 +423,6 @@ public class ProgrammedMetronomeFragment extends Fragment
                 } else {
                     unfillMenuItem(item);
                     makePieceUnfavorite();
-                    deleteFromSql();
                 }
                 return true;
             default:
@@ -465,13 +464,9 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void saveToSql() {
-        Timber.d("checkForExistingData() THIS IS THE METHOD WHERE IT SHOULD CONNECT TO DB");
         ContentValues contentValues = Utilities.getContentValuesFromPiece(mCurrentPiece);
         ContentResolver resolver = getContext().getContentResolver();
         resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
-    }
-    private void deleteFromSql() {
-
     }
 
     private class CheckIfFavoriteTask extends AsyncTask<String, Void, Boolean> {

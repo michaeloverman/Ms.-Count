@@ -1,8 +1,16 @@
 package tech.michaeloverman.android.mscount.pojos;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import tech.michaeloverman.android.mscount.utils.Utilities;
 import timber.log.Timber;
@@ -166,6 +174,7 @@ public class PieceOfMusic implements Serializable {
     }
 
     public String rawDataAsString() {
+        if(mRawData == null) constructRawData();
         StringBuilder rawString = new StringBuilder();
         for(DataEntry d : mRawData) {
             rawString.append(d);
@@ -228,6 +237,44 @@ public class PieceOfMusic implements Serializable {
                 mRawData.add(new DataEntry(mBeats.get(currentBeatCount++), false));
             }
         }
+
+        resaveToFirebase();
+    }
+
+    @Deprecated
+    private void resaveToFirebase() {
+        Timber.d("SAVING FOR NEW RAW DATA!!! THIS SHOULD NOT BE HAPPENING ANYMORE");
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference mPiecesDatabaseReference = mDatabase.getReference();
+
+        // Look for piece first, and if exists, get that key to update; otherwise push() to create
+        // new key for new piece.
+        mPiecesDatabaseReference.child("composers").child(this.getAuthor()).child(this.getTitle())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String key;
+                        if(dataSnapshot.exists()) {
+                            // update
+                            key = dataSnapshot.getValue().toString();
+                        } else {
+                            // push to create
+                            key = mPiecesDatabaseReference.child("pieces").push().getKey();
+                        }
+
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("/pieces/" + key, PieceOfMusic.this);
+                        updates.put("/composers/" + getAuthor() + "/" + getTitle(), key);
+                        mPiecesDatabaseReference.updateChildren(updates);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
     }
 
     public static class Builder {

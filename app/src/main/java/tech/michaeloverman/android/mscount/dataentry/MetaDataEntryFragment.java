@@ -504,7 +504,7 @@ public class MetaDataEntryFragment extends Fragment
         alert.show();
     }
 
-    private void saveToFirebase(final PieceOfMusic p) {
+    public void saveToFirebase(final PieceOfMusic p) {
         Timber.d("Saving to local database, or to Firebase: " + p.getTitle() + " by " + p.getAuthor());
 //        Timber.d("Pieces is " + p.getDownBeats().size() + " measures long.");
 
@@ -539,7 +539,6 @@ public class MetaDataEntryFragment extends Fragment
                         databaseSaveErrorStayHere();
                     }
                 });
-
     }
 
     private void databaseSaveErrorStayHere() {

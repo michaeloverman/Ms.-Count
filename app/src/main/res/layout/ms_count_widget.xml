@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:background="#09C"
+                android:padding="@dimen/widget_margin">
+
+    <TextView
+        android:id="@+id/widget_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@color/colorPrimaryDark"
+        android:contentDescription="@string/appwidget_text"
+        android:text="@string/app_name"
+        android:textColor="@color/colorAccent"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/widget_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/widget_header"
+        android:dividerHeight="1dp"
+        android:backgroundTint="@color/colorPrimary"
+        tools:listitem="@layout/widget_list_item">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/widget_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:fontFamily="sans-serif"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:text="There are no current favorite programs."
+        />
+
+</RelativeLayout>

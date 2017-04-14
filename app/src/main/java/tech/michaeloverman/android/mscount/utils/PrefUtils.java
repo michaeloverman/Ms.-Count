@@ -33,11 +33,5 @@ public final class PrefUtils {
         return Integer.parseInt(id);
     }
 
-    // get favorites()
-
-    // add favorite()
-
-    // remove favorite()
-
 
 }

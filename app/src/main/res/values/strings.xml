@@ -56,6 +56,8 @@
     <string name="delete_confirmation_question" formatted="false">Are you sure you want to delete %s from the database?</string>
     <string name="delete_program_dialog_title">Delete Program?</string>
     <string name="deleting_title" formatted="false">Deleting %s...</string>
+    <string name="appwidget_text">Ms. Count</string>
+    <string name="add_widget">Add widget</string>
 
 
 </resources>

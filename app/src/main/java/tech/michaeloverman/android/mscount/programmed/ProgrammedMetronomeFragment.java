@@ -67,6 +67,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final int REQUEST_NEW_PROGRAM = 44;
     public static final String EXTRA_COMPOSER_NAME = "composer_name_extra";
     public static final String EXTRA_USE_FIREBASE = "program_database_option";
+    public static final String PROGRAM_ID_EXTRA = "program_id_extra_from_widget";
 
     private PieceOfMusic mCurrentPiece;
     private String mCurrentPieceKey;

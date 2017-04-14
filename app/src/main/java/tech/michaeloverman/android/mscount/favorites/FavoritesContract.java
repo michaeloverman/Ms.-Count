@@ -24,8 +24,8 @@ public class FavoritesContract {
         
         public static final String TABLE_NAME = "favorites";
         
-        public static final String COLUMN_PIECE_ID = "firebase_id";
-//        public static final String COLUMN_POSTER_URL = "poster_url";
+        public static final String COLUMN_PIECE_ID = "favorite_firebase_id";
+        public static final String COLUMN_PIECE_TITLE = "favorite_title";
         
 //        public static Uri buildMovieUriWithId(int id) {
 //            return CONTENT_URI.buildUpon()

@@ -1,9 +1,11 @@
 package tech.michaeloverman.android.mscount.database;
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -59,12 +61,14 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     @BindView(R.id.program_select_progress_bar) ProgressBar mProgressSpinner;
     @BindView(R.id.select_composer_button) Button mSelectComposerButton;
 
+    MenuItem mDeleteCancelMenuItem;
+
     private String mCurrentComposer;
     private WorksListAdapter mAdapter;
     private List<TitleKeyObject> mTitlesList;
     private Cursor mCursor;
     private PieceOfMusic mPieceOfMusic;
-
+    private boolean mDeleteFlag;
     private LoadNewProgramActivity mActivity;
 
 
@@ -87,6 +91,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
 //        Timber.d("useFirebase = " + mActivity.useFirebase);
 
         mActivity = (LoadNewProgramActivity) getActivity();
@@ -99,27 +104,22 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Timber.d("onCreateOptionsMenu");
-        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.delete_menu_item, menu);
-//        menu.removeItem(R.id.create_new_program_option);
-//        MenuItem item = menu.findItem(R.id.firebase_local_database);
-//        Log.d(TAG, "useFirebase =Timber.d(rammedMetronomeActivity)getActivity()).useFirebase);
-//        item.setTitle(((ProgrammedMetronomeActivity)getActivity()).useFirebase ?
-//                R.string.use_local_database : R.string.use_cloud_database);
+        super.onCreateOptionsMenu(menu, inflater);
+        mDeleteCancelMenuItem = menu.findItem(R.id.delete_program_menu_item);
     }
 
-    private boolean deleteFlag;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.d("Fragment menu option");
         switch(item.getItemId()) {
             case R.id.delete_program_menu_item:
-                if(!deleteFlag) {
+                if(!mDeleteFlag) {
                     toastDeleteInstructions();
-                    deleteFlag = true;
-                    menuItemToCancelDelete(item);
+                    prepareProgramDelete();
                 } else {
-                    deleteFlag = false;
-                    menuItemToDelete(item);
+                    cleanUpProgramDelete();
                 }
                 return true;
 
@@ -132,12 +132,18 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         Toast.makeText(mActivity, R.string.select_to_delete, Toast.LENGTH_SHORT).show();
     }
 
-    private void menuItemToCancelDelete(MenuItem item) {
-        item.setTitle(R.string.cancel_delete);
+    private void prepareProgramDelete() {
+        mDeleteFlag = true;
+        mDeleteCancelMenuItem.setTitle(R.string.cancel_delete);
+        mDeleteCancelMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
     }
 
-    private void menuItemToDelete(MenuItem item) {
-        item.setTitle(R.string.delete_program);
+    public void cleanUpProgramDelete() {
+        mDeleteFlag = false;
+        mDeleteCancelMenuItem.setTitle(R.string.delete_program);
+        mDeleteCancelMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        progressSpinner(false);
     }
 
     @Override
@@ -195,19 +201,18 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     }
 
     @Override
-    public void onClick(int position, final String pieceId) {
+    public void onClick(int position, final String pieceId, final String title) {
         Timber.d("ProgramSelect onClick() pieceId: " + pieceId);
         progressSpinner(true);
 
-        if(!deleteFlag) {
+        if(!mDeleteFlag) {
             if(mActivity.useFirebase) {
                 getPieceFromFirebase(pieceId);
             } else {
                 getPieceFromSql(position);
             }
         } else {
-            dialogDeleteConfirmation(position, pieceId);
-            deleteFlag = false;
+            dialogDeleteConfirmation(position, pieceId, title);
         }
     }
 
@@ -230,38 +235,42 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         mActivity.finish();
     }
 
-    private void dialogDeleteConfirmation(final int position, final String pieceId) {
+    private void dialogDeleteConfirmation(final int position, final String pieceId, final String title) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
         dialog.setCancelable(false)
                 .setTitle(R.string.delete_program_dialog_title)
-                .setMessage(R.string.delete_confirmation_question)
+                .setMessage(getString(R.string.delete_confirmation_question, title))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(mActivity.useFirebase) {
-                            deletePieceFromFirebase(pieceId);
+                            deletePieceFromFirebase(pieceId, title);
                         } else {
-                            deletePieceFromSql(position);
+                            deletePieceFromSql(position, title);
                         }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        cleanUpProgramDelete();
                     }
                 });
         dialog.create().show();
     }
 
-    private void deletePieceFromSql(int position) {
+    private void deletePieceFromSql(int position, String title) {
+        Toast.makeText(mActivity, "Deleting from SQL", Toast.LENGTH_SHORT).show();
+
         mCursor.moveToPosition(position);
         int id = mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_ID);
-
+        new DeleteFromSqlTask(id, title).execute();
+        cleanUpProgramDelete();
     }
 
-    private void deletePieceFromFirebase(String id) {
-        
+    private void deletePieceFromFirebase(String id, String title) {
+        Toast.makeText(mActivity, "Deleting from Firebase", Toast.LENGTH_SHORT).show();
+        cleanUpProgramDelete();
     }
 
     private void getPieceFromFirebase(final String pieceId) {
@@ -280,6 +289,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
                     public void onCancelled(DatabaseError databaseError) {
                         Toast.makeText(getContext(), "A database error occurred. Please try again.",
                                 Toast.LENGTH_SHORT).show();
+                        progressSpinner(false);
                     }
                 });
     }
@@ -287,9 +297,9 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     @Override
     public void newComposer(String name) {
         mCurrentComposer = name;
-        if(!mActivity.useFirebase) {
-            mActivity.getSupportLoaderManager().restartLoader(ID_PROGRAM_LOADER, null, this);
-        }
+//        if(!mActivity.useFirebase) {
+//            mActivity.getSupportLoaderManager().restartLoader(ID_PROGRAM_LOADER, null, this);
+//        }
     }
 
     private void composerSelected() {
@@ -413,6 +423,40 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         } else {
             mComposersNameView.setVisibility(View.VISIBLE);
             mProgressSpinner.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    class DeleteFromSqlTask extends AsyncTask {
+        private int _id;
+        private String mTitle;
+        private final ProgressDialog dialog = new ProgressDialog(mActivity);
+
+        private DeleteFromSqlTask(int itemId, String title) {
+            _id = itemId;
+            mTitle = title;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog.setMessage(getString(R.string.deleting_title, mTitle));
+            dialog.show();
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            Uri uri = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
+            String whereClause = "_id=?";
+            String[] args = new String[] { Integer.toString(_id) };
+            mActivity.getContentResolver().delete(uri, whereClause, args);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            if(dialog.isShowing()) {
+                dialog.dismiss();
+            }
         }
     }
 }

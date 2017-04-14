@@ -2,6 +2,7 @@ package tech.michaeloverman.android.mscount.database;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -174,7 +175,28 @@ public class ProgramProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         Timber.d("delete()...");
-        return 0;
+        final SQLiteDatabase db = mHelper.getWritableDatabase();
+        int rowsDeleted;
+
+        switch(sUriMatcher.match(uri)) {
+            case CODE_ALL_OF_IT:
+                rowsDeleted = db.delete(ProgramDatabaseSchema.MetProgram.TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                Timber.d(rowsDeleted + " rows deleted");
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown URI: " + uri);
+        }
+
+        if(rowsDeleted != 0) {
+            Context context = getContext();
+            if (context != null) {
+                context.getContentResolver().notifyChange(uri, null);
+            }
+        }
+
+        return rowsDeleted;
     }
 
     @Override

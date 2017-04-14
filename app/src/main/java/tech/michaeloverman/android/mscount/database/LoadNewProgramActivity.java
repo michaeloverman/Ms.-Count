@@ -121,6 +121,7 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.d("Activity menu option");
         switch (item.getItemId()) {
             case R.id.firebase_local_database:
                 useFirebase = !useFirebase;

@@ -36,15 +36,19 @@
             android:label="@string/title_activity_settings">
         </activity>
 
-        <receiver android:name="tech.michaeloverman.android.stickit.MsCountWidgetProvider">
+        <receiver android:name="tech.michaeloverman.android.mscount.widget.MsCountWidgetProvider"
+            android:label="Ms. Count Widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="tech.michaeloverman.android.mscount.ACTION_DATA_UPDATED"/>
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/ms_count_widget_info"/>
         </receiver>
+        <service android:name=".widget.WidgetRemoteViewsService"
+                 android:exported="false"
+                 android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

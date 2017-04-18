@@ -14,6 +14,7 @@ import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.favorites.FavoritesContract;
 import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeFragment;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 4/14/2017.
@@ -35,6 +36,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
 
     public WidgetRemoteViewsFactory(Context context, Intent intent) {
+        Timber.d("WidgetRemoteViewsFactory");
         mContext = context;
 
         if(intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID)) {
@@ -46,11 +48,13 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
     @Override
     public void onCreate() {
+        Timber.d("onCreate()");
         widgetManager = AppWidgetManager.getInstance(mContext);
     }
 
     @Override
     public void onDataSetChanged() {
+        Timber.d("onDataSetChanged()");
         if(data != null) {
             data.close();
         }
@@ -70,6 +74,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
     @Override
     public void onDestroy() {
+        Timber.d("onDestroy()");
         if(data != null) {
             data.close();
             data = null;
@@ -78,11 +83,13 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
     @Override
     public int getCount() {
+        Timber.d("getCount()");
         return data == null ? 0 : data.getCount();
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
+        Timber.d("getViewAt: " + position);
         if(position == AdapterView.INVALID_POSITION ||
                 data == null || !data.moveToPosition(position)) {
             return null;
@@ -102,6 +109,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
     @Override
     public RemoteViews getLoadingView() {
+        Timber.d("getloadingView()");
         return new RemoteViews(mContext.getPackageName(), R.layout.widget_list_item);
     }
 
@@ -112,6 +120,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
     @Override
     public long getItemId(int position) {
+        Timber.d("getItemId: " + position);
         if(data.moveToPosition(position)) {
             return data.getLong(INDEX_PROGRAM_ID);
         }

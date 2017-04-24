@@ -47,6 +47,7 @@
                 android:resource="@xml/ms_count_widget_info"/>
         </receiver>
         <service android:name=".widget.WidgetRemoteViewsService"
+                 android:enabled="true"
                  android:exported="false"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>

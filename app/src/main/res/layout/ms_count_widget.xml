@@ -3,6 +3,7 @@
                 android:layout_height="match_parent"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:background="#09C"
+                android:id="@+id/widget"
                 android:padding="@dimen/widget_margin">
 
     <TextView
@@ -17,7 +18,7 @@
         android:textSize="24sp"
         android:textStyle="bold|italic"/>
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/widget_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,7 +27,7 @@
         android:backgroundTint="@color/colorPrimary"
         tools:listitem="@layout/widget_list_item">
 
-    </android.support.v7.widget.RecyclerView>
+    </ListView>
 
     <TextView
         android:id="@+id/widget_empty"

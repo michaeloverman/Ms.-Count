@@ -12,7 +12,6 @@ import android.widget.RemoteViewsService;
 
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
-import tech.michaeloverman.android.mscount.favorites.FavoritesContract;
 import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeFragment;
 import timber.log.Timber;
 
@@ -25,7 +24,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
     private Context mContext;
     private Cursor data = null;
     AppWidgetManager widgetManager;
-    int appWidgetId;
+    private int appWidgetId;
 
     private static final String[] PROGRAM_COLUMNS = {
             ProgramDatabaseSchema.MetProgram._ID,
@@ -40,8 +39,12 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         mContext = context;
 
         if(intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID)) {
+            Timber.d("EXXXXXXXXXXXXXXXXXtra found: ");
+            Timber.d("   int found: " + intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID));
             appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
+//            appWidgetId = 131;
         }
     }
 
@@ -62,12 +65,12 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         // temporarily clear identity
         final long identityToken = Binder.clearCallingIdentity();
 
-        Uri favoritesLocationUri = FavoritesContract.BASE_CONTENT_URI;
-        data = mContext.getContentResolver().query(favoritesLocationUri,
+        Uri localDatabaseLocation = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
+        data = mContext.getContentResolver().query(localDatabaseLocation,
                 PROGRAM_COLUMNS,
                 null,
                 null,
-                FavoritesContract.FavoriteEntry.COLUMN_PIECE_TITLE + " ASC");
+                ProgramDatabaseSchema.MetProgram.COLUMN_TITLE + " ASC");
 
         Binder.restoreCallingIdentity(identityToken);
     }
@@ -97,6 +100,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_item);
 
         String title = data.getString(INDEX_PROGRAM_TITLE);
+        Timber.d("title: " + title);
         views.setTextViewText(R.id.widget_item_title, title);
 
         final Intent fillInIntent = new Intent();

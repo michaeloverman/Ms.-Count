@@ -21,8 +21,9 @@ public class FavoritesProvider extends ContentProvider {
     
     public static final int CODE_FAVORITES = 222;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
+    public static final String ACTION_DATA_UPDATED = "tech.michaeloverman.android.mscount.ACTION_DATA_UPDATED";
     private FavoritesDBHelper mDBHelper;
-    
+
     public static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = FavoritesContract.CONTENT_AUTHORITY;
@@ -95,7 +96,9 @@ public class FavoritesProvider extends ContentProvider {
                 }
                 return uri;
         }
-        
+
+//        sendUpdateIntent();
+
         return uri;
     }
     
@@ -119,9 +122,11 @@ public class FavoritesProvider extends ContentProvider {
         if (numRowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
-        
+
+//        sendUpdateIntent();
         return numRowsDeleted;
     }
+
     
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {

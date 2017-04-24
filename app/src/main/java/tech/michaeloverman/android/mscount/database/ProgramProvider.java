@@ -3,6 +3,7 @@ package tech.michaeloverman.android.mscount.database;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +13,8 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import timber.log.Timber;
+
+import static tech.michaeloverman.android.mscount.favorites.FavoritesProvider.ACTION_DATA_UPDATED;
 
 /**
  * Created by Michael on 3/27/2017.
@@ -157,10 +160,15 @@ public class ProgramProvider extends ContentProvider {
                 returnUri = null;
 
         }
-
+        sendUpdateIntent();
         return returnUri;
     }
 
+    private void sendUpdateIntent() {
+        Timber.d("sending data_update intent!!!!");
+        Intent dataUpdateIntent = new Intent(ACTION_DATA_UPDATED);
+        getContext().sendBroadcast(dataUpdateIntent);
+    }
     public int getLineNumberInDatabase(SQLiteDatabase db, String composer, String title) {
         Cursor c = db.query(ProgramDatabaseSchema.MetProgram.TABLE_NAME,
                 new String[]{"_id"}, ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER + "=? AND "
@@ -195,7 +203,7 @@ public class ProgramProvider extends ContentProvider {
                 context.getContentResolver().notifyChange(uri, null);
             }
         }
-
+        sendUpdateIntent();
         return rowsDeleted;
     }
 

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -15,23 +16,34 @@ import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeFragment;
 import timber.log.Timber;
 
+import static tech.michaeloverman.android.mscount.favorites.FavoritesProvider.ACTION_DATA_UPDATED;
+
 /**
  * Implementation of App Widget functionality.
  */
 public class MsCountWidgetProvider extends AppWidgetProvider {
 
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        // There may be multiple widgets active, so update all of them
+        Timber.d("onUpdate: " + appWidgetIds.length + " widgets...");
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
+    }
+
     private void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
         Timber.d("updateAppWidget");
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
+//        CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ms_count_widget);
-        views.setTextViewText(R.id.widget_header, widgetText);
+//        views.setTextViewText(R.id.widget_header, widgetText);
 
         Intent intent = new Intent(context, MsCountActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        views.setOnClickPendingIntent(R.id.widget_header, pendingIntent);
+        views.setOnClickPendingIntent(R.id.widget, pendingIntent);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             setRemoteAdapter(context, views, appWidgetId);
@@ -51,17 +63,23 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
         views.setEmptyView(R.id.widget_list, R.id.widget_empty);
         Timber.d("Empty view set");
 
-        // Instruct the widget manager to update the widget
+//         Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
         Timber.d("appWidgetManager called to updateAppWidget: " + appWidgetId);
     }
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        Timber.d("onUpdate");
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        Timber.d("Provider onReceive(): " + intent.getAction());
+        if(intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) ||
+                intent.getAction().equals(ACTION_DATA_UPDATED)) {
+            Timber.d("Widget related Intent caught: updating widget!!");
+            AppWidgetManager manager = AppWidgetManager.getInstance(context);
+            int[] ids = manager.getAppWidgetIds(new ComponentName(context, getClass()));
+            manager.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        } else {
+            Timber.d("Non widget related intent caught: this shouldn't be happening....");
         }
     }
 

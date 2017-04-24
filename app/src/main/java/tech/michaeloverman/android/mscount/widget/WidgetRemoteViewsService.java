@@ -13,6 +13,7 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
 
     public WidgetRemoteViewsService() {
         super();
+        Timber.d("WidgetRemoteViewsService()!!!");
     }
 
     @Override

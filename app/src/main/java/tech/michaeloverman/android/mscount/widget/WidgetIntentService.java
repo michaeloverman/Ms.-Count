@@ -12,9 +12,10 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 
-import tech.michaeloverman.android.mscount.MsCountActivity;
 import tech.michaeloverman.android.mscount.R;
+import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
 import tech.michaeloverman.android.mscount.favorites.FavoritesContract;
+import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeActivity;
 import timber.log.Timber;
 
 /**
@@ -25,13 +26,11 @@ import timber.log.Timber;
 public class WidgetIntentService extends IntentService {
 
     private static final String[] PROGRAM_COLUMNS = {
-            FavoritesContract.FavoriteEntry._ID,
-            FavoritesContract.FavoriteEntry.COLUMN_PIECE_ID,
-            FavoritesContract.FavoriteEntry.COLUMN_PIECE_TITLE
+            ProgramDatabaseSchema.MetProgram._ID,
+            ProgramDatabaseSchema.MetProgram.COLUMN_TITLE
     };
     static final int INDEX_PROGRAM_ID = 0;
-    static final int INDEX_COLUMN_FIREBASE_ID = 1;
-    static final int INDEX_COLUMN_TITLE = 2;
+    static final int INDEX_COLUMN_TITLE = 1;
 
     public WidgetIntentService() {
         super("WidgetIntentService");
@@ -70,10 +69,10 @@ public class WidgetIntentService extends IntentService {
                     R.layout.widget_list_item);
             views.setTextViewText(R.id.widget_item_title, title);
 
-            Intent launchIntent = new Intent(this, MsCountActivity.class);
+            Intent launchIntent = new Intent(this, ProgrammedMetronomeActivity.class);
             PendingIntent pendingIntent = PendingIntent
                     .getActivity(this, 0, launchIntent, 0);
-            views.setOnClickPendingIntent(R.id.widget_header, pendingIntent);
+            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
 
             widgetManager.updateAppWidget(widgetId, views);
         }

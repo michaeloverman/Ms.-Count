@@ -13,7 +13,7 @@ import android.widget.RemoteViews;
 
 import tech.michaeloverman.android.mscount.MsCountActivity;
 import tech.michaeloverman.android.mscount.R;
-import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeFragment;
+import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeActivity;
 import timber.log.Timber;
 
 import static tech.michaeloverman.android.mscount.favorites.FavoritesProvider.ACTION_DATA_UPDATED;
@@ -51,13 +51,12 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
             setRemoteAdapterV11(context, views, appWidgetId);
         }
 
-        Intent clickIntentTemplate = new Intent(context, ProgrammedMetronomeFragment.class);
+        Intent clickIntentTemplate = new Intent(context, ProgrammedMetronomeActivity.class);
         Timber.d("clickIntentTemplate created");
 
         PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                 .addNextIntent(clickIntentTemplate)
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        Timber.d("PendingIntent created");
         views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
         Timber.d("PendingIntent set");
         views.setEmptyView(R.id.widget_list, R.id.widget_empty);
@@ -76,7 +75,9 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
                 intent.getAction().equals(ACTION_DATA_UPDATED)) {
             Timber.d("Widget related Intent caught: updating widget!!");
             AppWidgetManager manager = AppWidgetManager.getInstance(context);
+            Timber.d(manager.toString());
             int[] ids = manager.getAppWidgetIds(new ComponentName(context, getClass()));
+            Timber.d("widget ids[0]: " + ids[0]);
             manager.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
         } else {
             Timber.d("Non widget related intent caught: this shouldn't be happening....");

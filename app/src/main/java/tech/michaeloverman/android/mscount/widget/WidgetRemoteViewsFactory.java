@@ -12,7 +12,7 @@ import android.widget.RemoteViewsService;
 
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
-import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeFragment;
+import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeActivity;
 import timber.log.Timber;
 
 /**
@@ -104,9 +104,11 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         views.setTextViewText(R.id.widget_item_title, title);
 
         final Intent fillInIntent = new Intent();
-        fillInIntent.putExtra(ProgrammedMetronomeFragment.PROGRAM_ID_EXTRA,
+        Timber.d("ADDING id to fillInIntent: " + data.getInt(INDEX_PROGRAM_ID));
+        fillInIntent.putExtra(ProgrammedMetronomeActivity.PROGRAM_ID_EXTRA,
                 data.getInt(INDEX_PROGRAM_ID));
         views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
+        Timber.d("FillInIntent added to view, presumably!");
 
         return views;
     }

@@ -34,6 +34,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     protected FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     public boolean useFirebase;
+    public static final String PROGRAM_ID_EXTRA = "program_id_extra_from_widget";
 
     @Override
     protected Fragment createFragment() {
@@ -44,6 +45,10 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
         if(savedInstanceState != null) {
             useFirebase = savedInstanceState.getBoolean(KEY_USE_FIREBASE);
         }
@@ -65,6 +70,12 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
                 // ...
             }
         };
+
+        Intent intent = getIntent();
+        if(intent.hasExtra(PROGRAM_ID_EXTRA)) {
+            Timber.d("PROGRAM ID FROM WIDGET DETECTED: GO, GO, GO!!!");
+        }
+
 
         if(mAuth.getCurrentUser() == null) {
             signInToFirebase();

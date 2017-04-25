@@ -20,6 +20,7 @@ import tech.michaeloverman.android.mscount.BuildConfig;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.SingleFragmentActivity;
 import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeFragment;
+import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
 
 /**
@@ -88,7 +89,6 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         }
         Intent data = new Intent();
         data.putExtra(EXTRA_NEW_PROGRAM, pieceId);
-//        data.putExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE, useFirebase);
         setResult(RESULT_OK, data);
     }
 
@@ -124,6 +124,7 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         switch (item.getItemId()) {
             case R.id.firebase_local_database:
                 useFirebase = !useFirebase;
+                PrefUtils.saveFirebaseStatus(this, useFirebase);
                 if(useFirebase) {
                     item.setTitle(R.string.use_local_database);
                     if(mAuth.getCurrentUser() == null) {

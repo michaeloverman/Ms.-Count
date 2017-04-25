@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import tech.michaeloverman.android.mscount.R;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 3/27/2017.
@@ -63,6 +64,7 @@ public final class PrefUtils {
     }
 
     public static void saveFirebaseStatus(Context context, boolean firebase) {
+        Timber.d("saving useFirebase: " + firebase);
         SharedPreferences.Editor prefs = PreferenceManager
                 .getDefaultSharedPreferences(context).edit();
         prefs.putBoolean(PREF_USE_FIREBASE, firebase);
@@ -72,6 +74,7 @@ public final class PrefUtils {
     public static boolean usingFirebase(Context context) {
         SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
         boolean firebase = shp.getBoolean(PREF_USE_FIREBASE, true);
+        Timber.d("checking useFirebase: " + firebase);
         return firebase;
     }
 }

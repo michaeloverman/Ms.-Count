@@ -26,7 +26,7 @@
 
     <TextView
         android:id="@+id/current_composer_name"
-        android:text="                  "
+        android:text="@string/no_composer_empty_space"
         android:textColor="@color/secondaryText"
         android:textSize="14sp"
         android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
         app:layout_constraintRight_toRightOf="parent"/>
     <TextView
         android:id="@+id/current_program_title"
-        android:text="select a program..."
+        android:text="@string/select_a_program"
         android:textSize="24sp"
         android:textColor="@color/primaryText"
         android:layout_width="wrap_content"

@@ -40,7 +40,6 @@ import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.pojos.TitleKeyObject;
-import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
 
 /**
@@ -72,18 +71,6 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     private boolean mDeleteFlag;
     private LoadNewProgramActivity mActivity;
 
-
-//
-//    public interface ProgramCallback {
-//        void newPiece(PieceOfMusic piece);
-//    }
-
-//    public static Fragment newInstance(String composer) {
-////        mCursor = c;
-////        sProgramCallback = pc;
-////        Timber.d("Just set sPragramCallback : " + sProgramCallback);
-//        mCurrentComposer = composer;
-//    }
     public static Fragment newInstance() {
         return new PieceSelectFragment();
     }
@@ -93,12 +80,8 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-//        Timber.d("useFirebase = " + mActivity.useFirebase);
 
         mActivity = (LoadNewProgramActivity) getActivity();
-
-
-//        mActivity.getSupportLoaderManager().initLoader(ID_PROGRAM_LOADER, null, this);
 
     }
 
@@ -137,7 +120,6 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         mDeleteFlag = true;
         mDeleteCancelMenuItem.setTitle(R.string.cancel_delete);
         mDeleteCancelMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
     }
 
     public void cleanUpProgramDelete() {
@@ -207,7 +189,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         progressSpinner(true);
 
         if(!mDeleteFlag) {
-            PrefUtils.saveFirebaseStatus(mActivity, mActivity.useFirebase);
+//            PrefUtils.saveFirebaseStatus(mActivity, mActivity.useFirebase);
 //            if(!mActivity.useFirebase) {
 //                pieceId = Integer.toString(sqlId);
 //            }

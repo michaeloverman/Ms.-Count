@@ -92,6 +92,13 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        useFirebase = PrefUtils.usingFirebase(this);
+        Timber.d("onResume() - firebase: " + useFirebase);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_USE_FIREBASE, useFirebase);

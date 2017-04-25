@@ -167,6 +167,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     private void getPieceFromKey() {
         Timber.d("getPieceFromKey() " + mCurrentPieceKey);
+        Timber.d("activity's useFirebase: " + mActivity.useFirebase);
 //        boolean firebase = PrefUtils.usingFirebase(mActivity);
         if(mActivity.useFirebase) {
             getPieceFromFirebase();
@@ -351,10 +352,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         switch(requestCode) {
             case REQUEST_NEW_PROGRAM:
                 Timber.d("REQUEST_NEW_PROGRAM result received");
-                if(data.hasExtra(EXTRA_USE_FIREBASE)) {
-                    mActivity.useFirebase = data.getBooleanExtra(EXTRA_USE_FIREBASE, true);
-                    PrefUtils.saveFirebaseStatus(mActivity, mActivity.useFirebase);
-                }
+                mActivity.useFirebase = PrefUtils.usingFirebase(mActivity);
                 mCurrentPieceKey = data.getStringExtra(LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
                 getPieceFromKey();
 //                mCurrentTempo = mCurrentPiece.getDefaultTempo();
@@ -437,10 +435,10 @@ public class ProgrammedMetronomeFragment extends Fragment
         Timber.d("newPiece() " + mCurrentPiece.getTitle());
 
         mCurrentComposer = mCurrentPiece.getAuthor();
-//        if(mCurrentPiece.getDefaultTempo() != 0) {
-//            mCurrentTempo = mCurrentPiece.getDefaultTempo();
-//        }
-//        mCurrentPieceKey = mCurrentPiece.getFirebaseId();
+        mCurrentPieceKey = mCurrentPiece.getFirebaseId();
+        if(mCurrentPiece.getDefaultTempo() != 0) {
+            mCurrentTempo = mCurrentPiece.getDefaultTempo();
+        }
 
         updateGUI();
 
@@ -450,13 +448,17 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void updateGUI() {
-        Timber.d("updateGUI() " + mCurrentPiece.getAuthor() + ": " + mCurrentPiece.getTitle());
-        mTVCurrentPiece.setText(mCurrentPiece.getTitle());
-        mTVCurrentComposer.setText(mCurrentComposer);
-        mBeatLengthImage.setImageResource(getNoteImageResource
-                (mCurrentPiece.getBaselineNoteValue()));
-        mCurrentTempo = mCurrentPiece.getDefaultTempo();
-        updateTempoView();
+        if(mCurrentPiece == null) {
+            mTVCurrentPiece.setText(R.string.no_composer_empty_space);
+            mTVCurrentComposer.setText(R.string.select_a_program);
+        } else {
+            mTVCurrentPiece.setText(mCurrentPiece.getTitle());
+            mTVCurrentComposer.setText(mCurrentComposer);
+            mBeatLengthImage.setImageResource(getNoteImageResource
+                    (mCurrentPiece.getBaselineNoteValue()));
+            mCurrentTempo = mCurrentPiece.getDefaultTempo();
+            updateTempoView();
+        }
     }
 
     @Override
@@ -576,11 +578,10 @@ public class ProgrammedMetronomeFragment extends Fragment
         if(data == null || data.getCount() == 0) {
             Toast.makeText(mActivity, "Program Load Error", Toast.LENGTH_SHORT).show();
             mCurrentPiece = null;
-//            updateGUI();
+            updateGUI();
         } else {
             mCursor = data;
             getPieceFromSql();
-//            updateVariables();
         }
     }
 
@@ -588,7 +589,6 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void onLoaderReset(Loader<Cursor> loader) {
         Timber.d("onLoaderReset()");
         Timber.d("currentKey = " + mCurrentPieceKey);
-//        mCurrentPiece = null;
-//        getPieceFromSql();
+        mCursor = null;
     }
 }

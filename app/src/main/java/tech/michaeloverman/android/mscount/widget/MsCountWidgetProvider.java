@@ -52,6 +52,7 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
         }
 
         Intent clickIntentTemplate = new Intent(context, ProgrammedMetronomeActivity.class);
+
         Timber.d("clickIntentTemplate created");
 
         PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
@@ -99,17 +100,12 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setRemoteAdapter(Context context, final RemoteViews views, int widgetId) {
-        Timber.d("setting remote adapter");
         Intent intent = new Intent(context, WidgetRemoteViewsService.class);
-        Timber.d("intent made");
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-        Timber.d("extra put on intent");
         views.setRemoteAdapter(R.id.widget_list, intent);
-        Timber.d("remote adapter set...");
     }
     @SuppressWarnings("deprecation")
     private void setRemoteAdapterV11(Context context, RemoteViews views, int widgetId) {
-        Timber.d("setting remote adapter v11");
         Intent intent = new Intent(context, WidgetRemoteViewsService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         views.setRemoteAdapter(0, R.id.widget_list, intent);

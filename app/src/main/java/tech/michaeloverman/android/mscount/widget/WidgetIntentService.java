@@ -46,13 +46,6 @@ public class WidgetIntentService extends IntentService {
         int[] widgetIds = widgetManager.getAppWidgetIds(new ComponentName(this,
                 MsCountWidgetProvider.class));
 
-//        Set<String> prefStocks = PrefUtils.getStocks(this);
-//        Set<String> stocks = new HashSet<>();
-//        stocks.addAll(prefStocks);
-//        String[] stocksArray = (String[]) stocks.toArray();
-
-//        String displayMode = PrefUtils.getDisplayMode(this);
-
         Uri programLocationUri = FavoritesContract.FavoriteEntry.CONTENT_URI;
         Cursor data = getContentResolver().query(programLocationUri,
                 PROGRAM_COLUMNS,

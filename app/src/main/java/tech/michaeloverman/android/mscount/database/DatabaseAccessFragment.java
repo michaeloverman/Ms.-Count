@@ -9,4 +9,5 @@ import android.support.v4.app.Fragment;
 public abstract class DatabaseAccessFragment extends Fragment {
 
     void updateData() {}
+
 }

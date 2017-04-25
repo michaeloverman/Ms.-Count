@@ -21,6 +21,7 @@ import tech.michaeloverman.android.mscount.BuildConfig;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeActivity;
+import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
 
 /**
@@ -48,10 +49,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
 
 
-
-        if(savedInstanceState != null) {
-            useFirebase = savedInstanceState.getBoolean(KEY_USE_FIREBASE);
-        }
+        useFirebase = PrefUtils.usingFirebase(this);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -74,6 +72,8 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         Intent intent = getIntent();
         if(intent.hasExtra(PROGRAM_ID_EXTRA)) {
             Timber.d("PROGRAM ID FROM WIDGET DETECTED: GO, GO, GO!!!");
+            int id = intent.getIntExtra(PROGRAM_ID_EXTRA, 999);
+            PrefUtils.saveWidgetSelectedPieceToPrefs(this, id);
         }
 
 
@@ -123,6 +123,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         switch (item.getItemId()) {
             case R.id.firebase_local_database:
                 useFirebase = !useFirebase;
+                PrefUtils.saveFirebaseStatus(this, useFirebase);
                 if(useFirebase) {
                     item.setTitle(R.string.use_local_database);
                     if(mAuth.getCurrentUser() == null) {

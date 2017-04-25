@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import tech.michaeloverman.android.mscount.BuildConfig;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.SingleFragmentActivity;
-import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeFragment;
 import timber.log.Timber;
 
@@ -81,15 +80,15 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         }
     }
 
-    protected void setProgramResult(PieceOfMusic piece) {
-        if(piece == null) {
+    protected void setProgramResult(String pieceId) {
+        if(pieceId == null) {
             Timber.d("null piece recieved to return");
         } else {
-            Timber.d("setting new program on result intent: " + piece.getTitle());
+            Timber.d("setting new program on result intent: " + pieceId);
         }
         Intent data = new Intent();
-        data.putExtra(EXTRA_NEW_PROGRAM, piece);
-        data.putExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE, useFirebase);
+        data.putExtra(EXTRA_NEW_PROGRAM, pieceId);
+//        data.putExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE, useFirebase);
         setResult(RESULT_OK, data);
     }
 

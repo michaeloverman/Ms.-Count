@@ -15,6 +15,9 @@ public final class PrefUtils {
     public static final String PREF_FAVORITE_PROGRAM = "favorite";
     public static final String PREF_DOWNBEAT_CLICK_DEFAULT = "4";
     public static final String PREF_INNERBEAT_CLICK_DEFAULT = "2";
+    private static final String PREF_USE_FIREBASE = "use_firebase";
+    private static final String PREF_CURRENT_TEMPO = "programmable_tempo_key";
+    private static final String PREF_PIECE_KEY = "programmable_piece_id";
 
     private PrefUtils() {
     }
@@ -33,5 +36,42 @@ public final class PrefUtils {
         return Integer.parseInt(id);
     }
 
+    public static void saveCurrentProgramToPrefs(Context context,
+                                                boolean useFirebase, String key, int tempo) {
+        SharedPreferences.Editor prefs = PreferenceManager
+                .getDefaultSharedPreferences(context).edit();
+        prefs.putBoolean(PREF_USE_FIREBASE, useFirebase);
+        prefs.putString(PREF_PIECE_KEY, key);
+        prefs.putInt(PREF_CURRENT_TEMPO, tempo);
+        prefs.commit();
+    }
 
+    public static void saveWidgetSelectedPieceToPrefs(Context context, int key) {
+        saveCurrentProgramToPrefs(context, false, Integer.toString(key), getSavedTempo(context));
+    }
+
+    public static String getSavedPieceKey(Context context) {
+        SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
+        String key = shp.getString(PREF_PIECE_KEY, null);
+        return key;
+    }
+
+    public static int getSavedTempo(Context context) {
+        SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
+        int id = shp.getInt(PREF_CURRENT_TEMPO, 120);
+        return id;
+    }
+
+    public static void saveFirebaseStatus(Context context, boolean firebase) {
+        SharedPreferences.Editor prefs = PreferenceManager
+                .getDefaultSharedPreferences(context).edit();
+        prefs.putBoolean(PREF_USE_FIREBASE, firebase);
+        prefs.commit();
+    }
+
+    public static boolean usingFirebase(Context context) {
+        SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean firebase = shp.getBoolean(PREF_USE_FIREBASE, true);
+        return firebase;
+    }
 }

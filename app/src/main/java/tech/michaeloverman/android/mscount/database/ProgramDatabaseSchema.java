@@ -54,5 +54,11 @@ public class ProgramDatabaseSchema {
                     .build();
         }
 
+        public static Uri buildUriWithId(int id) {
+            return CONTENT_URI.buildUpon()
+                    .appendPath(Integer.toString(id))
+                    .build();
+        }
+
     }
 }

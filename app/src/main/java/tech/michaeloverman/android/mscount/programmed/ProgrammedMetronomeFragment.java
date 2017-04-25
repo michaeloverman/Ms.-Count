@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +47,7 @@ import tech.michaeloverman.android.mscount.favorites.FavoritesDBHelper;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import tech.michaeloverman.android.mscount.utils.Utilities;
 import timber.log.Timber;
 
@@ -53,7 +58,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class ProgrammedMetronomeFragment extends Fragment
-        implements MetronomeListener {
+        implements MetronomeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final boolean UP = true;
     private static final boolean DOWN = false;
@@ -62,8 +67,8 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final String CURRENT_PIECE_KEY = "current_piece_key";
     private static final String CURRENT_TEMPO_KEY = "current_tempo_key";
     private static final String CURRENT_COMPOSER_KEY = "current_composer_key";
-    private static final String PREF_CURRENT_TEMPO = "programmable_tempo_key";
-    private static final String PREF_PIECE_KEY = "programmable_piece_id";
+    private static final int ID_PIECE_LOADER = 434;
+
     private static final int REQUEST_NEW_PROGRAM = 44;
     public static final String EXTRA_COMPOSER_NAME = "composer_name_extra";
     public static final String EXTRA_USE_FIREBASE = "program_database_option";
@@ -128,12 +133,12 @@ public class ProgrammedMetronomeFragment extends Fragment
         } else {
             Timber.d("savedInstanceState not found - looking to SharedPrefs");
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-            mCurrentPieceKey = prefs.getString(PREF_PIECE_KEY, null);
+            mCurrentPieceKey = PrefUtils.getSavedPieceKey(mActivity);
+
             if(mCurrentPieceKey != null) {
-                Timber.d("getting saved piece from Firebase");
                 getPieceFromKey();
             }
-            mCurrentTempo = prefs.getInt(PREF_CURRENT_TEMPO, 120);
+            mCurrentTempo = PrefUtils.getSavedTempo(mActivity);
         }
 
         mMetronomeRunning = false;
@@ -161,6 +166,23 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void getPieceFromKey() {
+        Timber.d("getPieceFromKey() " + mCurrentPieceKey);
+//        boolean firebase = PrefUtils.usingFirebase(mActivity);
+        if(mActivity.useFirebase) {
+            getPieceFromFirebase();
+        } else {
+            if(mCursor == null) {
+                Timber.d("mCursor is null, initing loader...");
+                mActivity.getSupportLoaderManager().initLoader(ID_PIECE_LOADER, null, this);
+            } else {
+                Timber.d("mCursor exists, going straight to data");
+                getPieceFromSql();
+            }
+        }
+    }
+
+    private void getPieceFromFirebase() {
+        Timber.d("getPieceFromFirebase()");
         FirebaseDatabase.getInstance().getReference().child("pieces").child(mCurrentPieceKey)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -175,6 +197,39 @@ public class ProgrammedMetronomeFragment extends Fragment
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void getPieceFromSql() {
+        Timber.d("getPieceFromSql()");
+        int localDbId = Integer.parseInt(mCurrentPieceKey);
+        mCursor.moveToFirst();
+        while(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_ID) != localDbId) {
+            Timber.d("_id: " + mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_ID)
+                    + " != " + localDbId);
+            if(!mCursor.moveToNext()) {
+                programNotFoundError(localDbId);
+                return;
+            }
+        }
+        PieceOfMusic.Builder builder = new PieceOfMusic.Builder()
+                .author(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER))
+                .title(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE))
+                .subdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_PRIMANY_SUBDIVISIONS))
+                .countOffSubdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_COUNOFF_SUBDIVISIONS))
+                .defaultTempo(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_TEMPO))
+                .baselineNoteValue(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_RHYTHM))
+                .tempoMultiplier(mCursor.getDouble(ProgramDatabaseSchema.MetProgram.POSITION_TEMPO_MULTIPLIER))
+                .firstMeasureNumber(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_MEASURE_COUNTE_OFFSET))
+                .dataEntries(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_DATA_ARRAY))
+                .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID));
+//        mCursor.close();
+        mCurrentPiece = builder.build();
+        updateVariables();
+    }
+
+    private void programNotFoundError(int id) {
+        Toast.makeText(mActivity, "Program with id " + id + " is not found in the database.",
+                Toast.LENGTH_SHORT).show();
     }
 
     @Nullable
@@ -249,14 +304,12 @@ public class ProgrammedMetronomeFragment extends Fragment
     @Override
     public void onDestroy() {
         Timber.d("onDestroy() saving prefs....");
-        SharedPreferences.Editor prefs = PreferenceManager
-                .getDefaultSharedPreferences(getContext()).edit();
-        prefs.putString(PREF_PIECE_KEY, mCurrentPieceKey);
-        prefs.putInt(PREF_CURRENT_TEMPO, mCurrentTempo);
-        prefs.commit();
+        PrefUtils.saveCurrentProgramToPrefs(mActivity, mActivity.useFirebase,
+                mCurrentPieceKey, mCurrentTempo);
 
         Timber.d("Should have just saved " + mCurrentPieceKey + " at " + mCurrentTempo + " BPM");
 
+        mCursor = null;
         super.onDestroy();
     }
 
@@ -297,13 +350,16 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
         switch(requestCode) {
             case REQUEST_NEW_PROGRAM:
-                mCurrentPiece = (PieceOfMusic) data.getSerializableExtra(
-                        LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
-                mCurrentPieceKey = mCurrentPiece.getFirebaseId();
-                mCurrentTempo = mCurrentPiece.getDefaultTempo();
-                mActivity.useFirebase = data.getBooleanExtra(EXTRA_USE_FIREBASE, true);
-                Timber.d("New Piece loaded. FirebaseId: " + mCurrentPiece.getFirebaseId());
-                updateVariables();
+                Timber.d("REQUEST_NEW_PROGRAM result received");
+                if(data.hasExtra(EXTRA_USE_FIREBASE)) {
+                    mActivity.useFirebase = data.getBooleanExtra(EXTRA_USE_FIREBASE, true);
+                    PrefUtils.saveFirebaseStatus(mActivity, mActivity.useFirebase);
+                }
+                mCurrentPieceKey = data.getStringExtra(LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
+                getPieceFromKey();
+//                mCurrentTempo = mCurrentPiece.getDefaultTempo();
+//                Timber.d("New Piece loaded. FirebaseId: " + mCurrentPiece.getFirebaseId());
+//                updateVariables();
                 break;
             default:
         }
@@ -399,6 +455,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         mTVCurrentComposer.setText(mCurrentComposer);
         mBeatLengthImage.setImageResource(getNoteImageResource
                 (mCurrentPiece.getBaselineNoteValue()));
+        mCurrentTempo = mCurrentPiece.getDefaultTempo();
         updateTempoView();
     }
 
@@ -491,5 +548,47 @@ public class ProgrammedMetronomeFragment extends Fragment
             mIsCurrentFavorite = aBoolean;
             mActivity.invalidateOptionsMenu();
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Timber.d("loader creation...");
+        switch(id) {
+            case ID_PIECE_LOADER:
+                Uri queryUri = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
+                Timber.d("Uri: " + queryUri.toString());
+                return new CursorLoader(mActivity,
+                        queryUri,
+                        null,
+                        null,
+                        null,
+                        null);
+
+            default:
+                throw new RuntimeException("Unimplemented Loader Problem: " + id);
+        }
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Timber.d("loader finished...");
+        if(data == null || data.getCount() == 0) {
+            Toast.makeText(mActivity, "Program Load Error", Toast.LENGTH_SHORT).show();
+            mCurrentPiece = null;
+//            updateGUI();
+        } else {
+            mCursor = data;
+            getPieceFromSql();
+//            updateVariables();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Timber.d("onLoaderReset()");
+        Timber.d("currentKey = " + mCurrentPieceKey);
+//        mCurrentPiece = null;
+//        getPieceFromSql();
     }
 }

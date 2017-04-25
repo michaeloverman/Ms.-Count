@@ -36,7 +36,7 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
     }
 
     interface WorksListAdapterOnClickHandler {
-        void onClick(int position, String key, String title);
+        void onClick(String key, String title);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
             while (!data.isAfterLast()) {
                 titles.add(new TitleKeyObject(
                         data.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE),
-                        data.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID)));
+                        data.getString(ProgramDatabaseSchema.MetProgram.POSITION_ID)));
                 data.moveToNext();
             }
         } finally {
@@ -105,7 +105,7 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
             int position = getAdapterPosition();
             String key = mTitles.get(position).getKey();
             String title = mTitles.get(position).getTitle();
-            mClickHandler.onClick(position, key, title);
+            mClickHandler.onClick(key, title);
         }
     }
 }

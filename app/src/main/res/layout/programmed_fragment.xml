@@ -34,7 +34,9 @@
         android:paddingTop="@dimen/generic_8dp_margin"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        android:transitionName="@string/transition_composer_name_view"/>
+
     <TextView
         android:id="@+id/current_program_title"
         android:text="@string/select_a_program"

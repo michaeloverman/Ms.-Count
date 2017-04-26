@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme.Main" parent="@style/AppTheme">
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+    <style name="AppTheme.SelectProgram" parent="@style/AppTheme">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowEnterTransition">@transition/select_program_enter</item>
+    </style>
+</resources>

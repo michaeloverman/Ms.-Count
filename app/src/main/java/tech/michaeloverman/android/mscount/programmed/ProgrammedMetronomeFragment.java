@@ -284,6 +284,12 @@ public class ProgrammedMetronomeFragment extends Fragment
         return view;
     }
 
+//    @Override
+//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//        mActivity.supportStartPostponedEnterTransition();
+//    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Timber.d("onCreateOptionsMenu");
@@ -335,9 +341,12 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @OnClick( { R.id.current_composer_name, R.id.current_program_title } )
     public void selectNewProgram() {
-        Intent intent = new Intent(mActivity, LoadNewProgramActivity.class);
-        intent.putExtra(EXTRA_COMPOSER_NAME, mCurrentComposer);
-        intent.putExtra(EXTRA_USE_FIREBASE, mActivity.useFirebase);
+        Intent intent = new Intent(mActivity, LoadNewProgramActivity.class)
+                .putExtra(EXTRA_COMPOSER_NAME, mCurrentComposer)
+                .putExtra(EXTRA_USE_FIREBASE, mActivity.useFirebase);
+//        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                mActivity, new Pair<View, String>(mTVCurrentComposer, getString(R.string.transition_composer_name_view)) );
+//        startActivityForResult(intent, REQUEST_NEW_PROGRAM, activityOptions.toBundle());
         startActivityForResult(intent, REQUEST_NEW_PROGRAM);
     }
 
@@ -355,9 +364,6 @@ public class ProgrammedMetronomeFragment extends Fragment
                 mActivity.useFirebase = PrefUtils.usingFirebase(mActivity);
                 mCurrentPieceKey = data.getStringExtra(LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
                 getPieceFromKey();
-//                mCurrentTempo = mCurrentPiece.getDefaultTempo();
-//                Timber.d("New Piece loaded. FirebaseId: " + mCurrentPiece.getFirebaseId());
-//                updateVariables();
                 break;
             default:
         }

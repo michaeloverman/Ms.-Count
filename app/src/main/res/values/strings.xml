@@ -60,6 +60,7 @@
     <string name="add_widget">Add widget</string>
     <string name="no_composer_empty_space"/>
     <string name="select_a_program">select a program...</string>
+    <string name="transition_composer_name_view">transition_composer_name_view</string>
 
 
 </resources>

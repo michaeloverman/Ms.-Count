@@ -50,6 +50,7 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
     public void onBindViewHolder(WorksViewHolder holder, int position) {
 //        Timber.d("onBindViewHolder()");
         holder.title.setText(mTitles.get(position).getTitle());
+//        ViewCompat.setTransitionName(holder.title, "titleViewTrans" + position);
     }
 
     @Override

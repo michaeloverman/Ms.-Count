@@ -5,6 +5,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 
 import java.io.IOException;
@@ -306,34 +307,44 @@ public class Metronome {
         }
     }
     private void loadSounds() {
-        String[] soundNames;
-        try {
-            soundNames = mAssets.list(SOUNDS_FOLDER);
-            Timber.d("Found " + soundNames.length + " sounds");
-        } catch (IOException ioe) {
-            Timber.d("Could not list assets", ioe);
-            return;
-        }
-        for (String filename : soundNames) {
+        new LoadSoundsTask().execute();
+    }
+
+    private class LoadSoundsTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            String[] soundNames;
             try {
-                String assetPath = SOUNDS_FOLDER + "/" + filename;
-                Click click = new Click(assetPath);
-                load(click);
-                mClicks.add(click);
-                Timber.d("  Loaded: " + filename);
+                soundNames = mAssets.list(SOUNDS_FOLDER);
+                Timber.d("Found " + soundNames.length + " sounds");
             } catch (IOException ioe) {
-                Timber.d("Could not load sound " + filename, ioe);
-                return;
+                Timber.d("Could not list assets", ioe);
+                return null;
             }
+            for (String filename : soundNames) {
+                try {
+                    String assetPath = SOUNDS_FOLDER + "/" + filename;
+                    Click click = new Click(assetPath);
+                    load(click);
+                    mClicks.add(click);
+                    Timber.d("  Loaded: " + filename);
+                } catch (IOException ioe) {
+                    Timber.d("Could not load sound " + filename, ioe);
+                    return null;
+                }
+            }
+            return null;
         }
 
+        private void load(Click click) throws IOException {
+            AssetFileDescriptor afd = mAssets.openFd(click.getAssetPath());
+            int soundId = mSoundPool.load(afd, 1);
+            click.setSoundId(soundId);
+        }
     }
 
-    private void load(Click click) throws IOException {
-        AssetFileDescriptor afd = mAssets.openFd(click.getAssetPath());
-        int soundId = mSoundPool.load(afd, 1);
-        click.setSoundId(soundId);
-    }
+
 
 
     public List<Click> getClicks() {

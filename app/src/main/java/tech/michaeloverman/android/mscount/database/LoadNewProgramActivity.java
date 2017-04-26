@@ -47,6 +47,8 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        supportPostponeEnterTransition();
+
         Intent intent = getIntent();
         if(intent.hasExtra(ProgrammedMetronomeFragment.EXTRA_COMPOSER_NAME)) {
             mCurrentComposer = intent.getStringExtra(ProgrammedMetronomeFragment.EXTRA_COMPOSER_NAME);

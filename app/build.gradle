@@ -8,8 +8,8 @@ android {
         applicationId "tech.michaeloverman.android.stickit"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 8
-        versionName "1.4"
+        versionCode 9
+        versionName "1.5"
     }
     buildTypes {
         release {

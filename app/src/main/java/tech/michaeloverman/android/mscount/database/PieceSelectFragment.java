@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -166,6 +165,13 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         return view;
     }
 
+//    @Override
+//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+//        Timber.d("onViewCreated() - transition should go now");
+//        super.onViewCreated(view, savedInstanceState);
+//        mActivity.supportStartPostponedEnterTransition();
+//    }
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -177,10 +183,15 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     public void selectComposer() {
 //        mCurrentPiece = null;
         Fragment fragment = ComposerSelectFragment.newInstance(this);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+
+//        android.transition.ChangeBounds changeBounds = (android.transition.ChangeBounds) TransitionInflater.from(mActivity).inflateTransition(R.transition.change_bounds);
+//        fragment.setSharedElementEnterTransition(changeBounds);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+//                .addSharedElement(mComposersNameView, getString(R.string.transition_composer_name_view))
+                .commit();
     }
 
     @Override

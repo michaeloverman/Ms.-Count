@@ -64,7 +64,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final boolean DOWN = false;
     private static final int MAXIMUM_TEMPO = 350;
     private static final int MINIMUM_TEMPO = 1;
-    private static final String CURRENT_PIECE_KEY = "current_piece_key";
+    private static final String CURRENT_PIECE_TITLE_KEY = "current_piece_key";
     private static final String CURRENT_TEMPO_KEY = "current_tempo_key";
     private static final String CURRENT_COMPOSER_KEY = "current_composer_key";
     private static final int ID_PIECE_LOADER = 434;
@@ -126,7 +126,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         if(savedInstanceState != null) {
             Timber.d("found savedInstanceState");
 //            mCurrentTempo = savedInstanceState.getInt(CURRENT_TEMPO_KEY);
-            mCurrentPieceKey = savedInstanceState.getString(CURRENT_PIECE_KEY);
+            mCurrentPieceKey = savedInstanceState.getString(CURRENT_PIECE_TITLE_KEY);
 //            mCurrentComposer = savedInstanceState.getString(CURRENT_COMPOSER_KEY);
             Timber.d("savedInstanceState retrieved: composer: " + mCurrentComposer);
             getPieceFromKey();
@@ -134,9 +134,9 @@ public class ProgrammedMetronomeFragment extends Fragment
             Timber.d("savedInstanceState not found - looking to SharedPrefs");
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             mCurrentPieceKey = PrefUtils.getSavedPieceKey(mActivity);
-            checkKeyFormat();
 
             if(mCurrentPieceKey != null) {
+                checkKeyFormat();
                 getPieceFromKey();
             }
             mCurrentTempo = PrefUtils.getSavedTempo(mActivity);
@@ -417,7 +417,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         if(mCurrentPiece != null) {
             Timber.d("onSaveInstanceState() " + mCurrentPiece.getTitle() + " by " + mCurrentComposer);
             Timber.d("..... Current Tempo: " + mCurrentTempo);
-            outState.putString(CURRENT_PIECE_KEY, mCurrentPiece.getTitle());
+            outState.putString(CURRENT_PIECE_TITLE_KEY, mCurrentPiece.getTitle());
             outState.putInt(CURRENT_TEMPO_KEY, mCurrentTempo);
             outState.putString(CURRENT_COMPOSER_KEY, mCurrentComposer);
         }
@@ -459,15 +459,15 @@ public class ProgrammedMetronomeFragment extends Fragment
         Timber.d("newPiece() " + mCurrentPiece.getTitle());
 
         mCurrentComposer = mCurrentPiece.getAuthor();
-        mCurrentPieceKey = mCurrentPiece.getFirebaseId();
+//        mCurrentPieceKey = mCurrentPiece.getFirebaseId();
         if(mCurrentPiece.getDefaultTempo() != 0) {
             mCurrentTempo = mCurrentPiece.getDefaultTempo();
         }
 
         updateGUI();
 
-        if(mCurrentPieceKey != null) {
-            new CheckIfFavoriteTask().execute(mCurrentPieceKey);
+        if(mCurrentPiece.getFirebaseId() != null) {
+            new CheckIfFavoriteTask().execute(mCurrentPiece.getFirebaseId());
         }
     }
 

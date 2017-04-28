@@ -95,10 +95,11 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
         View view = inflater.inflate(R.layout.oddmeter_metronome_layout, container, false);
         ButterKnife.bind(this, view);
 
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B")
-                .build();
-        mAdView.loadAd(adRequest);
+        AdRequest.Builder adRequest = new AdRequest.Builder();
+        if(BuildConfig.DEBUG) {
+            adRequest.addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B");
+        }
+        mAdView.loadAd(adRequest.build());
 
 //        mSubdivisionLayout = (LinearLayout) this.getActivity().findViewById(R.id.subdivision_layout);
         // use the "naked" listener to catch ACTION_UP (release) for resetting tempo

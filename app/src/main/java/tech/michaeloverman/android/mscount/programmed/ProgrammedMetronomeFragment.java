@@ -40,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import tech.michaeloverman.android.mscount.BuildConfig;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.database.LoadNewProgramActivity;
 import tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema;
@@ -265,12 +266,11 @@ public class ProgrammedMetronomeFragment extends Fragment
         mActivity.setTitle(R.string.app_name);
 //        Timber.d("using firebase? " + mActivity.useFirebase);
 
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B")
-                .build();
-        if(adRequest != null) {
-            mAdView.loadAd(adRequest);
+        AdRequest.Builder adRequest = new AdRequest.Builder();
+        if(BuildConfig.DEBUG) {
+            adRequest.addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B");
         }
+        mAdView.loadAd(adRequest.build());
 
 
 

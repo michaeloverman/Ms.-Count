@@ -11,6 +11,7 @@
         android:id="@+id/oddmeter_start_stop_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:transitionName="@string/round_button_transition"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="@dimen/normal_met_fab_margin"

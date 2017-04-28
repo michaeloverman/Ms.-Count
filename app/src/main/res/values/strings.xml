@@ -61,6 +61,7 @@
     <string name="no_composer_empty_space"/>
     <string name="select_a_program">select a program...</string>
     <string name="transition_composer_name_view">transition_composer_name_view</string>
+    <string name="round_button_transition">round_button_transition</string>
 
 
 </resources>

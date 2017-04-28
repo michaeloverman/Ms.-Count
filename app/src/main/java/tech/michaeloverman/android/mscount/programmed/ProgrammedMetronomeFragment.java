@@ -134,6 +134,7 @@ public class ProgrammedMetronomeFragment extends Fragment
             Timber.d("savedInstanceState not found - looking to SharedPrefs");
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             mCurrentPieceKey = PrefUtils.getSavedPieceKey(mActivity);
+            checkKeyFormat();
 
             if(mCurrentPieceKey != null) {
                 getPieceFromKey();
@@ -163,6 +164,23 @@ public class ProgrammedMetronomeFragment extends Fragment
                 mRunnableHandler.postDelayed(this, mTempoChangeDelay -= RATE_OF_DELAY_CHANGE);
             }
         };
+    }
+
+    private void checkKeyFormat() {
+        Timber.d("Firebase: " + mActivity.useFirebase + " :: key: " + mCurrentPieceKey.charAt(0));
+        if(mActivity.useFirebase) {
+            try {
+                Integer.parseInt(mCurrentPieceKey);
+            } catch (NumberFormatException nfe) {
+                mActivity.useFirebase = false;
+                PrefUtils.saveFirebaseStatus(mActivity, mActivity.useFirebase);
+            }
+        } else {
+            if(mCurrentPieceKey.charAt(0) == '-') {
+                mActivity.useFirebase = true;
+                PrefUtils.saveFirebaseStatus(mActivity, mActivity.useFirebase);
+            }
+        }
     }
 
     private void getPieceFromKey() {

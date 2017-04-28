@@ -21,6 +21,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -71,6 +74,8 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     @BindView(R.id.subdivision_indicator8) FloatingActionButton sub8;
     @BindView(R.id.subdivision_indicator9) FloatingActionButton sub9;
     @BindView(R.id.subdivision_indicator10) FloatingActionButton sub10;
+    @BindView(R.id.normal_adView) AdView mAdView;
+
     FloatingActionButton[] mSubdivisionIndicators;
     private int[] mSubdivisionFabColors;
 
@@ -124,6 +129,12 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.normal_metronome_fragment, container, false);
         ButterKnife.bind(this, view);
+
+        //        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B")
+                .build();
+        mAdView.loadAd(adRequest);
 
         // use the "naked" listener to catch ACTION_UP (release) for resetting tempo
         // otherwise defer to GestureDetector to handle scrolling
@@ -190,6 +201,21 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         return view;
     }
 
+    @Override
+    public void onPause() {
+        if(mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+    }
 
     @Override
     public void onDestroy() {
@@ -199,6 +225,10 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         prefs.putInt(PREF_KEY_SUBDIVISIONS, mNumSubdivisions);
         prefs.putBoolean(PREF_WHOLE_NUMBERS, mWholeNumbersSelected);
         prefs.commit();
+
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
 
         super.onDestroy();
     }

@@ -2,14 +2,14 @@
 <resources>
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00796B</color>
-    <color name="colorAccent">#FF5722</color>
+    <color name="colorAccent">#ffd800</color>
     <color name="colorPrimaryLight">#B2DFDB</color>
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#757575</color>
     <color name="dividerColor">#BDBDBD</color>
     <color name="white">#FFFFFF</color>
 
-    <color name="colorSubdivisionIndicator10">@color/colorAccent</color>
+    <color name="colorSubdivisionIndicator10">#ff5722</color>
     <color name="colorSubdivisionIndicator9">#fe642e</color>
     <color name="colorSubdivisionIndicator8">#fd723b</color>
     <color name="colorSubdivisionIndicator7">#fc7f47</color>

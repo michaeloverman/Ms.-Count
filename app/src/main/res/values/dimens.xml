@@ -15,8 +15,8 @@
     <dimen name="home_screen_button_height">40dp</dimen>
     <dimen name="fab_right_margin">32dp</dimen>
     <dimen name="normal_met_fab_margin">16dp</dimen>
-    <dimen name="normal_met_tempo_vertical_padding">64dp</dimen>
-    <dimen name="subdivision_fab_margin">16dp</dimen>
+    <dimen name="normal_met_tempo_vertical_padding">48dp</dimen>
+    <dimen name="subdivision_fab_margin">4dp</dimen>
     <dimen name="data_entry_sub_button_text_size">60sp</dimen>
     <dimen name="data_entry_barline_text_size">88sp</dimen>
     <dimen name="data_entry_sub_button_margin">4dp</dimen>

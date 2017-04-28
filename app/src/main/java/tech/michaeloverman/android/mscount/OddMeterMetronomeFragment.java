@@ -17,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +54,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
     @BindView(R.id.oddmeter_tempo_view) TextView mTempoSetting;
     @BindView(R.id.extra_subdivision_buttons) LinearLayout mOtherButtons;
     @BindView(R.id.pulse_multiplier_view) TextView mPulseMultiplierView;
+    @BindView(R.id.odd_adView) AdView mAdView;
     private boolean mMultiplierSelected;
 
     private List<Integer> mSubdivisionsList;
@@ -90,6 +94,12 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.oddmeter_metronome_layout, container, false);
         ButterKnife.bind(this, view);
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B")
+                .build();
+        mAdView.loadAd(adRequest);
+
 //        mSubdivisionLayout = (LinearLayout) this.getActivity().findViewById(R.id.subdivision_layout);
         // use the "naked" listener to catch ACTION_UP (release) for resetting tempo
         // otherwise defer to GestureDetector to handle scrolling

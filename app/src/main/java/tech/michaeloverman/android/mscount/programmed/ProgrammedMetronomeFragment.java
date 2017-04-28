@@ -30,6 +30,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -89,6 +91,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
     @BindView(R.id.tempo_down_button) ImageButton mTempoDownButton;
     @BindView(R.id.current_measure_number) TextView mCurrentMeasureNumber;
+    @BindView(R.id.programmed_adView) AdView mAdView;
 
     private Handler mRunnableHandler;
     private Runnable mDownRunnable;
@@ -120,6 +123,8 @@ public class ProgrammedMetronomeFragment extends Fragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+
+
 
         getActivity().setTitle(getString(R.string.app_name));
 
@@ -260,6 +265,15 @@ public class ProgrammedMetronomeFragment extends Fragment
         mActivity.setTitle(R.string.app_name);
 //        Timber.d("using firebase? " + mActivity.useFirebase);
 
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B")
+                .build();
+        if(adRequest != null) {
+            mAdView.loadAd(adRequest);
+        }
+
+
+
         mTempoDownButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -323,7 +337,18 @@ public class ProgrammedMetronomeFragment extends Fragment
     @Override
     public void onPause() {
         if(mMetronomeRunning) metronomeStartStop();
+        if(mAdView != null) {
+            mAdView.pause();
+        }
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mAdView != null) {
+            mAdView.resume();
+        }
     }
 
     @Override
@@ -335,6 +360,11 @@ public class ProgrammedMetronomeFragment extends Fragment
         Timber.d("Should have just saved " + mCurrentPieceKey + " at " + mCurrentTempo + " BPM");
 
         mCursor = null;
+
+        if(mAdView != null) {
+            mAdView.destroy();
+        }
+
         super.onDestroy();
     }
 

@@ -1,8 +1,11 @@
 package tech.michaeloverman.android.mscount.programmed;
 
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,12 +53,15 @@ import tech.michaeloverman.android.mscount.favorites.FavoritesContract;
 import tech.michaeloverman.android.mscount.favorites.FavoritesDBHelper;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Metronome;
+import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import tech.michaeloverman.android.mscount.utils.Utilities;
+import tech.michaeloverman.android.mscount.utils.WearNotifications;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
  * Created by Michael on 2/24/2017.
@@ -75,6 +82,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final int REQUEST_NEW_PROGRAM = 44;
     public static final String EXTRA_COMPOSER_NAME = "composer_name_extra";
     public static final String EXTRA_USE_FIREBASE = "program_database_option";
+    private static final String EXTRA_WEAR_INTENT_ID = "program_wear_notif";
 
     private PieceOfMusic mCurrentPiece;
     private String mCurrentPieceKey;
@@ -83,6 +91,8 @@ public class ProgrammedMetronomeFragment extends Fragment
     private boolean mIsCurrentFavorite;
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
+
+    private BroadcastReceiver mMetronomeBroadcastReceiver;
 
     @BindView(R.id.current_composer_name) TextView mTVCurrentComposer;
     @BindView(R.id.current_program_title) TextView mTVCurrentPiece;
@@ -125,7 +135,9 @@ public class ProgrammedMetronomeFragment extends Fragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-
+        if(true) {  // TODO check for wearable connection....
+            createAndRegisterBroadcastReceiver();
+        }
 
         getActivity().setTitle(getString(R.string.app_name));
 
@@ -193,7 +205,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         Timber.d("getPieceFromKey() " + mCurrentPieceKey);
         Timber.d("activity's useFirebase: " + mActivity.useFirebase);
 //        boolean firebase = PrefUtils.usingFirebase(mActivity);
-        if(mActivity.useFirebase) {
+        if(mCurrentPieceKey.charAt(0) == '-') {
             getPieceFromFirebase();
         } else {
             if(mCursor == null) {
@@ -361,6 +373,10 @@ public class ProgrammedMetronomeFragment extends Fragment
 
         mCursor = null;
 
+        if(mMetronomeBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
+        }
+
         if(mAdView != null) {
             mAdView.destroy();
         }
@@ -495,6 +511,8 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
 
         updateGUI();
+        Timber.d("calling updateWearNotif()");
+        updateWearNotif();
 
         if(mCurrentPiece.getFirebaseId() != null) {
             new CheckIfFavoriteTask().execute(mCurrentPiece.getFirebaseId());
@@ -514,6 +532,26 @@ public class ProgrammedMetronomeFragment extends Fragment
             updateTempoView();
         }
     }
+
+    private PendingIntent getExamplePendingIntent() {
+        Intent intent = new Intent("tech.michaeloverman.android.mscount.wearable.pendingintent")
+                .setClass(mActivity, ProgrammedMetronomeFragment.class);
+        intent.putExtra(EXTRA_MESSAGE, "extra pending intent message: here it is");
+        Timber.d("returning example pending intent");
+        return PendingIntent.getBroadcast(mActivity, 007, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+    private void updateWearNotif() {
+        WearNotifications.sendStartStopNotifToWear(mActivity, mCurrentComposer, mCurrentPiece.getTitle());
+
+    }
+
+    private void createAndRegisterBroadcastReceiver() {
+        mMetronomeBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
+//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
+        mActivity.registerReceiver(mMetronomeBroadcastReceiver, filter);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -581,6 +619,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         ContentResolver resolver = getContext().getContentResolver();
         resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
     }
+
 
     private class CheckIfFavoriteTask extends AsyncTask<String, Void, Boolean> {
 

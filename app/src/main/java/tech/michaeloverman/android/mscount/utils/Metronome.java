@@ -21,7 +21,7 @@ import timber.log.Timber;
  */
 
 public class Metronome {
-    private static final String TAG = "Metronome";
+    public static final String ACTION_METRONOME_START_STOP = "metronome_start_stop_action";
     private static final String SOUNDS_FOLDER = "sample_sounds";
     private static final long TWENTY_MINUTES = 60000 * 20;
     public static final int MAX_SUBDIVISIONS = 10;

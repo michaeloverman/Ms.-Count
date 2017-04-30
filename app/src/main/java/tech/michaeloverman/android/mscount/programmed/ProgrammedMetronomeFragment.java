@@ -1,6 +1,5 @@
 package tech.michaeloverman.android.mscount.programmed;
 
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -13,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -53,15 +53,13 @@ import tech.michaeloverman.android.mscount.favorites.FavoritesContract;
 import tech.michaeloverman.android.mscount.favorites.FavoritesDBHelper;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Metronome;
-import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import tech.michaeloverman.android.mscount.utils.Utilities;
-import tech.michaeloverman.android.mscount.utils.WearNotifications;
+import tech.michaeloverman.android.mscount.utils.WearNotificationManager;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
  * Created by Michael on 2/24/2017.
@@ -135,9 +133,9 @@ public class ProgrammedMetronomeFragment extends Fragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        if(true) {  // TODO check for wearable connection....
-            createAndRegisterBroadcastReceiver();
-        }
+//        if(true) {  // TODO check for wearable connection....
+//            createAndRegisterBroadcastReceiver();
+//        }
 
         getActivity().setTitle(getString(R.string.app_name));
 
@@ -533,23 +531,30 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
     }
 
-    private PendingIntent getExamplePendingIntent() {
-        Intent intent = new Intent("tech.michaeloverman.android.mscount.wearable.pendingintent")
-                .setClass(mActivity, ProgrammedMetronomeFragment.class);
-        intent.putExtra(EXTRA_MESSAGE, "extra pending intent message: here it is");
-        Timber.d("returning example pending intent");
-        return PendingIntent.getBroadcast(mActivity, 007, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
     private void updateWearNotif() {
-        WearNotifications.sendStartStopNotifToWear(mActivity, mCurrentComposer, mCurrentPiece.getTitle());
+//        WearNotificationManager.sendStartStopNotifToWear(mActivity, mCurrentComposer, mCurrentPiece.getTitle());
+        try {
+            WearNotificationManager manager = new WearNotificationManager(mActivity,
+                    this, mCurrentComposer, mCurrentPiece.getTitle());
+            manager.startNotification();
+        } catch (RemoteException re) {
+            Timber.d("Remote Exception caught...");
+        }
+    }
 
+    public void registerReceiver(BroadcastReceiver br, IntentFilter filter) {
+        mActivity.registerReceiver(br, filter);
+    }
+
+    public void unregisterReceiver(BroadcastReceiver br) {
+        mActivity.unregisterReceiver(br);
     }
 
     private void createAndRegisterBroadcastReceiver() {
-        mMetronomeBroadcastReceiver = new MetronomeBroadcastReceiver(this);
-        IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
-//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
-        mActivity.registerReceiver(mMetronomeBroadcastReceiver, filter);
+//        mMetronomeBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+//        IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
+////        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
+//        mActivity.registerReceiver(mMetronomeBroadcastReceiver, filter);
     }
 
 

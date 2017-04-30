@@ -1,5 +1,7 @@
 package tech.michaeloverman.android.mscount;
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -309,6 +311,16 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
     @Override
     public void metronomeMeasureNumber(String mm) {
         // method not used
+    }
+
+    @Override
+    public void registerReceiver(BroadcastReceiver br, IntentFilter filter) {
+
+    }
+
+    @Override
+    public void unregisterReceiver(BroadcastReceiver br) {
+
     }
 
     @OnClick( { R.id.whole_numbers, R.id.decimals } )

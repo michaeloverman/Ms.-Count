@@ -1,5 +1,7 @@
 package tech.michaeloverman.android.mscount;
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -239,6 +241,16 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
     @Override
     public void metronomeMeasureNumber(String mm) {
         // not used in this metronome
+    }
+
+    @Override
+    public void registerReceiver(BroadcastReceiver br, IntentFilter filter) {
+
+    }
+
+    @Override
+    public void unregisterReceiver(BroadcastReceiver br) {
+
     }
 
     private void changeTempo(float tempoChange) {

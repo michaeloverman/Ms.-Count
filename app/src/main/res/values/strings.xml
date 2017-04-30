@@ -67,4 +67,8 @@
     <string name="programmed_banner_ad_unit_id">ca-app-pub-9915736656105375/2110261449</string>
     <string name="normal_banner_ad_unit_id">ca-app-pub-9915736656105375/8017194246</string>
     <string name="odd_banner_ad_unit_id">ca-app-pub-9915736656105375/8935524240</string>
+
+    <string name="hello">Hello World!</string>
+    <string name="title">Hello Notification!</string>
+    <string name="notification_posted">Notification posted</string>
 </resources>

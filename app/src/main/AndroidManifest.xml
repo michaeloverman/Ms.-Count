@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="tech.michaeloverman.android.mscount">
 
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,20 +18,19 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".NormalMetronomeActivity"
+        <activity android:name=".NormalMetronomeActivity"
             android:parentActivityName=".MsCountActivity">
+
         </activity>
-        <activity
-            android:name=".OddMeterMetronomeActivity"
+        <activity android:name=".OddMeterMetronomeActivity"
             android:parentActivityName=".MsCountActivity">
+
         </activity>
-        <activity
-            android:name=".programmed.ProgrammedMetronomeActivity"
+        <activity android:name=".programmed.ProgrammedMetronomeActivity"
             android:parentActivityName=".MsCountActivity">
+
         </activity>
-        <activity
-            android:name=".database.LoadNewProgramActivity"
+        <activity android:name=".database.LoadNewProgramActivity"
             android:parentActivityName=".programmed.ProgrammedMetronomeActivity"
             android:theme="@style/AppTheme.SelectProgram">
         </activity>
@@ -48,25 +45,20 @@
             android:label="@string/title_activity_settings">
         </activity>
 
-        <receiver
-            android:name=".widget.MsCountWidgetProvider"
+        <receiver android:name="tech.michaeloverman.android.mscount.widget.MsCountWidgetProvider"
             android:label="Ms. Count Widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="tech.michaeloverman.android.mscount.ACTION_DATA_UPDATED"/>
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/ms_count_widget_info"/>
         </receiver>
-
-        <service
-            android:name=".widget.WidgetRemoteViewsService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
-
+        <service android:name=".widget.WidgetRemoteViewsService"
+                 android:enabled="true"
+                 android:exported="false"
+                 android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package tech.michaeloverman.android.mscount.programmed;
 
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -57,11 +56,10 @@ import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import tech.michaeloverman.android.mscount.utils.Utilities;
-import tech.michaeloverman.android.mscount.utils.WearNotifications;
+import tech.michaeloverman.android.mscount.utils.WearNotification;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
  * Created by Michael on 2/24/2017.
@@ -92,6 +90,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
 
+    private WearNotification mWearNotification;
     private BroadcastReceiver mMetronomeBroadcastReceiver;
 
     @BindView(R.id.current_composer_name) TextView mTVCurrentComposer;
@@ -445,11 +444,13 @@ public class ProgrammedMetronomeFragment extends Fragment
             mMetronomeRunning = false;
             mStartStopButton.setImageResource(android.R.drawable.ic_media_play);
             mCurrentMeasureNumber.setText("--");
+            mWearNotification.sendStartStop();
         } else {
             Timber.d("metronomeStart() " + mCurrentPiece.getTitle());
             mMetronomeRunning = true;
             mStartStopButton.setImageResource(android.R.drawable.ic_media_pause);
             mMetronome.play(mCurrentPiece, mCurrentTempo);
+            mWearNotification.sendStartStop();
         }
     }
 
@@ -533,16 +534,10 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
     }
 
-    private PendingIntent getExamplePendingIntent() {
-        Intent intent = new Intent("tech.michaeloverman.android.mscount.wearable.pendingintent")
-                .setClass(mActivity, ProgrammedMetronomeFragment.class);
-        intent.putExtra(EXTRA_MESSAGE, "extra pending intent message: here it is");
-        Timber.d("returning example pending intent");
-        return PendingIntent.getBroadcast(mActivity, 007, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
     private void updateWearNotif() {
-        WearNotifications.sendStartStopNotifToWear(mActivity, mCurrentComposer, mCurrentPiece.getTitle());
-
+        mWearNotification = new WearNotification(mActivity,
+                mCurrentComposer, mCurrentPiece.getTitle());
+        mWearNotification.sendStartStop();
     }
 
     private void createAndRegisterBroadcastReceiver() {

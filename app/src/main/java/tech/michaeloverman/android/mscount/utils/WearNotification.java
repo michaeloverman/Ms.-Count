@@ -9,37 +9,39 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import tech.michaeloverman.android.mscount.R;
-import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeFragment;
 import timber.log.Timber;
-
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
  * Created by Michael on 4/29/2017.
  */
 
-public class WearNotifications {
+public class WearNotification {
 
-    private static final String EXTRA_WEAR_INTENT_ID = "tech.michaeloverman.android.mscount.wearable.extra_message";
+    private final String EXTRA_WEAR_INTENT_ID = "tech.michaeloverman.android.mscount.wearable.extra_message";
 
-    private PendingIntent getExamplePendingIntent(Context context) {
-        Intent intent = new Intent("tech.michaeloverman.android.mscount.wearable.pendingintent")
-                .setClass(context, ProgrammedMetronomeFragment.class);
-        intent.putExtra(EXTRA_MESSAGE, "extra pending intent message: here it is");
-        Timber.d("returning example pending intent");
-        return PendingIntent.getBroadcast(context, 007, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    private Context mContext;
+    private boolean mPlaying;
+    private String mTitle;
+    private String mMessage;
+
+    public WearNotification(Context context, String title, String message) {
+        mContext = context;
+        mTitle = title;
+        mMessage = message;
+        mPlaying = false;
     }
-    public static void sendStartStopNotifToWear(Context context, String title, String message) {
-        Timber.d("sendStartStopNotifToWear()");
+
+    public void sendStartStop() {
+        Timber.d("sendStartStop()");
         int notifId = 3435;
         Intent wearIntent = new Intent(Metronome.ACTION_METRONOME_START_STOP);
 //        wearIntent.putExtra(EXTRA_WEAR_INTENT_ID, 42);
         PendingIntent wearPendingIntent = PendingIntent.getBroadcast(
-                context, notifId, wearIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mContext, notifId, wearIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Timber.d("Pending Intent created");
 
         NotificationCompat.Action action = new NotificationCompat.Action.Builder(
-                android.R.drawable.ic_media_play,
+                getIcon(),
                 "Start/Stop",
                 wearPendingIntent)
                 .build();
@@ -51,16 +53,16 @@ public class WearNotifications {
                 .setCustomSizePreset(NotificationCompat.WearableExtender.SIZE_FULL_SCREEN)
                 .setHintScreenTimeout(NotificationCompat.WearableExtender.SCREEN_TIMEOUT_LONG)
                 .setBackground(BitmapFactory.decodeResource(
-                        context.getResources(), R.mipmap.ic_launcher))
+                        mContext.getResources(), R.mipmap.ic_launcher))
                 .setContentIntentAvailableOffline(false)
 //                .setHintAmbientBigPicture(true)
                 .addAction(action);
 
-        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(android.R.drawable.ic_media_play)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setVibrate(new long[] { 50, 50, 500 })
+        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(mContext)
+                .setSmallIcon(getIcon())
+                .setContentTitle(mTitle)
+                .setContentText(mMessage)
+//                .setVibrate(new long[] { 50, 50, 500 })
 //                .addAction(action)
                 .setContentIntent(wearPendingIntent)
                 .extend(wearExtend);
@@ -69,8 +71,17 @@ public class WearNotifications {
 
         Notification notif = notifBuilder.build();
 
-        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+        NotificationManagerCompat manager = NotificationManagerCompat.from(mContext);
         manager.notify(notifId, notif);
+        mPlaying = !mPlaying;
         Timber.d("manager has notified...");
+    }
+
+    private int getIcon() {
+        if(mPlaying) {
+            return android.R.drawable.ic_media_pause;
+        } else {
+            return android.R.drawable.ic_media_play;
+        }
     }
 }

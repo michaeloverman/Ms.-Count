@@ -33,6 +33,7 @@ import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import tech.michaeloverman.android.mscount.utils.WearNotification;
 import timber.log.Timber;
 
@@ -62,6 +63,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
     private WearNotification mWearNotification;
     private BroadcastReceiver mBroadcastReceiver;
+    private boolean mHasWearDevice;
 
     @BindView(R.id.normal_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.current_tempo) TextView mTempoSetting;
@@ -110,7 +112,8 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        if(true) { // TODO check for existence of Wear
+        mHasWearDevice = PrefUtils.wearPresent(getContext());
+        if(mHasWearDevice) {
             createAndRegisterBroadcastReceiver();
         }
 
@@ -133,9 +136,11 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
 
     private void updateWearNotif() {
-        mWearNotification = new WearNotification(getContext(),
-                getString(R.string.app_name), (int) mBPM + " bpm");
-        mWearNotification.sendStartStop();
+        if(mHasWearDevice) {
+            mWearNotification = new WearNotification(getContext(),
+                    getString(R.string.app_name), (int) mBPM + " bpm");
+            mWearNotification.sendStartStop();
+        }
     }
 
     private void createAndRegisterBroadcastReceiver() {
@@ -255,8 +260,8 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
         if(mBroadcastReceiver != null) {
             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+            mWearNotification.cancel();
         }
-        mWearNotification.cancel();
 
         if (mAdView != null) {
             mAdView.destroy();
@@ -333,7 +338,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             }
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
-        mWearNotification.sendStartStop();
+        if(mHasWearDevice) mWearNotification.sendStartStop();
     }
 
 

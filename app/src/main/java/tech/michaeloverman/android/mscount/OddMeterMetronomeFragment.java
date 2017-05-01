@@ -32,6 +32,7 @@ import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import tech.michaeloverman.android.mscount.utils.WearNotification;
 import timber.log.Timber;
 
@@ -57,6 +58,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
 
     private WearNotification mWearNotification;
     private BroadcastReceiver mBroadcastReceiver;
+    private boolean mHasWearDevice;
 
     @BindView(R.id.oddmeter_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.oddmeter_tempo_view) TextView mTempoSetting;
@@ -84,11 +86,12 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        if(true) {
+        mHasWearDevice = PrefUtils.wearPresent(getContext());
+        if(mHasWearDevice) {
             createAndRegisterBroadcastReceiver();
         }
-//        mMetronome = new Metronome(getActivity(), this);
-        mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
+
+        mDetector = new GestureDetectorCompat(getContext(), new MetronomeGestureListener());
 
         mSubdivisionsList = new ArrayList<>();
         mSubdivisionViews = new ArrayList<>();
@@ -101,9 +104,11 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
     }
 
     private void updateWearNotif() {
-        mWearNotification = new WearNotification(getContext(),
-                getString(R.string.app_name), (int) mBPM + " bpm");
-        mWearNotification.sendStartStop();
+        if(mHasWearDevice) {
+            mWearNotification = new WearNotification(getContext(),
+                    getString(R.string.app_name), (int) mBPM + " bpm");
+            mWearNotification.sendStartStop();
+        }
     }
 
     private void createAndRegisterBroadcastReceiver() {
@@ -239,8 +244,8 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
 
         if(mBroadcastReceiver != null) {
             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+            mWearNotification.cancel();
         }
-        mWearNotification.cancel();
 
         super.onDestroy();
     }
@@ -262,7 +267,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
             mMetronome.play(((int) mBPM * mMultiplier), mSubdivisionsList);
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
-        mWearNotification.sendStartStop();
+        if(mHasWearDevice) mWearNotification.sendStartStop();
     }
 
     @Override

@@ -19,6 +19,7 @@ public final class PrefUtils {
     private static final String PREF_USE_FIREBASE = "use_firebase";
     private static final String PREF_CURRENT_TEMPO = "programmable_tempo_key";
     private static final String PREF_PIECE_KEY = "programmable_piece_id";
+    private static final String PREF_WEAR_STATUS_KEY = "pref_wear_status";
 
     private PrefUtils() {
     }
@@ -76,5 +77,18 @@ public final class PrefUtils {
         boolean firebase = shp.getBoolean(PREF_USE_FIREBASE, true);
         Timber.d("checking useFirebase: " + firebase);
         return firebase;
+    }
+
+    public static void saveWearStatus(Context context, boolean status) {
+        SharedPreferences.Editor prefs = PreferenceManager
+                .getDefaultSharedPreferences(context).edit();
+        prefs.putBoolean(PREF_WEAR_STATUS_KEY, status);
+        prefs.commit();
+    }
+
+    public static boolean wearPresent(Context context) {
+        SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean wearStatus = shp.getBoolean(PREF_WEAR_STATUS_KEY, false);
+        return wearStatus;
     }
 }

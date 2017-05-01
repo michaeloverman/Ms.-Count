@@ -92,6 +92,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     private WearNotification mWearNotification;
     private BroadcastReceiver mMetronomeBroadcastReceiver;
+    private boolean mHasWearDevice;
 
     @BindView(R.id.current_composer_name) TextView mTVCurrentComposer;
     @BindView(R.id.current_program_title) TextView mTVCurrentPiece;
@@ -134,7 +135,8 @@ public class ProgrammedMetronomeFragment extends Fragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        if(true) {  // TODO check for wearable connection....
+        mHasWearDevice = PrefUtils.wearPresent(mActivity);
+        if(mHasWearDevice) {
             createAndRegisterBroadcastReceiver();
         }
 
@@ -374,8 +376,8 @@ public class ProgrammedMetronomeFragment extends Fragment
 
         if(mMetronomeBroadcastReceiver != null) {
             LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
+            mWearNotification.cancel();
         }
-        mWearNotification.cancel();
 
         if(mAdView != null) {
             mAdView.destroy();
@@ -445,13 +447,13 @@ public class ProgrammedMetronomeFragment extends Fragment
             mMetronomeRunning = false;
             mStartStopButton.setImageResource(android.R.drawable.ic_media_play);
             mCurrentMeasureNumber.setText("--");
-            mWearNotification.sendStartStop();
+            if(mHasWearDevice) mWearNotification.sendStartStop();
         } else {
             Timber.d("metronomeStart() " + mCurrentPiece.getTitle());
             mMetronomeRunning = true;
             mStartStopButton.setImageResource(android.R.drawable.ic_media_pause);
             mMetronome.play(mCurrentPiece, mCurrentTempo);
-            mWearNotification.sendStartStop();
+            if(mHasWearDevice) mWearNotification.sendStartStop();
         }
     }
 
@@ -536,9 +538,11 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void updateWearNotif() {
-        mWearNotification = new WearNotification(mActivity,
-                mCurrentComposer, mCurrentPiece.getTitle());
-        mWearNotification.sendStartStop();
+        if(mHasWearDevice) {
+            mWearNotification = new WearNotification(mActivity,
+                    mCurrentComposer, mCurrentPiece.getTitle());
+            mWearNotification.sendStartStop();
+        }
     }
 
     private void createAndRegisterBroadcastReceiver() {

@@ -58,12 +58,17 @@ public class WearNotification {
 //                .setHintAmbientBigPicture(true)
                 .addAction(action);
 
+        int color = mContext.getResources().getColor(R.color.colorPrimary);
+//        NotificationCompat.Style style = new android.support.v7.app.NotificationCompat.MediaStyle();
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(getIcon())
                 .setContentTitle(mTitle)
                 .setContentText(mMessage)
-//                .setVibrate(new long[] { 50, 50, 500 })
-//                .addAction(action)
+                .setColor(color)
+                .setVibrate(new long[] { 50, 50, 500 })
+                .setOnlyAlertOnce(true)
+//                .setStyle(style)
+                .addAction(action)
                 .setContentIntent(wearPendingIntent)
                 .extend(wearExtend);
 //                .addAction(android.R.drawable.ic_media_play, playPauseIntent);

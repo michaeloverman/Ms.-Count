@@ -84,4 +84,8 @@ public class WearNotification {
             return android.R.drawable.ic_media_play;
         }
     }
+
+    public void cancel() {
+        NotificationManagerCompat.from(mContext).cancelAll();
+    }
 }

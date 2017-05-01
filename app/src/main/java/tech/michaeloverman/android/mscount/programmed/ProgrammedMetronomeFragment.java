@@ -375,6 +375,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         if(mMetronomeBroadcastReceiver != null) {
             LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
         }
+        mWearNotification.cancel();
 
         if(mAdView != null) {
             mAdView.destroy();

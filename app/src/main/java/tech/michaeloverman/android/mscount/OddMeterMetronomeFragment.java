@@ -1,11 +1,14 @@
 package tech.michaeloverman.android.mscount;
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.view.GestureDetector;
@@ -27,7 +30,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.utils.Metronome;
+import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import tech.michaeloverman.android.mscount.utils.WearNotification;
 import timber.log.Timber;
 
 /**
@@ -49,6 +54,9 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
     private boolean mMetronomeRunning;
     private float mBPM;
     private int mMultiplier;
+
+    private WearNotification mWearNotification;
+    private BroadcastReceiver mBroadcastReceiver;
 
     @BindView(R.id.oddmeter_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.oddmeter_tempo_view) TextView mTempoSetting;
@@ -76,6 +84,9 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
+        if(true) {
+            createAndRegisterBroadcastReceiver();
+        }
 //        mMetronome = new Metronome(getActivity(), this);
         mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
 
@@ -89,6 +100,18 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
         mMetronome.setMetronomeListener(this);
     }
 
+    private void updateWearNotif() {
+        mWearNotification = new WearNotification(getContext(),
+                getString(R.string.app_name), (int) mBPM + " bpm");
+        mWearNotification.sendStartStop();
+    }
+
+    private void createAndRegisterBroadcastReceiver() {
+        mBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
+//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
+        getActivity().registerReceiver(mBroadcastReceiver, filter);
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -214,6 +237,11 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
         }
         prefs.commit();
 
+        if(mBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+        }
+        mWearNotification.cancel();
+
         super.onDestroy();
     }
 
@@ -234,6 +262,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
             mMetronome.play(((int) mBPM * mMultiplier), mSubdivisionsList);
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
+        mWearNotification.sendStartStop();
     }
 
     @Override
@@ -251,6 +280,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
     private void updateTempoDisplay() {
         mTempoSetting.setText((int) mBPM + "");
         mPulseMultiplierView.setText(mMultiplier + "=");
+        updateWearNotif();
     }
 
     private View getNewSubdivisionView(int value) {

@@ -1,5 +1,7 @@
 package tech.michaeloverman.android.mscount;
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.view.GestureDetector;
@@ -28,7 +31,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.utils.Metronome;
+import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
 import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import tech.michaeloverman.android.mscount.utils.WearNotification;
 import timber.log.Timber;
 
 import static android.view.MotionEvent.ACTION_UP;
@@ -54,6 +59,9 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
+
+    private WearNotification mWearNotification;
+    private BroadcastReceiver mBroadcastReceiver;
 
     @BindView(R.id.normal_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.current_tempo) TextView mTempoSetting;
@@ -102,6 +110,10 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
+        if(true) { // TODO check for existence of Wear
+            createAndRegisterBroadcastReceiver();
+        }
+
 //        mMetronome = new Metronome(getActivity(), this);
         mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
 
@@ -117,6 +129,20 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             mSubdivisionFloatVolumes[i] = MAX_FLOAT_VOLUME;
         }
         mSubdivisionFabColors = getContext().getResources().getIntArray(R.array.subdivision_colors);
+    }
+
+
+    private void updateWearNotif() {
+        mWearNotification = new WearNotification(getContext(),
+                getString(R.string.app_name), (int) mBPM + " bpm");
+        mWearNotification.sendStartStop();
+    }
+
+    private void createAndRegisterBroadcastReceiver() {
+        mBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
+//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
+        getActivity().registerReceiver(mBroadcastReceiver, filter);
     }
 
     private void setMetronome(Metronome m) {
@@ -227,6 +253,11 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         prefs.putBoolean(PREF_WHOLE_NUMBERS, mWholeNumbersSelected);
         prefs.commit();
 
+        if(mBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+        }
+        mWearNotification.cancel();
+
         if (mAdView != null) {
             mAdView.destroy();
         }
@@ -302,7 +333,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             }
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
-
+        mWearNotification.sendStartStop();
     }
 
 
@@ -361,7 +392,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         } else {
             mTempoSetting.setText((float)((int)(mBPM * 10)) / 10  + "");
         }
-
+        updateWearNotif();
     }
 
     private void addSubdivisionVolumeChangeListeners() {

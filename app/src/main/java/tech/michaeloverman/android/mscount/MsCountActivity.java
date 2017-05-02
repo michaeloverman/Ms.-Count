@@ -3,6 +3,8 @@ package tech.michaeloverman.android.mscount;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -20,6 +22,8 @@ import timber.log.Timber;
 public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleFragmentActivity {
 
     public Metronome mMetronome;
+    private GoogleApiClient client;
+    private static final long CONNECTION_TIME_OUT_MS = 3000;
 
     @Override
     protected Fragment createFragment() {
@@ -38,10 +42,10 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
 
         mMetronome = Metronome.getInstance();
         mMetronome.setContext(this);
+
+        setupWindowAnimations();
     }
 
-    private GoogleApiClient client;
-    private static final long CONNECTION_TIME_OUT_MS = 3000;
 
     public void checkIfWearableConnected() {
         Timber.d("checking in wearable present");
@@ -100,5 +104,13 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
         }).start();
     }
 
+    private void setupWindowAnimations() {
+        Slide slide = (Slide) TransitionInflater.from(this).inflateTransition(R.transition.activity_slide_out);
+        getWindow().setExitTransition(slide);
+        getWindow().setAllowEnterTransitionOverlap(true);
+
+//        getWindow().setReenterTransition(slide);
+//        getWindow().setAllowReturnTransitionOverlap(true);
+    }
 
 }

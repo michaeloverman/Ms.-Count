@@ -132,6 +132,8 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             mSubdivisionFloatVolumes[i] = MAX_FLOAT_VOLUME;
         }
         mSubdivisionFabColors = getContext().getResources().getIntArray(R.array.subdivision_colors);
+
+
     }
 
 
@@ -210,8 +212,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
             }
         });
-//        fadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_fab);
-//        unFadingFabAnim = AnimationUtils.loadAnimation(getContext(), R.anim.unfade_fab);
 
         mSubdivisionIndicators = new FloatingActionButton[]
                 { sub1, sub2, sub3, sub4, sub5, sub6, sub7, sub8, sub9, sub10 };
@@ -232,6 +232,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
         updateDisplay();
         return view;
     }
+
 
     @Override
     public void onPause() {

@@ -3,6 +3,8 @@ package tech.michaeloverman.android.mscount;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
 
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeActivity;
@@ -22,7 +24,7 @@ public class NormalMetronomeActivity extends MetronomeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setupWindowAnimations();
     }
 
     @Override
@@ -31,5 +33,11 @@ public class NormalMetronomeActivity extends MetronomeActivity {
         if(mMetronome.isRunning()) {
             mMetronome.stop();
         }
+    }
+
+    private void setupWindowAnimations() {
+        Fade slide = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade_enter);
+        getWindow().setEnterTransition(slide);
+        getWindow().setAllowEnterTransitionOverlap(true);
     }
 }

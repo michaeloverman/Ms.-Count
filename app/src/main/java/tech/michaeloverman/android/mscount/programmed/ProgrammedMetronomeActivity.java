@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -47,7 +49,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        setupWindowAnimations();
 
         useFirebase = PrefUtils.usingFirebase(this);
 
@@ -145,6 +147,12 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setupWindowAnimations() {
+        Fade slide = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade_enter);
+        getWindow().setEnterTransition(slide);
+        getWindow().setAllowEnterTransitionOverlap(true);
     }
 
     private void signInToFirebase() {

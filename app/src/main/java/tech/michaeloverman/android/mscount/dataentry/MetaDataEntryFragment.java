@@ -10,6 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -54,7 +57,9 @@ import static android.app.Activity.RESULT_OK;
  *
  */
 public class MetaDataEntryFragment extends Fragment
-        implements DataEntryFragment.DataEntryCallback {
+        implements DataEntryFragment.DataEntryCallback,
+        LoaderManager.LoaderCallbacks<Cursor> {
+
     private static final int REQUEST_NEW_PROGRAM = 1984;
 
     @BindView(R.id.composer_name_text_entry) EditText mComposerEntry;
@@ -68,11 +73,13 @@ public class MetaDataEntryFragment extends Fragment
 
     private PieceOfMusic mPieceOfMusic;
     private PieceOfMusic.Builder mBuilder;
+    private String mCurrentPieceKey;
     private String mFirebaseId;
     private List<DataEntry> mDataEntries;
     private List<Integer> mDownBeats;
 
     private static ProgrammedMetronomeActivity mActivity;
+    private static final int ID_PIECE_LOADER = 435;
     private static Cursor mCursor;
 
     public static Fragment newInstance(ProgrammedMetronomeActivity a, Cursor c) {
@@ -244,16 +251,87 @@ public class MetaDataEntryFragment extends Fragment
         }
         switch(requestCode) {
             case REQUEST_NEW_PROGRAM:
-                mPieceOfMusic = (PieceOfMusic) data.getSerializableExtra(
-                        LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
-                if(mPieceOfMusic.getRawData() == null) {
-                    mPieceOfMusic.constructRawData();
-                }
-                mFirebaseId = mPieceOfMusic.getFirebaseId();
-                updateGUI();
+                getPieceFromKey(data.getStringExtra(LoadNewProgramActivity.EXTRA_NEW_PROGRAM));
                 break;
             default:
         }
+    }
+
+    private void getPieceFromKey(String key) {
+
+        mCurrentPieceKey = key;
+
+        if(mCurrentPieceKey.charAt(0) == '-') {
+            getPieceFromFirebase();
+        } else {
+            if(mCursor == null) {
+                Timber.d("mCursor is null, initing loader...");
+                mActivity.getSupportLoaderManager().initLoader(ID_PIECE_LOADER, null, this);
+            } else {
+                Timber.d("mCursor exists, going straight to data");
+                getPieceFromSql();
+            }
+        }
+        
+    }
+
+    private void getPieceFromFirebase() {
+        Timber.d("getPieceFromFirebase()");
+        FirebaseDatabase.getInstance().getReference().child("pieces").child(mCurrentPieceKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
+                        updateVariables();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getContext(), "A database error occurred. Please try again.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void getPieceFromSql() {
+        Timber.d("getPieceFromSql()");
+        int localDbId = Integer.parseInt(mCurrentPieceKey);
+        mCursor.moveToFirst();
+        while(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_ID) != localDbId) {
+            Timber.d("_id: " + mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_ID)
+                    + " != " + localDbId);
+            if(!mCursor.moveToNext()) {
+                programNotFoundError(localDbId);
+                return;
+            }
+        }
+        PieceOfMusic.Builder builder = new PieceOfMusic.Builder()
+                .author(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER))
+                .title(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_TITLE))
+                .subdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_PRIMANY_SUBDIVISIONS))
+                .countOffSubdivision(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_COUNOFF_SUBDIVISIONS))
+                .defaultTempo(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_TEMPO))
+                .baselineNoteValue(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DEFAULT_RHYTHM))
+                .tempoMultiplier(mCursor.getDouble(ProgramDatabaseSchema.MetProgram.POSITION_TEMPO_MULTIPLIER))
+                .firstMeasureNumber(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_MEASURE_COUNTE_OFFSET))
+                .dataEntries(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_DATA_ARRAY))
+                .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID));
+//        mCursor.close();
+        mPieceOfMusic = builder.build();
+        updateVariables();
+    }
+
+    private void programNotFoundError(int id) {
+        Toast.makeText(mActivity, "Program with id " + id + " is not found in the database.",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateVariables() {
+        if(mPieceOfMusic.getRawData() == null) {
+            mPieceOfMusic.constructRawData();
+        }
+        mFirebaseId = mPieceOfMusic.getFirebaseId();
+        updateGUI();
     }
 
     private void updateGUI() {
@@ -563,6 +641,45 @@ public class MetaDataEntryFragment extends Fragment
     public void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder) {
         mBuilder = builder;
         mDataEntries = data;
+    }
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Timber.d("loader creation...");
+        switch(id) {
+            case ID_PIECE_LOADER:
+                Uri queryUri = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
+                Timber.d("Uri: " + queryUri.toString());
+                return new CursorLoader(mActivity,
+                        queryUri,
+                        null,
+                        null,
+                        null,
+                        null);
+
+            default:
+                throw new RuntimeException("Unimplemented Loader Problem: " + id);
+        }
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Timber.d("loader finished...");
+        if(data == null || data.getCount() == 0) {
+            Toast.makeText(mActivity, "Program Load Error", Toast.LENGTH_SHORT).show();
+            mPieceOfMusic = null;
+            updateGUI();
+        } else {
+            mCursor = data;
+            getPieceFromSql();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Timber.d("onLoaderReset()");
+        Timber.d("currentKey = " + mCurrentPieceKey);
+        mCursor = null;
     }
 
 }

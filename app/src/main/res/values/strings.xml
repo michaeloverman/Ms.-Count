@@ -68,4 +68,6 @@
     <string name="programmed_banner_ad_unit_id">ca-app-pub-9915736656105375/2110261449</string>
     <string name="normal_banner_ad_unit_id">ca-app-pub-9915736656105375/8017194246</string>
     <string name="odd_banner_ad_unit_id">ca-app-pub-9915736656105375/8935524240</string>
+    <string name="halve_all_data_values">Halve all data values</string>
+    <string name="double_all_data_values">Double all data values</string>
 </resources>

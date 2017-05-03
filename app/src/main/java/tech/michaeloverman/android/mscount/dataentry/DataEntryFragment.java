@@ -7,9 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +111,57 @@ public class DataEntryFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.data_entry_menu, menu);
+//        menu.removeItem(R.id.create_new_program_option);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.double_data_values:
+                doubleValues();
+                return true;
+            case R.id.halve_data_values:
+                halveValues();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void doubleValues() {
+        for (int i = 0; i < mDataList.size(); i++) {
+            DataEntry entry = mDataList.get(i);
+            if(!entry.isBarline()) {
+                entry.setData(entry.getData() * 2);
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void halveValues() {
+        for (int i = 0; i < mDataList.size(); i++) {
+            DataEntry entry = mDataList.get(i);
+            if(!entry.isBarline() && entry.getData() % 2 == 1) {
+                cantHalveError();
+                return;
+            }
+        }
+        for (int i = 0; i < mDataList.size(); i++) {
+            DataEntry entry = mDataList.get(i);
+            if(!entry.isBarline()) {
+                entry.setData(entry.getData() / 2);
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void cantHalveError() {
+        Toast.makeText(getContext(), "Can't halve odd values.", Toast.LENGTH_SHORT).show();
     }
 
     /**

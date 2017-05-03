@@ -225,7 +225,6 @@ public class MetaDataEntryFragment extends Fragment
         transaction.commit();
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -272,7 +271,7 @@ public class MetaDataEntryFragment extends Fragment
                 getPieceFromSql();
             }
         }
-        
+
     }
 
     private void getPieceFromFirebase() {

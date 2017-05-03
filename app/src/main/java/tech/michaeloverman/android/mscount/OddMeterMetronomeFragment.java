@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
     private static final String PREF_LIST_LENGTH = "pref_key_oddmeter_subdivision_list";
     private static final String PREF_KEY_LIST = "oddmeter_subdivision_";
     private static final String PREF_KEY_MULTIPLIER = "oddmeter_multiplier";
+    private static final String PREF_KEY_INCLUDE_SUBDIVISIONS = "include_subdivisions_checkbox";
 
     private Metronome mMetronome;
     private boolean mMetronomeRunning;
@@ -63,6 +65,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
 
     @BindView(R.id.oddmeter_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.oddmeter_tempo_view) TextView mTempoSetting;
+    @BindView(R.id.include_subdivisions_checkBox) CheckBox mSubdivisionsCheckbox;
     @BindView(R.id.extra_subdivision_buttons) LinearLayout mOtherButtons;
     @BindView(R.id.pulse_multiplier_view) TextView mPulseMultiplierView;
     @BindView(R.id.odd_adView) AdView mAdView;
@@ -156,6 +159,8 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         mBPM = prefs.getFloat(PREF_KEY_BPM, 120f);
         mMultiplier = prefs.getInt(PREF_KEY_MULTIPLIER, 2);
+        boolean subdivCheck = prefs.getBoolean(PREF_KEY_INCLUDE_SUBDIVISIONS, false);
+        mSubdivisionsCheckbox.setChecked(subdivCheck);
         int listlength = prefs.getInt(PREF_LIST_LENGTH, 0);
         for(int i = 0; i < listlength; i++) {
             int subdiv = prefs.getInt(PREF_KEY_LIST + i, 2);
@@ -237,6 +242,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
         prefs.putFloat(PREF_KEY_BPM, mBPM);
         prefs.putInt(PREF_KEY_MULTIPLIER, mMultiplier);
         prefs.putInt(PREF_LIST_LENGTH, mSubdivisionsList.size());
+        prefs.putBoolean(PREF_KEY_INCLUDE_SUBDIVISIONS, mSubdivisionsCheckbox.isChecked());
         for(int i = 0; i < mSubdivisionsList.size(); i++) {
             prefs.remove(PREF_KEY_LIST + i);
             prefs.putInt(PREF_KEY_LIST + i, mSubdivisionsList.get(i));
@@ -265,7 +271,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
                 return;
             }
             mMetronomeRunning = true;
-            mMetronome.play(((int) mBPM * mMultiplier), mSubdivisionsList);
+            mMetronome.play(((int) mBPM * mMultiplier), mSubdivisionsList, mSubdivisionsCheckbox.isChecked());
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
         if(mHasWearDevice) mWearNotification.sendStartStop();

@@ -17,6 +17,7 @@ public final class PrefUtils {
     public static final String PREF_FAVORITE_PROGRAM = "favorite";
     public static final String PREF_DOWNBEAT_CLICK_DEFAULT = "4";
     public static final String PREF_INNERBEAT_CLICK_DEFAULT = "2";
+    public static final String PREF_SUBDIVISION_CLICK_DEFAULT = "6";
     private static final String PREF_USE_FIREBASE = "use_firebase";
     private static final String PREF_CURRENT_TEMPO = "programmable_tempo_key";
     private static final String PREF_PIECE_KEY = "programmable_piece_id";
@@ -39,6 +40,12 @@ public final class PrefUtils {
         return Integer.parseInt(id);
     }
 
+    public static int getSubdivisionBeatClickId(Context context) {
+        SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
+        String id = shp.getString(context.getResources().getString(R.string.subdivision_beat_click_key),
+                PREF_SUBDIVISION_CLICK_DEFAULT);
+        return Integer.parseInt(id);
+    }
     public static void saveCurrentProgramToPrefs(Context context,
                                                 boolean useFirebase, String key, int tempo) {
         SharedPreferences.Editor prefs = PreferenceManager

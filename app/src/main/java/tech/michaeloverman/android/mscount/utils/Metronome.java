@@ -34,7 +34,7 @@ public class Metronome {
     private List<Click> mClicks = new ArrayList<>();
     private SoundPool mSoundPool;
 //    private Click mDownBeatClick, mOtherBeatClick;
-    private int mDownBeatClickId, mInnerBeatClickId;
+    private int mDownBeatClickId, mInnerBeatClickId, mSubdivisionBeatClickId;
     private float[] mClickVolumes;
     private Context mContext;
 
@@ -250,7 +250,7 @@ public class Metronome {
      * @param tempo
      * @param groupings
      */
-    public void play(int tempo, List<Integer> groupings) {
+    public void play(int tempo, List<Integer> groupings, final boolean includeSubs) {
         getClicksFromSharedPrefs();
 
         Timber.d("play an odd-meter loop");
@@ -282,6 +282,8 @@ public class Metronome {
                     }
                     nextClick += beats[beatPointer++]; // set the subdivision counter for next beat
 
+                } else if (includeSubs) {
+                    mSoundPool.play(mSubdivisionBeatClickId, 1.0f, 1.0f, 1, 0, 1.0f);
                 }
                 count++; // count one subdivision gone by...
             }
@@ -355,5 +357,6 @@ public class Metronome {
     private void getClicksFromSharedPrefs() {
         mDownBeatClickId = PrefUtils.getDownBeatClickId(mContext);
         mInnerBeatClickId = PrefUtils.getInnerBeatClickId(mContext);
+        mSubdivisionBeatClickId = PrefUtils.getSubdivisionBeatClickId(mContext);
     }
 }

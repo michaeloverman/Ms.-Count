@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount.programmed;
 
 import android.content.Intent;
@@ -26,7 +27,7 @@ import tech.michaeloverman.android.mscount.utils.MetronomeActivity;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
 
-/**
+ /**
  * Created by Michael on 3/24/2017.
  */
 

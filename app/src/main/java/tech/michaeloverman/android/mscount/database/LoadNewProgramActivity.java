@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount.database;
 
 import android.content.Intent;

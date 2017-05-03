@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount;
 
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import timber.log.Timber;
 
 /**
  * Created by Michael on 4/21/2016.
+ * Adapted from SingleFragmentActivity from the Big Nerd Ranch Guide
  */
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 

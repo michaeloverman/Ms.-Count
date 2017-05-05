@@ -1,11 +1,13 @@
 /* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount.programmed;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.transition.Fade;
 import android.transition.TransitionInflater;
 import android.view.Menu;
@@ -22,12 +24,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 import tech.michaeloverman.android.mscount.BuildConfig;
 import tech.michaeloverman.android.mscount.R;
+import tech.michaeloverman.android.mscount.dataentry.MetaDataEntryFragment;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeActivity;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
 
- /**
+/**
  * Created by Michael on 3/24/2017.
  */
 
@@ -73,14 +76,14 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         };
 
         Intent intent = getIntent();
-        if(intent.hasExtra(PROGRAM_ID_EXTRA)) {
+        if (intent.hasExtra(PROGRAM_ID_EXTRA)) {
             Timber.d("PROGRAM ID FROM WIDGET DETECTED: GO, GO, GO!!!");
             int id = intent.getIntExtra(PROGRAM_ID_EXTRA, 999);
             PrefUtils.saveWidgetSelectedPieceToPrefs(this, id);
         }
 
 
-        if(mAuth.getCurrentUser() == null) {
+        if (mAuth.getCurrentUser() == null) {
             signInToFirebase();
         }
 
@@ -134,9 +137,9 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
             case R.id.firebase_local_database:
                 useFirebase = !useFirebase;
                 PrefUtils.saveFirebaseStatus(this, useFirebase);
-                if(useFirebase) {
+                if (useFirebase) {
                     item.setTitle(R.string.use_local_database);
-                    if(mAuth.getCurrentUser() == null) {
+                    if (mAuth.getCurrentUser() == null) {
                         signInToFirebase();
                     }
                 } else {
@@ -171,7 +174,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
         Timber.d("ACTIVITY: onActivityResult()");
 
-        if(requestCode == FIREBASE_SIGN_IN) {
+        if (requestCode == FIREBASE_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             // Successfully signed in
@@ -211,11 +214,41 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
     @Override
     public void onBackPressed() {
+        Fragment f = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (f instanceof MetaDataEntryFragment) {
+            losingDataAlertDialog();
+        } else {
+            actuallyGoBack();
+        }
+
+    }
+
+    private void actuallyGoBack() {
+
         super.onBackPressed();
-        if(mMetronome.isRunning()) {
+
+        if (mMetronome.isRunning()) {
             mMetronome.stop();
         }
     }
 
+    private void losingDataAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.erase_data)
+                .setMessage(R.string.leave_without_save)
+                .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actuallyGoBack();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                })
+                .show();
+    }
 
 }

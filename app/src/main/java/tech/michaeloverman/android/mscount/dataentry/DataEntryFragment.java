@@ -36,6 +36,10 @@ import timber.log.Timber;
 
 public class DataEntryFragment extends Fragment {
 
+    private final static boolean BARLINE = true;
+    private final static boolean BEAT = false;
+
+
     private PieceOfMusic.Builder mBuilder;
 //    private PieceOfMusic mPieceOfMusic;
 
@@ -235,9 +239,9 @@ public class DataEntryFragment extends Fragment {
 
     private void losingDataAlertDialog() {
         new AlertDialog.Builder(getContext())
-                .setTitle("Delete?")
-                .setMessage("You are about to lose data. Are you sure you want to leave without saving your data?")
-                .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.erase_data)
+                .setMessage(R.string.delete_for_sure_question)
+                .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getFragmentManager().popBackStackImmediate();
@@ -258,27 +262,33 @@ public class DataEntryFragment extends Fragment {
         String value = view.getText().toString();
         switch(value) {
             case "|":
-                if(mDataItemSelected) {
-                    mDataList.add(mAdapter.selectedPosition++, new DataEntry(++mMeasureNumber, true));
-                } else {
-                    mDataList.add(new DataEntry(++mMeasureNumber, true));
-                }
+                addDataEntry(null, BARLINE);
                 break;
             case "?":
                 getIntegerDialogResponse();
                 break;
             default:
-                if(mDataItemSelected) {
-                    mDataList.add(mAdapter.selectedPosition++, new DataEntry(Integer.parseInt(value), false));
-                } else {
-                    mDataList.add(new DataEntry(Integer.parseInt(value), false));
-                }
+                addDataEntry(value, BEAT);
                 break;
-
         }
-        Timber.d(value + " subdivisions in next beat");
+
+    }
+
+    private void addDataEntry(String valueString, boolean beatOrBarline) {
+        int value;
+        if(beatOrBarline) {
+            value = ++mMeasureNumber;
+        } else {
+            value = Integer.parseInt(valueString);
+        }
+
+        if(mDataItemSelected) {
+            mDataList.add(mAdapter.selectedPosition++, new DataEntry(value, beatOrBarline));
+        } else {
+            mDataList.add(new DataEntry(value, beatOrBarline));
+            mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
+        }
         mAdapter.notifyDataSetChanged();
-        if(!mDataItemSelected) mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
     }
 
     private void getIntegerDialogResponse() {
@@ -292,8 +302,8 @@ public class DataEntryFragment extends Fragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        int value = Integer.parseInt(editText.getText().toString());
-                        onDialogPositiveClick(value);
+                        addDataEntry(editText.getText().toString(), BEAT);
+//                        onDialogPositiveClick(value);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -306,15 +316,6 @@ public class DataEntryFragment extends Fragment {
         dialog.show();
         // force keyboard to show automatically
         dialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-    }
-
-    private void onDialogPositiveClick(int integer) {
-        if(mDataItemSelected) {
-            mDataList.add(mAdapter.selectedPosition++, new DataEntry(integer, false));
-        } else {
-            mDataList.add(new DataEntry(integer, false));
-        }
-        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -338,6 +339,8 @@ public class DataEntryFragment extends Fragment {
         for (++i; i < lastIndex; i++) {
             mDataList.add(mDataList.get(i));
         }
+
+        // add barline at end
         mDataList.add(new DataEntry(++mMeasureNumber, true));
 
         mAdapter.notifyDataSetChanged();

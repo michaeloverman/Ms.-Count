@@ -1,9 +1,11 @@
 /* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount.dataentry;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +14,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -221,9 +225,31 @@ public class DataEntryFragment extends Fragment {
      */
     @OnClick(R.id.data_back_button)
     public void back() {
-//        mPieceOfMusic.setDataBeats(mDataList);
-        // TODO put a warning about losing data before actually doing this...
-        getFragmentManager().popBackStackImmediate();
+
+        if(mDataList == null || mDataList.size() == 0) {
+            getFragmentManager().popBackStackImmediate();
+        } else {
+            losingDataAlertDialog();
+        }
+    }
+
+    private void losingDataAlertDialog() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Delete?")
+                .setMessage("You are about to lose data. Are you sure you want to leave without saving your data?")
+                .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getFragmentManager().popBackStackImmediate();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                })
+                .show();
     }
 
     @OnClick( { R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six, R.id.seven,
@@ -239,7 +265,7 @@ public class DataEntryFragment extends Fragment {
                 }
                 break;
             case "?":
-                // TODO Open dialog to get another number....
+                getIntegerDialogResponse();
                 break;
             default:
                 if(mDataItemSelected) {
@@ -253,6 +279,42 @@ public class DataEntryFragment extends Fragment {
         Timber.d(value + " subdivisions in next beat");
         mAdapter.notifyDataSetChanged();
         if(!mDataItemSelected) mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
+    }
+
+    private void getIntegerDialogResponse() {
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.get_integer_dialog_layout, null);
+        final EditText editText = (EditText) view.findViewById(R.id.get_integer_edittext);
+
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle("Enter a subdivision value...")
+                .setView(view)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int value = Integer.parseInt(editText.getText().toString());
+                        onDialogPositiveClick(value);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).create();
+
+        dialog.show();
+        // force keyboard to show automatically
+        dialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+    }
+
+    private void onDialogPositiveClick(int integer) {
+        if(mDataItemSelected) {
+            mDataList.add(mAdapter.selectedPosition++, new DataEntry(integer, false));
+        } else {
+            mDataList.add(new DataEntry(integer, false));
+        }
+        mAdapter.notifyDataSetChanged();
     }
 
     /**

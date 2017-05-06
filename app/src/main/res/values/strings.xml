@@ -74,4 +74,5 @@
     <string name="delete_for_sure_question">You are about to delete your data. Are you sure you want to leave without saving?</string>
     <string name="leave">Leave</string>
     <string name="leave_without_save">Are you sure you want to leave without saving your data?</string>
+    <string name="favorite_database_error_try_again">Database error. Try reloading program and mark as favorite.</string>
 </resources>

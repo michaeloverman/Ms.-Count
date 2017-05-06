@@ -127,6 +127,10 @@ public class PieceOfMusic implements Serializable {
         return mDisplayNoteValue == 0 ? mBaselineNoteValue : mDisplayNoteValue;
     }
 
+    public int getActualDisplayNoteValue() {
+        return mDisplayNoteValue;
+    }
+
     public void setDisplayNoteValue(int displayNoteValue) {
         mDisplayNoteValue = displayNoteValue;
     }

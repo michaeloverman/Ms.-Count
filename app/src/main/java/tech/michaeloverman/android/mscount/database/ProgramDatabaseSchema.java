@@ -34,6 +34,7 @@ public class ProgramDatabaseSchema {
         public static final String COLUMN_DATA_ARRAY = "actual_data";
         public static final String COLUMN_FIREBASE_ID = "firebase_id";
         public static final String COLUMN_CREATOR_ID = "creator_id";
+        public static final String COLUMN_DISPLAY_RHYTHM = "display_ryhthm";
 
         public static final int POSITION_ID = 0;
         public static final int POSITION_COMPOSER = 1;
@@ -47,6 +48,7 @@ public class ProgramDatabaseSchema {
         public static final int POSITION_DATA_ARRAY = 9;
         public static final int POSITION_FIREBASE_ID = 10;
         public static final int POSITION_CREATOR_ID = 11;
+        public static final int POSITION_DISPLAY_RHYTHM = 12;
 
         public static Uri buildUriWithComposer(String composer) {
             Timber.d("buildUriWithComposer");

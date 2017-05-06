@@ -15,7 +15,7 @@ import static tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema
 
 public class ProgramDatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final String DATABASE_NAME = "programDatabase.db";
 
 
@@ -40,7 +40,8 @@ public class ProgramDatabaseHelper extends SQLiteOpenHelper {
                 + MetProgram.COLUMN_MEASURE_COUNT_OFFSET + " INTEGER, "
                 + MetProgram.COLUMN_DATA_ARRAY + " TEXT NOT NULL, "
                 + MetProgram.COLUMN_FIREBASE_ID + " TEXT, "
-                + MetProgram.COLUMN_CREATOR_ID + " TEXT);";
+                + MetProgram.COLUMN_CREATOR_ID + " TEXT, "
+                + MetProgram.COLUMN_DISPLAY_RHYTHM + " INTEGER NOT NULL);";
 
         db.execSQL(SQL_BUILDER_STRING);
     }
@@ -48,8 +49,14 @@ public class ProgramDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //TODO This must be fixed before actual release to save users' data if/when db is updated
-        db.execSQL(" DROP TABLE IF EXISTS " + DATABASE_NAME);
+        if(oldVersion == 1 && newVersion == 2) {
+            final String SQL_STRING = "ALTER TABLE " + MetProgram.TABLE_NAME + " "
+                    + "ADD " + MetProgram.COLUMN_DISPLAY_RHYTHM + " INTEGER NOT NULL "
+                    + "DEFAULT 0;";
 
-        onCreate(db);
+            db.execSQL(SQL_STRING);
+        }
+
+//        onCreate(db);
     }
 }

@@ -369,9 +369,6 @@ public class ProgrammedMetronomeFragment extends Fragment
     @OnClick(R.id.start_stop_fab)
     public void metronomeStartStop() {
 
-        Timber.d("BaselineNoteValue: " + mCurrentPiece.getBaselineNoteValue());
-        Timber.d("DisplayNoteValue: " + mCurrentPiece.getDisplayNoteValue());
-
         if(mCurrentPiece == null) {
             Toast.makeText(mActivity, "Please select a program before starting metronome.", Toast.LENGTH_SHORT).show();
             return;
@@ -471,7 +468,9 @@ public class ProgrammedMetronomeFragment extends Fragment
                 .tempoMultiplier(mCursor.getDouble(ProgramDatabaseSchema.MetProgram.POSITION_TEMPO_MULTIPLIER))
                 .firstMeasureNumber(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_MEASURE_COUNTE_OFFSET))
                 .dataEntries(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_DATA_ARRAY))
-                .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID));
+                .firebaseId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_FIREBASE_ID))
+                .creatorId(mCursor.getString(ProgramDatabaseSchema.MetProgram.POSITION_CREATOR_ID))
+                .displayNoteValue(mCursor.getInt(ProgramDatabaseSchema.MetProgram.POSITION_DISPLAY_RHYTHM));
 //        mCursor.close();
         mCurrentPiece = builder.build();
         updateVariables();
@@ -595,14 +594,24 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void makePieceFavorite() {
+        Timber.d("making piece a favorite!");
         final SQLiteDatabase db = new FavoritesDBHelper(mActivity).getWritableDatabase();
         ContentValues values = new ContentValues();
+        if(mCurrentPiece.getFirebaseId() == null) {
+            if(mCurrentPieceKey.charAt(0) == '-') {
+                mCurrentPiece.setFirebaseId(mCurrentPieceKey);
+            } else {
+                Toast.makeText(mActivity,
+                        R.string.favorite_database_error_try_again, Toast.LENGTH_SHORT).show();
+            }
+        }
         values.put(FavoritesContract.FavoriteEntry.COLUMN_PIECE_ID, mCurrentPiece.getFirebaseId());
         db.insert(FavoritesContract.FavoriteEntry.TABLE_NAME, null, values);
         db.close();
     }
 
     private void makePieceUnfavorite() {
+        Timber.d("unfavoriting the piece...");
         final SQLiteDatabase db = new FavoritesDBHelper(mActivity).getWritableDatabase();
         String selection = FavoritesContract.FavoriteEntry.COLUMN_PIECE_ID + " LIKE ?";
         String[] selectionArgs = { mCurrentPiece.getFirebaseId() };

@@ -106,9 +106,9 @@ public class DataEntryFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         mTitleView.setText(mTitle);
-//        mTitleView.setText("Dummy Text Title");
 
-        LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false);
         mEnteredDataRecycler.setLayoutManager(manager);
         mAdapter = new DataListAdapter();
         mEnteredDataRecycler.setAdapter(mAdapter);

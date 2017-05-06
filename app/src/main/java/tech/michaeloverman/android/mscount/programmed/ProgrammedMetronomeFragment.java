@@ -621,7 +621,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         ContentResolver resolver = getContext().getContentResolver();
         resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
     }
-    
+
     private class CheckIfFavoriteTask extends AsyncTask<String, Void, Boolean> {
 
         @Override

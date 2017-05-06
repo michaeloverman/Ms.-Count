@@ -31,4 +31,16 @@
         <item>6</item>
 
     </string-array>
+
+    <integer-array name="note_values">
+        <item>@drawable/ic_16thnote</item>
+        <item>@drawable/ic_dotted16th</item>
+        <item>@drawable/ic_8th</item>
+        <item>@drawable/ic_dotted8th</item>
+        <item>@drawable/ic_quarter</item>
+        <item>@drawable/ic_dotted_4th</item>
+        <item>@drawable/ic_half</item>
+        <item>@drawable/ic_dotted_2th</item>
+        <item>@drawable/ic_whole</item>
+    </integer-array>
 </resources>

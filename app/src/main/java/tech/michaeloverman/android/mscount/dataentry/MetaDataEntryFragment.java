@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -24,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,7 +73,9 @@ public class MetaDataEntryFragment extends Fragment
     @BindView(R.id.default_tempo_label) TextView mDefaultTempoLabel;
     @BindView(R.id.default_tempo_entry) EditText mDefaultTempoEntry;
     @BindView(R.id.enter_beats_button) Button mEnterBeatsButton;
-    @BindView(R.id.baseline_rhythmic_value_entry) EditText mBaselineRhythmicValueEntry;
+    @BindView(R.id.baseline_rhythmic_value_recycler) RecyclerView mBaselineRhythmicValueEntry;
+    private NoteValuesAdapter mBaselineRhythmicValueAdapter;
+    private int mTemporaryBaselineRhythm = 4;
 
     private PieceOfMusic mPieceOfMusic;
     private PieceOfMusic.Builder mBuilder;
@@ -188,6 +194,14 @@ public class MetaDataEntryFragment extends Fragment
             }
         });
 
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(mActivity,
+                LinearLayoutManager.HORIZONTAL, false);
+        mBaselineRhythmicValueEntry.setLayoutManager(manager);
+        mBaselineRhythmicValueAdapter = new NoteValuesAdapter(
+                getResources().obtainTypedArray(R.array.note_values));
+        mBaselineRhythmicValueEntry.setAdapter(mBaselineRhythmicValueAdapter);
+        mBaselineRhythmicValueAdapter.setSelectedPosition(mTemporaryBaselineRhythm);
+        Timber.d("SelectedRythmicValue set to " + mTemporaryBaselineRhythm);
         return view;
     }
 
@@ -209,6 +223,8 @@ public class MetaDataEntryFragment extends Fragment
         mBuilder.author(composer)
                 .title(title);
 
+        mTemporaryBaselineRhythm = mBaselineRhythmicValueAdapter.getSelectedRhythm();
+        Timber.d("mTemporaryBaselineRhythm" + mTemporaryBaselineRhythm);
         gotoDataEntryFragment(title);
     }
 
@@ -339,7 +355,8 @@ public class MetaDataEntryFragment extends Fragment
         mBaselineSubdivisionEntry.setText(Integer.toString(mPieceOfMusic.getSubdivision()));
         mCountoffSubdivisionEntry.setText(Integer.toString(mPieceOfMusic.getCountOffSubdivision()));
         mDefaultTempoEntry.setText(Integer.toString(mPieceOfMusic.getDefaultTempo()));
-        mBaselineRhythmicValueEntry.setText(Integer.toString(mPieceOfMusic.getBaselineNoteValue()));
+        mBaselineRhythmicValueAdapter.setSelectedPosition(mPieceOfMusic.getBaselineNoteValue());
+        mBaselineRhythmicValueAdapter.notifyDataSetChanged();
         mDataEntries = mPieceOfMusic.getRawData();
     }
 
@@ -378,7 +395,7 @@ public class MetaDataEntryFragment extends Fragment
         String subd = mBaselineSubdivisionEntry.getText().toString();
         String countoff = mCountoffSubdivisionEntry.getText().toString();
         String defaultTempo = mDefaultTempoEntry.getText().toString();
-        String rhythm = mBaselineRhythmicValueEntry.getText().toString();
+        int rhythm = mBaselineRhythmicValueAdapter.getSelectedRhythm();
 
         if(composer.equals("")) {
             Toast.makeText(getContext(), R.string.error_no_composer_message,
@@ -442,7 +459,7 @@ public class MetaDataEntryFragment extends Fragment
                 .title(title)
                 .subdivision(subdInt)
                 .countOffSubdivision(countoffInt);
-        int tempoInt, rhythmInt;
+        int tempoInt;
         try {
             if(!defaultTempo.equals("")) {
                 tempoInt = Integer.parseInt(defaultTempo);
@@ -452,17 +469,19 @@ public class MetaDataEntryFragment extends Fragment
             Timber.d("You should not be here: should not be able to enter anything but numbers, and any numbers entered have already been checked for range.");
         }
 
-        // TODO redo the UI so this is not a raw data input, but a selection from various note values
-        try {
-            if(!rhythm.equals("")) {
-                rhythmInt = Integer.parseInt(rhythm);
-                mBuilder.baselineNoteValue(rhythmInt);
-            }
-        } catch (NumberFormatException nfe) {
-            Timber.d("You really shouldn't be here, with a NumberFormatException on the baseline rhythmic value.");
-        }
+        mBuilder.baselineNoteValue(rhythm);
+
+//        try {
+//            if(!rhythm.equals("")) {
+//                rhythmInt = Integer.parseInt(rhythm);
+//            }
+//        } catch (NumberFormatException nfe) {
+//            Timber.d("You really shouldn't be here, with a NumberFormatException on the baseline rhythmic value.");
+//        }
 
         // TODO Get other meta data entries: tempo multiplier, etc.
+
+
         return true;
     }
 
@@ -639,6 +658,9 @@ public class MetaDataEntryFragment extends Fragment
     public void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder) {
         mBuilder = builder;
         mDataEntries = data;
+        Timber.d("mTemporaryBaselineRhythm: " + mTemporaryBaselineRhythm);
+        mBaselineRhythmicValueAdapter.setSelectedPosition(mTemporaryBaselineRhythm);
+//        mBaselineRhythmicValueAdapter.notifyDataSetChanged();
     }
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -680,4 +702,109 @@ public class MetaDataEntryFragment extends Fragment
         mCursor = null;
     }
 
+    class NoteValuesAdapter extends RecyclerView.Adapter<NoteValuesAdapter.NoteViewHolder> {
+
+        TypedArray noteValueImages;
+        private int selectedPosition;
+
+        public NoteValuesAdapter(TypedArray images) {
+//            Timber.d("NoteValuesAdapter CREATED!!!");
+//            Timber.d("TypedArray: " + images.toString());
+            noteValueImages = images;
+//            Timber.d("Index count: " + noteValueImages.length());
+        }
+
+        public int getSelectedRhythm() {
+            switch(selectedPosition) {
+                case 0: return PieceOfMusic.SIXTEENTH;
+                case 1: return PieceOfMusic.DOTTED_SIXTEENTH;
+                case 2: return PieceOfMusic.EIGHTH;
+                case 3: return PieceOfMusic.DOTTED_EIGHTH;
+                case 4: return PieceOfMusic.QUARTER;
+                case 5: return PieceOfMusic.DOTTED_QUARTER;
+                case 6: return PieceOfMusic.HALF;
+                case 7: return PieceOfMusic.DOTTED_HALF;
+                case 8: return PieceOfMusic.WHOLE;
+                default: return PieceOfMusic.QUARTER;
+            }
+        }
+
+        public void setSelectedPosition(int rhythm) {
+            Timber.d("setting selected rhythmic value..." + rhythm);
+            switch(rhythm) {
+                case PieceOfMusic.SIXTEENTH:
+                    selectedPosition = 0;
+                    break;
+                case PieceOfMusic.DOTTED_SIXTEENTH:
+                    selectedPosition = 1;
+                    break;
+                case PieceOfMusic.EIGHTH:
+                    selectedPosition = 2;
+                    break;
+                case PieceOfMusic.DOTTED_EIGHTH:
+                    selectedPosition = 3;
+                    break;
+                case PieceOfMusic.QUARTER:
+                    selectedPosition = 4;
+                    break;
+                case PieceOfMusic.DOTTED_QUARTER:
+                    selectedPosition = 5;
+                    break;
+                case PieceOfMusic.HALF:
+                    selectedPosition = 6;
+                    break;
+                case PieceOfMusic.DOTTED_HALF:
+                    selectedPosition = 7;
+                    break;
+                case PieceOfMusic.WHOLE:
+                    selectedPosition = 8;
+                    break;
+                default: selectedPosition = 4;
+            }
+            Timber.d("selectedPosition = " + selectedPosition);
+        }
+
+        @Override
+        public NoteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View item = LayoutInflater.from(getContext())
+                    .inflate(R.layout.note_value_image_view, parent, false);
+            return new NoteViewHolder(item);
+        }
+
+        @Override
+        public void onBindViewHolder(NoteViewHolder holder, final int position) {
+            holder.image.setImageDrawable(noteValueImages.getDrawable(position));
+            Timber.d("onBindViewHolder, position: " + position + " selected: " + (position == selectedPosition));
+
+            if(selectedPosition == position) {
+                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
+            } else {
+                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
+            }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    notifyItemChanged(selectedPosition);
+                    selectedPosition = position;
+                    notifyItemChanged(selectedPosition);
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return noteValueImages.length();
+        }
+
+        class NoteViewHolder extends RecyclerView.ViewHolder {
+            ImageView image;
+
+            public NoteViewHolder(View itemView) {
+                super(itemView);
+                image = (ImageView) itemView.findViewById(R.id.note_value_image);
+                Timber.d("NoteViewHolder created, image: ");
+            }
+        }
+    }
 }

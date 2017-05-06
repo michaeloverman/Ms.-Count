@@ -26,8 +26,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -126,6 +128,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         mDeleteFlag = false;
         mDeleteCancelMenuItem.setTitle(R.string.delete_program);
         mDeleteCancelMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        mAdapter.notifyDataSetChanged();
         progressSpinner(false);
     }
 
@@ -226,7 +229,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(mActivity.useFirebase) {
-                            deletePieceFromFirebase(pieceId, title);
+                            checkFirebaseAuthorizationToDelete(pieceId, title);
                         } else {
                             deletePieceFromSql(pieceId, title);
                         }
@@ -242,44 +245,75 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     }
 
     private void deletePieceFromSql(String id, String title) {
-        Toast.makeText(mActivity, "Deleting from SQL", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mActivity, R.string.delete_from_sql_toast, Toast.LENGTH_SHORT).show();
         int idInt;
         try {
             idInt = Integer.parseInt(id);
         } catch (NumberFormatException numE) {
-            Timber.d("SQL Id not correct integer format...");
+            Timber.d(getString(R.string.incorrect_format_database_id));
             return;
         }
         new DeleteFromSqlTask(idInt, title).execute();
         cleanUpProgramDelete();
     }
 
-    private void deletePieceFromFirebase(String id, String title) {
-        Toast.makeText(mActivity, "Deleting from Firebase", Toast.LENGTH_SHORT).show();
-        //TODO delete from Firebase....
-        cleanUpProgramDelete();
+    private void checkFirebaseAuthorizationToDelete(final String id, final String title) {
+
+        final String userId = getFirebaseAuthId();
+
+        FirebaseDatabase.getInstance().getReference().child("pieces").child(id)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Timber.d("userId: " + userId);
+                        Timber.d("creatorId: " + dataSnapshot.child("creatorId"));
+                        if(dataSnapshot.child("creatorId").getValue().equals(userId)) {
+                            completeAuthorizedFirebaseDelete(id, title);
+                        } else {
+                            Toast.makeText(mActivity, R.string.not_authorized_to_delete_toast,
+                                    Toast.LENGTH_SHORT).show();
+                            cleanUpProgramDelete();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
     }
 
-//    private void getPieceFromFirebase(final String pieceId) {
-//        FirebaseDatabase.getInstance().getReference().child("pieces").child(pieceId)
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        mPieceOfMusic = dataSnapshot.getValue(PieceOfMusic.class);
-//                        mPieceOfMusic.setFirebaseId(pieceId);
-//                        Timber.d("Just loaded piece from Firebase. Id: " + pieceId);
-//                        mActivity.setProgramResult(mPieceOfMusic);
-//                        mActivity.finish();
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                        Toast.makeText(getContext(), "A database error occurred. Please try again.",
-//                                Toast.LENGTH_SHORT).show();
-//                        progressSpinner(false);
-//                    }
-//                });
-//    }
+    private String getFirebaseAuthId() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if(auth != null) {
+            return auth.getCurrentUser().getUid();
+        }
+        return null;
+    }
+
+    private void completeAuthorizedFirebaseDelete(final String id, final String title) {
+        Toast.makeText(mActivity, R.string.delete_from_firebase_toast, Toast.LENGTH_SHORT).show();
+        //TODO delete from Firebase....
+        // delete from composers
+        FirebaseDatabase.getInstance().getReference().child("composers").child(mCurrentComposer)
+                .child(title).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                Timber.d(title + " deleted from cloud database...");
+            }
+        });
+        // delete from pieces
+        FirebaseDatabase.getInstance().getReference().child("pieces").child(id).removeValue(
+                new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        cleanUpProgramDelete();
+                        selectComposer();
+                    }
+                }
+        );
+    }
 
     @Override
     public void newComposer(String name) {

@@ -75,4 +75,8 @@
     <string name="leave">Leave</string>
     <string name="leave_without_save">Are you sure you want to leave without saving your data?</string>
     <string name="favorite_database_error_try_again">Database error. Try reloading program and mark as favorite.</string>
+    <string name="delete_from_sql_toast">Deleting from local database...</string>
+    <string name="incorrect_format_database_id">Database id not correct integer format...</string>
+    <string name="delete_from_firebase_toast">Deleting from cloud database...</string>
+    <string name="not_authorized_to_delete_toast">You are not authorized to delete this program.</string>
 </resources>

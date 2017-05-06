@@ -3,6 +3,7 @@ package tech.michaeloverman.android.mscount.dataentry;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -25,6 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -201,7 +203,18 @@ public class MetaDataEntryFragment extends Fragment
                 getResources().obtainTypedArray(R.array.note_values));
         mBaselineRhythmicValueEntry.setAdapter(mBaselineRhythmicValueAdapter);
         mBaselineRhythmicValueAdapter.setSelectedPosition(mTemporaryBaselineRhythm);
-        Timber.d("SelectedRythmicValue set to " + mTemporaryBaselineRhythm);
+
+        mBaselineRhythmicValueEntry.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) v.getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        });
+
         return view;
     }
 

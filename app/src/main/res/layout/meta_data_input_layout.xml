@@ -154,7 +154,7 @@
         android:hint="120"
         android:inputType="number"
         android:imeOptions="actionNext"
-        android:nextFocusForward="@+id/baseline_rhythmic_value_entry"
+        android:nextFocusForward="@+id/baseline_rhythmic_value_recycler"
         app:layout_constraintLeft_toLeftOf="@+id/default_tempo_label"
         app:layout_constraintRight_toRightOf="@+id/default_tempo_label"
         app:layout_constraintTop_toBottomOf="@+id/default_tempo_label"

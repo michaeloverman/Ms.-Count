@@ -92,6 +92,17 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Timber.d("onCreateOptionsMenu");
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.programmed_global_menu, menu);
+        MenuItem item = menu.findItem(R.id.firebase_local_database);
+        item.setTitle(useFirebase ? R.string.use_local_database : R.string.use_cloud_database);
+        return true;
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
@@ -105,30 +116,12 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_USE_FIREBASE, useFirebase);
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Timber.d("onCreateOptionsMenu");
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.programmed_global_menu, menu);
-        MenuItem item = menu.findItem(R.id.firebase_local_database);
-        item.setTitle(useFirebase ? R.string.use_local_database : R.string.use_cloud_database);
-        return true;
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -151,6 +144,23 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_USE_FIREBASE, useFirebase);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment f = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (f instanceof MetaDataEntryFragment) {
+            losingDataAlertDialog();
+        } else {
+            actuallyGoBack();
+        }
+
     }
 
     private void setupWindowAnimations() {
@@ -210,17 +220,6 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         String m = getString(message);
         Toast.makeText(this, m, Toast.LENGTH_SHORT).show();
         Timber.d(m);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Fragment f = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (f instanceof MetaDataEntryFragment) {
-            losingDataAlertDialog();
-        } else {
-            actuallyGoBack();
-        }
-
     }
 
     private void actuallyGoBack() {

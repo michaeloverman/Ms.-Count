@@ -536,8 +536,7 @@ public class MetaDataEntryFragment extends Fragment
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         PieceOfMusic pieceFromFirebase = dataSnapshot.getValue(PieceOfMusic.class);
-//                        Timber.d("mPiece: " + mPieceOfMusic.getCreatorId());
-//                        Timber.d("firePi: " + pieceFromFirebase.getCreatorId());
+
                         if(pieceFromFirebase.getCreatorId().equals(mPieceOfMusic.getCreatorId())) {
                             overwriteFirebaseDataAlertDialog(mPieceOfMusic.getTitle(), mPieceOfMusic.getAuthor());
                         } else {

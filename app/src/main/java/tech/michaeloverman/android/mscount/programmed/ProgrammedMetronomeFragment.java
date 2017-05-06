@@ -187,6 +187,212 @@ public class ProgrammedMetronomeFragment extends Fragment
         };
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.programmed_fragment, container, false);
+        ButterKnife.bind(this, view);
+
+        mActivity.setTitle(R.string.app_name);
+//        Timber.d("using firebase? " + mActivity.useFirebase);
+
+        AdRequest.Builder adRequest = new AdRequest.Builder();
+        if(BuildConfig.DEBUG) {
+            adRequest.addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B");
+        }
+        mAdView.loadAd(adRequest.build());
+
+
+
+        mTempoDownButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mRunnableHandler.post(mDownRunnable);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mRunnableHandler.removeCallbacks(mDownRunnable);
+                        mTempoChangeDelay = INITIAL_TEMPO_CHANGE_DELAY;
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
+        mTempoUpButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mRunnableHandler.post(mUpRunnable);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mRunnableHandler.removeCallbacks(mUpRunnable);
+                        mTempoChangeDelay = INITIAL_TEMPO_CHANGE_DELAY;
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
+
+
+        if(mCurrentPiece != null) {
+            updateGUI();
+        }
+        return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Timber.d("onCreateOptionsMenu");
+        inflater.inflate(R.menu.programmed_menu, menu);
+        MenuItem item = menu.findItem(R.id.mark_as_favorite_menu);
+        if(mIsCurrentFavorite) {
+            fillFavoriteMenuItem(item);
+        } else {
+            unfillFavoriteMenuItem(item);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if(mMetronomeRunning) metronomeStartStop();
+        if(mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mCurrentPiece != null) {
+            Timber.d("onSaveInstanceState() " + mCurrentPiece.getTitle() + " by " + mCurrentComposer);
+            Timber.d("..... Current Tempo: " + mCurrentTempo);
+            outState.putString(CURRENT_PIECE_TITLE_KEY, mCurrentPiece.getTitle());
+            outState.putInt(CURRENT_TEMPO_KEY, mCurrentTempo);
+            outState.putString(CURRENT_COMPOSER_KEY, mCurrentComposer);
+        }
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    public void onDestroy() {
+        Timber.d("onDestroy() saving prefs....");
+        PrefUtils.saveCurrentProgramToPrefs(mActivity, mActivity.useFirebase,
+                mCurrentPieceKey, mCurrentTempo);
+
+        Timber.d("Should have just saved " + mCurrentPieceKey + " at " + mCurrentTempo + " BPM");
+
+        mCursor = null;
+
+        cancelWearNotification();
+
+        if(mAdView != null) {
+            mAdView.destroy();
+        }
+
+        super.onDestroy();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Timber.d("FRAGMENT: onActivityResult()");
+        if(resultCode != RESULT_OK) {
+            Toast.makeText(mActivity, "Problem with return result", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        switch(requestCode) {
+            case REQUEST_NEW_PROGRAM:
+                Timber.d("REQUEST_NEW_PROGRAM result received");
+                mActivity.useFirebase = PrefUtils.usingFirebase(mActivity);
+                mCurrentPieceKey = data.getStringExtra(LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
+                getPieceFromKey();
+                break;
+            default:
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.d("FRAGMENT: onOptionsItemSelected()");
+        switch (item.getItemId()) {
+            case R.id.create_new_program_option:
+                openProgramEditor();
+                return true;
+            case R.id.mark_as_favorite_menu:
+                if(mCurrentPiece == null) {
+                    Toast.makeText(mActivity, R.string.need_program_before_favorite,
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                mIsCurrentFavorite = !mIsCurrentFavorite;
+                if(mIsCurrentFavorite) {
+                    fillFavoriteMenuItem(item);
+                    makePieceFavorite();
+                    saveToSql();
+                } else {
+                    unfillFavoriteMenuItem(item);
+                    makePieceUnfavorite();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @OnClick( { R.id.current_composer_name, R.id.current_program_title } )
+    public void selectNewProgram() {
+        cancelWearNotification();
+        Intent intent = new Intent(mActivity, LoadNewProgramActivity.class)
+                .putExtra(EXTRA_COMPOSER_NAME, mCurrentComposer)
+                .putExtra(EXTRA_USE_FIREBASE, mActivity.useFirebase);
+//        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                mActivity, new Pair<View, String>(mTVCurrentComposer, getString(R.string.transition_composer_name_view)) );
+//        startActivityForResult(intent, REQUEST_NEW_PROGRAM, activityOptions.toBundle());
+        startActivityForResult(intent, REQUEST_NEW_PROGRAM);
+    }
+
+    @OnClick(R.id.start_stop_fab)
+    public void metronomeStartStop() {
+        if(mCurrentPiece == null) {
+            Toast.makeText(mActivity, "Please select a program before starting metronome.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(mMetronomeRunning) {
+            Timber.d("metronomeStop() " + mCurrentComposer);
+            mMetronome.stop();
+            mMetronomeRunning = false;
+            mStartStopButton.setImageResource(android.R.drawable.ic_media_play);
+            mCurrentMeasureNumber.setText("--");
+            if(mHasWearDevice) mWearNotification.sendStartStop();
+        } else {
+            Timber.d("metronomeStart() " + mCurrentPiece.getTitle());
+            mMetronomeRunning = true;
+            mStartStopButton.setImageResource(android.R.drawable.ic_media_pause);
+            mMetronome.play(mCurrentPiece, mCurrentTempo);
+            if(mHasWearDevice) mWearNotification.sendStartStop();
+        }
+    }
+
+    @Override
+    public void metronomeMeasureNumber(String mm) {
+        mCurrentMeasureNumber.setText(mm);
+    }
+
     private void checkKeyFormat() {
         Timber.d("Firebase: " + mActivity.useFirebase + " :: key: " + mCurrentPieceKey.charAt(0));
         if(mActivity.useFirebase) {
@@ -272,121 +478,6 @@ public class ProgrammedMetronomeFragment extends Fragment
                 Toast.LENGTH_SHORT).show();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.programmed_fragment, container, false);
-        ButterKnife.bind(this, view);
-
-        mActivity.setTitle(R.string.app_name);
-//        Timber.d("using firebase? " + mActivity.useFirebase);
-
-        AdRequest.Builder adRequest = new AdRequest.Builder();
-        if(BuildConfig.DEBUG) {
-            adRequest.addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B");
-        }
-        mAdView.loadAd(adRequest.build());
-
-
-
-        mTempoDownButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        mRunnableHandler.post(mDownRunnable);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        mRunnableHandler.removeCallbacks(mDownRunnable);
-                        mTempoChangeDelay = INITIAL_TEMPO_CHANGE_DELAY;
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
-        mTempoUpButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        mRunnableHandler.post(mUpRunnable);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        mRunnableHandler.removeCallbacks(mUpRunnable);
-                        mTempoChangeDelay = INITIAL_TEMPO_CHANGE_DELAY;
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
-
-
-        if(mCurrentPiece != null) {
-            updateGUI();
-        }
-        return view;
-    }
-
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        mActivity.supportStartPostponedEnterTransition();
-//    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Timber.d("onCreateOptionsMenu");
-        inflater.inflate(R.menu.programmed_menu, menu);
-        MenuItem item = menu.findItem(R.id.mark_as_favorite_menu);
-        if(mIsCurrentFavorite) {
-            fillMenuItem(item);
-        } else {
-            unfillMenuItem(item);
-        }
-    }
-
-    @Override
-    public void onPause() {
-        if(mMetronomeRunning) metronomeStartStop();
-        if(mAdView != null) {
-            mAdView.pause();
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(mAdView != null) {
-            mAdView.resume();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        Timber.d("onDestroy() saving prefs....");
-        PrefUtils.saveCurrentProgramToPrefs(mActivity, mActivity.useFirebase,
-                mCurrentPieceKey, mCurrentTempo);
-
-        Timber.d("Should have just saved " + mCurrentPieceKey + " at " + mCurrentTempo + " BPM");
-
-        mCursor = null;
-
-        if(mMetronomeBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
-            mWearNotification.cancel();
-        }
-
-        if(mAdView != null) {
-            mAdView.destroy();
-        }
-
-        super.onDestroy();
-    }
 
     private void changeTempo(boolean direction) {
         if(direction) {
@@ -405,76 +496,6 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     private void updateTempoView() {
         mTVCurrentTempo.setText(Integer.toString(mCurrentTempo));
-    }
-
-    @OnClick( { R.id.current_composer_name, R.id.current_program_title } )
-    public void selectNewProgram() {
-        Intent intent = new Intent(mActivity, LoadNewProgramActivity.class)
-                .putExtra(EXTRA_COMPOSER_NAME, mCurrentComposer)
-                .putExtra(EXTRA_USE_FIREBASE, mActivity.useFirebase);
-//        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                mActivity, new Pair<View, String>(mTVCurrentComposer, getString(R.string.transition_composer_name_view)) );
-//        startActivityForResult(intent, REQUEST_NEW_PROGRAM, activityOptions.toBundle());
-        startActivityForResult(intent, REQUEST_NEW_PROGRAM);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("FRAGMENT: onActivityResult()");
-        if(resultCode != RESULT_OK) {
-            Toast.makeText(mActivity, "Problem with return result", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        switch(requestCode) {
-            case REQUEST_NEW_PROGRAM:
-                Timber.d("REQUEST_NEW_PROGRAM result received");
-                mActivity.useFirebase = PrefUtils.usingFirebase(mActivity);
-                mCurrentPieceKey = data.getStringExtra(LoadNewProgramActivity.EXTRA_NEW_PROGRAM);
-                getPieceFromKey();
-                break;
-            default:
-        }
-    }
-
-    @OnClick(R.id.start_stop_fab)
-    public void metronomeStartStop() {
-        if(mCurrentPiece == null) {
-            Toast.makeText(mActivity, "Please select a program before starting metronome.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(mMetronomeRunning) {
-            Timber.d("metronomeStop() " + mCurrentComposer);
-            mMetronome.stop();
-            mMetronomeRunning = false;
-            mStartStopButton.setImageResource(android.R.drawable.ic_media_play);
-            mCurrentMeasureNumber.setText("--");
-            if(mHasWearDevice) mWearNotification.sendStartStop();
-        } else {
-            Timber.d("metronomeStart() " + mCurrentPiece.getTitle());
-            mMetronomeRunning = true;
-            mStartStopButton.setImageResource(android.R.drawable.ic_media_pause);
-            mMetronome.play(mCurrentPiece, mCurrentTempo);
-            if(mHasWearDevice) mWearNotification.sendStartStop();
-        }
-    }
-
-    @Override
-    public void metronomeMeasureNumber(String mm) {
-        mCurrentMeasureNumber.setText(mm);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if(mCurrentPiece != null) {
-            Timber.d("onSaveInstanceState() " + mCurrentPiece.getTitle() + " by " + mCurrentComposer);
-            Timber.d("..... Current Tempo: " + mCurrentTempo);
-            outState.putString(CURRENT_PIECE_TITLE_KEY, mCurrentPiece.getTitle());
-            outState.putInt(CURRENT_TEMPO_KEY, mCurrentTempo);
-            outState.putString(CURRENT_COMPOSER_KEY, mCurrentComposer);
-        }
-        super.onSaveInstanceState(outState);
-
     }
 
     private int getNoteImageResource(int noteValue) {
@@ -539,6 +560,13 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
     }
 
+    private void createAndRegisterBroadcastReceiver() {
+        mMetronomeBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
+//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
+        mActivity.registerReceiver(mMetronomeBroadcastReceiver, filter);
+    }
+
     private void updateWearNotif() {
         if(mHasWearDevice) {
             mWearNotification = new WearNotification(mActivity,
@@ -547,39 +575,10 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
     }
 
-    private void createAndRegisterBroadcastReceiver() {
-        mMetronomeBroadcastReceiver = new MetronomeBroadcastReceiver(this);
-        IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
-//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
-        mActivity.registerReceiver(mMetronomeBroadcastReceiver, filter);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Timber.d("FRAGMENT: onOptionsItemSelected()");
-        switch (item.getItemId()) {
-            case R.id.create_new_program_option:
-                openProgramEditor();
-                return true;
-            case R.id.mark_as_favorite_menu:
-                if(mCurrentPiece == null) {
-                    Toast.makeText(mActivity, R.string.need_program_before_favorite,
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                mIsCurrentFavorite = !mIsCurrentFavorite;
-                if(mIsCurrentFavorite) {
-                    fillMenuItem(item);
-                    makePieceFavorite();
-                    saveToSql();
-                } else {
-                    unfillMenuItem(item);
-                    makePieceUnfavorite();
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    private void cancelWearNotification() {
+        if(mMetronomeBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
+            mWearNotification.cancel();
         }
     }
 
@@ -591,16 +590,6 @@ public class ProgrammedMetronomeFragment extends Fragment
         trans.commit();
     }
 
-    private void fillMenuItem(MenuItem item) {
-        item.setIcon(R.drawable.ic_heart);
-        item.setTitle(getString(R.string.mark_as_unfavorite_menu));
-    }
-
-    private void unfillMenuItem(MenuItem item) {
-        item.setIcon(R.drawable.ic_heart_outline);
-        item.setTitle(getString(R.string.mark_as_favorite_menu));
-    }
-
     private void makePieceFavorite() {
         final SQLiteDatabase db = new FavoritesDBHelper(mActivity).getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -608,6 +597,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         db.insert(FavoritesContract.FavoriteEntry.TABLE_NAME, null, values);
         db.close();
     }
+
     private void makePieceUnfavorite() {
         final SQLiteDatabase db = new FavoritesDBHelper(mActivity).getWritableDatabase();
         String selection = FavoritesContract.FavoriteEntry.COLUMN_PIECE_ID + " LIKE ?";
@@ -616,13 +606,22 @@ public class ProgrammedMetronomeFragment extends Fragment
         db.close();
     }
 
+    private void fillFavoriteMenuItem(MenuItem item) {
+        item.setIcon(R.drawable.ic_heart);
+        item.setTitle(getString(R.string.mark_as_unfavorite_menu));
+    }
+
+    private void unfillFavoriteMenuItem(MenuItem item) {
+        item.setIcon(R.drawable.ic_heart_outline);
+        item.setTitle(getString(R.string.mark_as_favorite_menu));
+    }
+
     private void saveToSql() {
         ContentValues contentValues = Utilities.getContentValuesFromPiece(mCurrentPiece);
         ContentResolver resolver = getContext().getContentResolver();
         resolver.insert(ProgramDatabaseSchema.MetProgram.CONTENT_URI, contentValues);
     }
-
-
+    
     private class CheckIfFavoriteTask extends AsyncTask<String, Void, Boolean> {
 
         @Override

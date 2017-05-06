@@ -50,6 +50,7 @@ public class DataEntryFragment extends Fragment {
 
     private String mTitle;
     private List<DataEntry> mDataList;
+    private float mMultiplier = 1.0f;
     private int mMeasureNumber;
     private DataListAdapter mAdapter;
     private boolean mDataItemSelected;
@@ -60,7 +61,7 @@ public class DataEntryFragment extends Fragment {
      * Callback to return the raw data to the previous fragment
      */
     interface DataEntryCallback {
-        void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder);
+        void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder, float multiplier);
     }
 
     public static Fragment newInstance(String title, DataEntryCallback callback, PieceOfMusic.Builder builder) {
@@ -149,6 +150,7 @@ public class DataEntryFragment extends Fragment {
             }
         }
         mAdapter.notifyDataSetChanged();
+        mMultiplier *= 2f;
     }
 
     private void halveValues() {
@@ -166,6 +168,7 @@ public class DataEntryFragment extends Fragment {
             }
         }
         mAdapter.notifyDataSetChanged();
+        mMultiplier *= 0.5f;
     }
 
     private void cantHalveError() {
@@ -217,10 +220,11 @@ public class DataEntryFragment extends Fragment {
 //        mBuilder.dataEntries(mDataList);
 //        mPieceOfMusic.setDataBeats(mDataList);
 
+        // add barline to end, if not already there
         if(!mDataList.get(mDataList.size() - 1).isBarline()) {
             mDataList.add(new DataEntry(++mMeasureNumber, true));
         }
-        sDataEntryCallback.returnDataList(mDataList, mBuilder);
+        sDataEntryCallback.returnDataList(mDataList, mBuilder, mMultiplier);
         getFragmentManager().popBackStackImmediate();
     }
 

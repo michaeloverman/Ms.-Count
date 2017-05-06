@@ -78,6 +78,7 @@ public class MetaDataEntryFragment extends Fragment
     @BindView(R.id.baseline_rhythmic_value_recycler) RecyclerView mBaselineRhythmicValueEntry;
     private NoteValuesAdapter mBaselineRhythmicValueAdapter;
     private int mTemporaryBaselineRhythm = 4;
+    private float mBaselineMultiplier = 1.0f;
 
     private PieceOfMusic mPieceOfMusic;
     private PieceOfMusic.Builder mBuilder;
@@ -216,6 +217,17 @@ public class MetaDataEntryFragment extends Fragment
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mBaselineMultiplier != 1.0f) {
+            int current = Integer.parseInt(mBaselineSubdivisionEntry.getText().toString());
+            float multiplied = current * mBaselineMultiplier;
+            mBaselineSubdivisionEntry.setText((int) multiplied + "");
+            mBaselineMultiplier = 1.0f;
+        }
     }
 
     @OnClick(R.id.enter_beats_button)
@@ -668,11 +680,14 @@ public class MetaDataEntryFragment extends Fragment
      * @param builder
      */
     @Override
-    public void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder) {
+    public void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder, float baselineMultiplier) {
         mBuilder = builder;
         mDataEntries = data;
         Timber.d("mTemporaryBaselineRhythm: " + mTemporaryBaselineRhythm);
         mBaselineRhythmicValueAdapter.setSelectedPosition(mTemporaryBaselineRhythm);
+        if(baselineMultiplier != 1) {
+            mBaselineMultiplier = baselineMultiplier;
+        }
 //        mBaselineRhythmicValueAdapter.notifyDataSetChanged();
     }
     @Override

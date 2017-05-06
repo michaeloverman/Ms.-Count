@@ -219,17 +219,6 @@ public class MetaDataEntryFragment extends Fragment
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(mBaselineMultiplier != 1.0f) {
-            int current = Integer.parseInt(mBaselineSubdivisionEntry.getText().toString());
-            float multiplied = current * mBaselineMultiplier;
-            mBaselineSubdivisionEntry.setText((int) multiplied + "");
-            mBaselineMultiplier = 1.0f;
-        }
-    }
-
     @OnClick(R.id.enter_beats_button)
     public void enterBeatsClicked() {
         Timber.d("enterBeatsClicked()");

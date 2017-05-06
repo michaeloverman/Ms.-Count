@@ -368,6 +368,10 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @OnClick(R.id.start_stop_fab)
     public void metronomeStartStop() {
+
+        Timber.d("BaselineNoteValue: " + mCurrentPiece.getBaselineNoteValue());
+        Timber.d("DisplayNoteValue: " + mCurrentPiece.getDisplayNoteValue());
+
         if(mCurrentPiece == null) {
             Toast.makeText(mActivity, "Please select a program before starting metronome.", Toast.LENGTH_SHORT).show();
             return;
@@ -554,7 +558,7 @@ public class ProgrammedMetronomeFragment extends Fragment
             mTVCurrentPiece.setText(mCurrentPiece.getTitle());
             mTVCurrentComposer.setText(mCurrentComposer);
             mBeatLengthImage.setImageResource(getNoteImageResource
-                    (mCurrentPiece.getBaselineNoteValue()));
+                    (mCurrentPiece.getDisplayNoteValue()));
             mCurrentTempo = mCurrentPiece.getDefaultTempo();
             updateTempoView();
         }

@@ -45,6 +45,7 @@ public class PieceOfMusic implements Serializable {
     private int mDefaultTempo;
     private double mTempoMultiplier;
     private int mBaselineNoteValue;
+    private int mDisplayNoteValue;
     private int mMeasureCountOffset;
     private List<DataEntry> mRawData;
     private String mFirebaseId;
@@ -55,7 +56,8 @@ public class PieceOfMusic implements Serializable {
         mTitle = title;
     }
 
-    public PieceOfMusic() { }
+    public PieceOfMusic() {
+    }
 
     public String getCreatorId() {
         return mCreatorId;
@@ -64,13 +66,13 @@ public class PieceOfMusic implements Serializable {
     public void setCreatorId(String id) {
         mCreatorId = id;
     }
+
     public String getTitle() {
         return mTitle;
     }
 
     public void setTitle(String title) {
         mTitle = title;
-//        Timber.d("setTitle()" + title);
     }
 
     public String getAuthor() {
@@ -79,7 +81,6 @@ public class PieceOfMusic implements Serializable {
 
     public void setAuthor(String author) {
         mAuthor = author;
-//        Timber.d("setAuthor()" + author);
     }
 
     public int getSubdivision() {
@@ -88,8 +89,6 @@ public class PieceOfMusic implements Serializable {
 
     public void setSubdivision(int subdivision) {
         mSubdivision = subdivision;
-//        mCountOffSubdivision = mSubdivision;
-//        Timber.d("setSubdivision()" + subdivision + " COsub: " + mCountOffSubdivision);
     }
 
     public int getCountOffSubdivision() {
@@ -98,7 +97,6 @@ public class PieceOfMusic implements Serializable {
 
     public void setCountOffSubdivision(int countOffSubdivision) {
         mCountOffSubdivision = countOffSubdivision;
-//        Timber.d("setCountOffSubdivision()" + countOffSubdivision + " sub: " + mSubdivision);
     }
 
     public int getDefaultTempo() {
@@ -107,7 +105,6 @@ public class PieceOfMusic implements Serializable {
 
     public void setDefaultTempo(int defaultTempo) {
         mDefaultTempo = defaultTempo;
-//        Timber.d("setDefaultTempo()" + defaultTempo);
     }
 
     public double getTempoMultiplier() {
@@ -116,7 +113,6 @@ public class PieceOfMusic implements Serializable {
 
     public void setTempoMultiplier(double tempoMultiplier) {
         mTempoMultiplier = tempoMultiplier;
-//        Timber.d("setTempoMultiplier" + tempoMultiplier);
     }
 
     public int getBaselineNoteValue() {
@@ -125,7 +121,14 @@ public class PieceOfMusic implements Serializable {
 
     public void setBaselineNoteValue(int baselineNoteValue) {
         mBaselineNoteValue = baselineNoteValue;
-//        Timber.d("setBaselineNoteValue() " + baselineNoteValue);
+    }
+
+    public int getDisplayNoteValue() {
+        return mDisplayNoteValue == 0 ? mBaselineNoteValue : mDisplayNoteValue;
+    }
+
+    public void setDisplayNoteValue(int displayNoteValue) {
+        mDisplayNoteValue = displayNoteValue;
     }
 
     public int getMeasureCountOffset() {
@@ -134,7 +137,6 @@ public class PieceOfMusic implements Serializable {
 
     public void setMeasureCountOffset(int measureCountOffset) {
         mMeasureCountOffset = measureCountOffset;
-//        Timber.d("setMeasureCountOffset()" +measureCountOffset);
     }
 
     public List<Integer> getBeats() {
@@ -148,6 +150,7 @@ public class PieceOfMusic implements Serializable {
     public void setFirebaseId(String id) {
         mFirebaseId = id;
     }
+
     /**
      * Accepts array of the length of each beat, by number of primary subdivisions,
      * combines that with a generated count off measure, and saves the entire array.
@@ -175,16 +178,18 @@ public class PieceOfMusic implements Serializable {
     }
 
     public String rawDataAsString() {
-        if(mRawData == null) constructRawData();
+        if (mRawData == null) constructRawData();
         StringBuilder rawString = new StringBuilder();
-        for(DataEntry d : mRawData) {
+        for (DataEntry d : mRawData) {
             rawString.append(d);
             rawString.append("\n");
         }
         return rawString.toString();
     }
 
-    /** Uses the 'length' of first beat to generate count off measure */
+    /**
+     * Uses the 'length' of first beat to generate count off measure
+     */
     public void buildCountoff() {
         mCountOffMeasureLength = COUNTOFF_LENGTH + mCountOffSubdivision - 1;
         mCountOff = new int[mCountOffMeasureLength];
@@ -206,7 +211,6 @@ public class PieceOfMusic implements Serializable {
     }
 
 
-
     public List<Integer> getDownBeats() {
         return mDownBeats;
     }
@@ -224,15 +228,15 @@ public class PieceOfMusic implements Serializable {
     }
 
     public void constructRawData() {
-        if(mRawData != null) {
+        if (mRawData != null) {
             return;
         }
         mRawData = new ArrayList<>();
         int currentBeatCount = mDownBeats.get(0);
-        for(int i = 1; i < mDownBeats.size(); i++) {
+        for (int i = 1; i < mDownBeats.size(); i++) {
             mRawData.add(new DataEntry(i, true));
-            for(int j = 0; j < mDownBeats.get(i); j++) {
-                if(currentBeatCount >= mBeats.size()) {
+            for (int j = 0; j < mDownBeats.get(i); j++) {
+                if (currentBeatCount >= mBeats.size()) {
                     mBeats.add(mSubdivision);
                 }
                 mRawData.add(new DataEntry(mBeats.get(currentBeatCount++), false));
@@ -255,7 +259,7 @@ public class PieceOfMusic implements Serializable {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String key;
-                        if(dataSnapshot.exists()) {
+                        if (dataSnapshot.exists()) {
                             // update
                             key = dataSnapshot.getValue().toString();
                         } else {
@@ -289,6 +293,7 @@ public class PieceOfMusic implements Serializable {
         private int defaultTempo;
         private double tempoMultiplier;
         private int baselineNoteValue;
+        private int displayNoteValue;
         private int measureCountOffset;
         private String firebaseId;
         private String creatorId;
@@ -301,48 +306,63 @@ public class PieceOfMusic implements Serializable {
             this.title = title;
             return this;
         }
+
         public Builder author(String author) {
             this.author = author;
             return this;
         }
+
         public Builder beats(List<Integer> beats) {
             this.beats = beats;
             return this;
         }
-//        public Builder beats(int[] beats) {
+
+        //        public Builder beats(int[] beats) {
 //            return beats(Utilities.arrayToIntegerList(beats));
 //        }
         public Builder downBeats(List<Integer> downBeats) {
             this.downBeats = downBeats;
             return this;
         }
-//        public Builder downBeats(int[] downBeats) {
+
+        //        public Builder downBeats(int[] downBeats) {
 //            return downBeats(Utilities.arrayToIntegerList(downBeats));
 //        }
         public Builder subdivision(int sub) {
             this.subdivision = sub;
             return this;
         }
+
         public Builder countOffSubdivision(int coSub) {
             this.countOffSubdivision = coSub;
             return this;
         }
+
         public Builder defaultTempo(int tempo) {
             this.defaultTempo = tempo;
             return this;
         }
+
         public Builder tempoMultiplier(double mult) {
             this.tempoMultiplier = mult;
             return this;
         }
+
         public Builder baselineNoteValue(int value) {
             this.baselineNoteValue = value;
             return this;
         }
+
+        public Builder displayNoteValue(int value) {
+            this.displayNoteValue = value;
+            return this;
+        }
+
         public Builder firstMeasureNumber(int offset) {
             this.measureCountOffset = offset - 1;
             return this;
         }
+
         public Builder dataEntries(List<DataEntry> data) {
             this.rawData = data;
             this.beats = new ArrayList<>();
@@ -352,9 +372,9 @@ public class PieceOfMusic implements Serializable {
 
             int beatsPerMeasureCount = 0;
 
-            for(int i = start; i < data.size(); i++) {
+            for (int i = start; i < data.size(); i++) {
 
-                if(data.get(i).isBarline()) {
+                if (data.get(i).isBarline()) {
                     this.downBeats.add(beatsPerMeasureCount);
                     beatsPerMeasureCount = 0;
                 } else {
@@ -365,23 +385,27 @@ public class PieceOfMusic implements Serializable {
 
             return this;
         }
+
         public Builder dataEntries(String data) {
             String[] entries = data.split("\\n");
             List<DataEntry> list = new ArrayList<>();
-            for(int i = 0; i < entries.length; i++) {
+            for (int i = 0; i < entries.length; i++) {
                 String[] entry = entries[i].split(";");
                 list.add(new DataEntry(Integer.parseInt(entry[0]), Boolean.parseBoolean(entry[1])));
             }
             return dataEntries(list);
         }
+
         public Builder firebaseId(String id) {
             this.firebaseId = id;
             return this;
         }
+
         public Builder creatorId(String id) {
             this.creatorId = id;
             return this;
         }
+
         public PieceOfMusic build() {
             return new PieceOfMusic(this);
         }
@@ -398,6 +422,7 @@ public class PieceOfMusic implements Serializable {
         mDefaultTempo = builder.defaultTempo == 0 ? DEFAULT_DEFAULT_TEMPO : builder.defaultTempo;
         mTempoMultiplier = builder.tempoMultiplier == 0.0 ? 1.0 : builder.tempoMultiplier;
         mBaselineNoteValue = builder.baselineNoteValue == 0 ? QUARTER : builder.baselineNoteValue;
+        mDisplayNoteValue = builder.displayNoteValue;
         mRawData = builder.rawData;
         mFirebaseId = builder.firebaseId;
         mCreatorId = builder.creatorId;

@@ -266,7 +266,8 @@ public class DataEntryFragment extends Fragment {
         String value = view.getText().toString();
         switch(value) {
             case "|":
-                addDataEntry(null, BARLINE);
+                if(mDataList.get(mDataList.size() - 1).isBarline()) return;
+                else addDataEntry(null, BARLINE);
                 break;
             case "?":
                 getIntegerDialogResponse();

@@ -93,4 +93,6 @@
     <string name="rhythm_of_display_click">Rhythm of display click:</string>
     <string name="fortytwo">42</string>
     <string name="measure_number_offset">Measure number offset:</string>
+    <string name="triple_all_data_values">Triple all data values</string>
+    <string name="third_all_data_values">Third all data values</string>
 </resources>

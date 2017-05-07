@@ -61,25 +61,20 @@ public class DataEntryFragment extends Fragment {
      * Callback to return the raw data to the previous fragment
      */
     interface DataEntryCallback {
-        void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder, float multiplier);
+        void returnDataList(List<DataEntry> data, float multiplier);
     }
 
     public static Fragment newInstance(String title, DataEntryCallback callback,
                                        PieceOfMusic.Builder builder) {
-        Timber.d("newInstance()");
-//        DataEntryFragment fragment = new DataEntryFragment();
-//        fragment.mTitle = title;
-//        fragment.mBuilder = builder;
-//        sDataEntryCallback = callback;
         return newInstance(title, callback, builder, new ArrayList<DataEntry>());
     }
     public static Fragment newInstance(String title, DataEntryCallback callback,
                                        PieceOfMusic.Builder builder, List<DataEntry> data) {
         DataEntryFragment fragment = new DataEntryFragment();
-        fragment.mDataList = data;
         fragment.mTitle = title;
-        fragment.mBuilder = builder;
         sDataEntryCallback = callback;
+        fragment.mBuilder = builder;
+        fragment.mDataList = data;
         return fragment;
 
     }
@@ -90,11 +85,10 @@ public class DataEntryFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        // set up variables
+        // set up measure numbers - add opening barline, if necessary
         if(mDataList.size() == 0) {
-//            mDataList = new ArrayList<>();
             mMeasureNumber = 0;
-            mDataList.add(new DataEntry(++mMeasureNumber, true));
+            mDataList.add(new DataEntry(++mMeasureNumber, BARLINE));
         } else {
             mMeasureNumber = mDataList.get(mDataList.size() - 1).getData();
         }
@@ -126,7 +120,6 @@ public class DataEntryFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.data_entry_menu, menu);
-//        menu.removeItem(R.id.create_new_program_option);
     }
 
     @Override
@@ -137,6 +130,12 @@ public class DataEntryFragment extends Fragment {
                 return true;
             case R.id.halve_data_values:
                 halveValues();
+                return true;
+            case R.id.triple_data_values:
+                tripleValues();
+                return true;
+            case R.id.third_data_values:
+                thirdValues();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -154,11 +153,22 @@ public class DataEntryFragment extends Fragment {
         mMultiplier *= 2f;
     }
 
+    private void tripleValues() {
+        for (int i = 0; i < mDataList.size(); i++) {
+            DataEntry entry = mDataList.get(i);
+            if(!entry.isBarline()) {
+                entry.setData(entry.getData() * 3);
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+        mMultiplier *= 3f;
+    }
+
     private void halveValues() {
         for (int i = 0; i < mDataList.size(); i++) {
             DataEntry entry = mDataList.get(i);
             if(!entry.isBarline() && entry.getData() % 2 == 1) {
-                cantHalveError();
+                cantDivideError();
                 return;
             }
         }
@@ -172,8 +182,25 @@ public class DataEntryFragment extends Fragment {
         mMultiplier *= 0.5f;
     }
 
-    private void cantHalveError() {
-        Toast.makeText(getContext(), "Can't halve odd values.", Toast.LENGTH_SHORT).show();
+    private void thirdValues() {
+        for (int i = 0; i < mDataList.size(); i++) {
+            DataEntry entry = mDataList.get(i);
+            if(!entry.isBarline() && entry.getData() % 3 != 0) {
+                cantDivideError();
+                return;
+            }
+        }
+        for (int i = 0; i < mDataList.size(); i++) {
+            DataEntry entry = mDataList.get(i);
+            if(!entry.isBarline()) {
+                entry.setData(entry.getData() / 3);
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+        mMultiplier *= 0.333f;
+    }
+    private void cantDivideError() {
+        Toast.makeText(getContext(), "Can't evenly divide values.", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -218,14 +245,12 @@ public class DataEntryFragment extends Fragment {
     @OnClick(R.id.data_save_button)
     public void saveData() {
         Timber.d("saveData()");
-//        mBuilder.dataEntries(mDataList);
-//        mPieceOfMusic.setDataBeats(mDataList);
 
         // add barline to end, if not already there
         if(!mDataList.get(mDataList.size() - 1).isBarline()) {
             mDataList.add(new DataEntry(++mMeasureNumber, true));
         }
-        sDataEntryCallback.returnDataList(mDataList, mBuilder, mMultiplier);
+        sDataEntryCallback.returnDataList(mDataList, mMultiplier);
         getFragmentManager().popBackStackImmediate();
     }
 

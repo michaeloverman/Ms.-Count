@@ -224,11 +224,11 @@ public class MetaDataEntryFragment extends Fragment
     @OnClick(R.id.enter_beats_button)
     public void enterBeatsClicked() {
         Timber.d("enterBeatsClicked()");
-        String composer = mComposerEntry.getText().toString();
-        if(composer.equals("")) {
-            toastError();
-            return;
-        }
+//        String composer = mComposerEntry.getText().toString();
+//        if(composer.equals("")) {
+//            toastError();
+//            return;
+//        }
 
         String title = mTitleEntry.getText().toString();
         if(title.equals("")) {
@@ -236,11 +236,10 @@ public class MetaDataEntryFragment extends Fragment
             return;
         }
 
-        mBuilder.author(composer)
-                .title(title);
+        mBuilder.title(title);
 
         mTemporaryBaselineRhythm = mBaselineRhythmicValueAdapter.getSelectedRhythm();
-        Timber.d("mTemporaryBaselineRhythm" + mTemporaryBaselineRhythm);
+//        Timber.d("mTemporaryBaselineRhythm" + mTemporaryBaselineRhythm);
         gotoDataEntryFragment(title);
     }
 
@@ -426,6 +425,7 @@ public class MetaDataEntryFragment extends Fragment
         String defaultTempo = mDefaultTempoEntry.getText().toString();
         int rhythm = mBaselineRhythmicValueAdapter.getSelectedRhythm();
 
+        // Check for null entries...
         if(composer.equals("")) {
             Toast.makeText(getContext(), R.string.error_no_composer_message,
                     Toast.LENGTH_SHORT).show();
@@ -454,6 +454,7 @@ public class MetaDataEntryFragment extends Fragment
             return false;
         }
 
+        // Check for valid data input...
         int subdInt, countoffInt;
         try {
             subdInt = Integer.parseInt(subd);
@@ -483,11 +484,11 @@ public class MetaDataEntryFragment extends Fragment
             return false;
         }
 
-
         mBuilder.author(composer)
                 .title(title)
                 .subdivision(subdInt)
                 .countOffSubdivision(countoffInt);
+
         int tempoInt;
         try {
             if(!defaultTempo.equals("")) {
@@ -499,17 +500,6 @@ public class MetaDataEntryFragment extends Fragment
         }
 
         mBuilder.baselineNoteValue(rhythm);
-
-//        try {
-//            if(!rhythm.equals("")) {
-//                rhythmInt = Integer.parseInt(rhythm);
-//            }
-//        } catch (NumberFormatException nfe) {
-//            Timber.d("You really shouldn't be here, with a NumberFormatException on the baseline rhythmic value.");
-//        }
-
-        // TODO Get other meta data entries: tempo multiplier, etc.
-
 
         return true;
     }
@@ -680,13 +670,11 @@ public class MetaDataEntryFragment extends Fragment
     /**
      * Callback from the DataEntryFragment. Takes the raw data and the reference to the original
      * Builder object, and assigns to local variables.
-     * @param data
-     * @param builder
      */
     @Override
-    public void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder, float baselineMultiplier) {
-        mBuilder = builder;
-        mDataEntries = data;
+    public void returnDataList(List<DataEntry> dataEntries, float baselineMultiplier) {
+//        mBuilder = builder;
+        mDataEntries = dataEntries;
         Timber.d("mTemporaryBaselineRhythm: " + mTemporaryBaselineRhythm);
         mBaselineRhythmicValueAdapter.setSelectedPosition(mTemporaryBaselineRhythm);
         if(baselineMultiplier != 1) {

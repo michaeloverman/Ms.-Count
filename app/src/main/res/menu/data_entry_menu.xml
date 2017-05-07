@@ -4,10 +4,14 @@
 
     <item android:id="@+id/double_data_values"
           android:title="@string/double_all_data_values"
-          android:icon="@android:drawable/ic_menu_edit"
           app:showAsAction="never"/>
     <item android:id="@+id/halve_data_values"
           android:title="@string/halve_all_data_values"
-          android:icon="@android:drawable/ic_menu_edit"
+          app:showAsAction="never"/>
+    <item android:id="@+id/triple_data_values"
+          android:title="@string/triple_all_data_values"
+          app:showAsAction="never"/>
+    <item android:id="@+id/third_data_values"
+          android:title="@string/third_all_data_values"
           app:showAsAction="never"/>
 </menu>

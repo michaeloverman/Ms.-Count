@@ -260,18 +260,24 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     @Override
     public void onPause() {
+        Timber.d("onPause()");
         if(mMetronomeRunning) metronomeStartStop();
         if(mAdView != null) {
             mAdView.pause();
         }
+        cancelWearNotification();
         super.onPause();
     }
 
     @Override
     public void onResume() {
+        Timber.d("onResume()");
         super.onResume();
         if(mAdView != null) {
             mAdView.resume();
+        }
+        if(mCurrentPiece != null) {
+            updateWearNotif();
         }
     }
 

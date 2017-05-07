@@ -12,7 +12,7 @@
         android:id="@+id/composer_label_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Composer:"
+        android:text="@string/composer"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/data_entry_outside_margin"
         android:layout_marginLeft="@dimen/data_entry_outside_margin"
@@ -41,7 +41,7 @@
         android:id="@+id/title_label_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title:"
+        android:text="@string/title"
         app:layout_constraintTop_toBottomOf="@+id/composer_name_text_entry"
         android:layout_marginLeft="@dimen/data_entry_outside_margin"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
@@ -56,7 +56,7 @@
         android:imeOptions="actionNext"
         android:nextFocusForward="@+id/baseline_subdivision_entry"
         android:digits="@string/valid_characters_string"
-        android:hint="Sonata No. 3, Allegro"
+        android:hint="@string/title_hint_string"
         app:layout_constraintTop_toBottomOf="@+id/title_label_view"
         android:layout_marginLeft="@dimen/data_entry_outside_margin"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
@@ -69,7 +69,7 @@
         android:id="@+id/baseline_subdivision_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Subdivisions in Primary Beat"
+        android:text="@string/subdivisions_in_primary_beat"
         app:layout_constraintTop_toBottomOf="@+id/title_text_entry"
         android:layout_marginLeft="@dimen/data_entry_outside_margin"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
@@ -123,21 +123,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="192dp"/>
+        />
 
     <TextView
         android:id="@+id/default_tempo_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Default Tempo"
+        android:text="@string/default_tempo"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toLeftOf="@+id/baseline_rhythmic_value_label"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
         android:layout_marginRight="8dp"
-        app:layout_constraintHorizontal_bias="0.557"
+        app:layout_constraintHorizontal_bias="0.558"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/countoff_subdivision_entry"/>
 
@@ -164,12 +163,14 @@
         android:id="@+id/baseline_rhythmic_value_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rhythmic Value of Primary Click"
-        android:layout_marginRight="8dp"
+        android:text="@string/rhythm_of_primary_click"
+        android:layout_marginRight="7dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginEnd="8dp"
         app:layout_constraintTop_toTopOf="@+id/default_tempo_label"
-        />
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/baseline_rhythmic_value_recycler"
         android:layout_width="151dp"
@@ -192,22 +193,23 @@
         android:id="@+id/enter_beats_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Program Beats"
+        android:text="@string/program_beats_2lines"
         android:backgroundTint="@color/colorPrimary"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="38dp"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/baseline_rhythmic_value_recycler"
+        app:layout_constraintLeft_toLeftOf="@+id/baseline_rhythmic_value_recycler"
         app:layout_constraintTop_toBottomOf="@+id/default_tempo_entry"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginEnd="8dp"
+        />
 
     <Button
         android:id="@+id/save_program_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save Program"
+        android:text="@string/save_program"
         android:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="16dp"
@@ -217,6 +219,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"/>
+
+    <Button
+        android:id="@+id/options_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/options"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="@+id/default_tempo_label"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/default_tempo_label"
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toTopOf="@+id/enter_beats_button"
+        />
 
     <!--<Button-->
         <!--android:id="@+id/load_program_button"-->

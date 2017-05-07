@@ -64,13 +64,14 @@ public class DataEntryFragment extends Fragment {
         void returnDataList(List<DataEntry> data, PieceOfMusic.Builder builder, float multiplier);
     }
 
-    public static Fragment newInstance(String title, DataEntryCallback callback, PieceOfMusic.Builder builder) {
+    public static Fragment newInstance(String title, DataEntryCallback callback,
+                                       PieceOfMusic.Builder builder) {
         Timber.d("newInstance()");
-        DataEntryFragment fragment = new DataEntryFragment();
-        fragment.mTitle = title;
-        fragment.mBuilder = builder;
-        sDataEntryCallback = callback;
-        return fragment;
+//        DataEntryFragment fragment = new DataEntryFragment();
+//        fragment.mTitle = title;
+//        fragment.mBuilder = builder;
+//        sDataEntryCallback = callback;
+        return newInstance(title, callback, builder, new ArrayList<DataEntry>());
     }
     public static Fragment newInstance(String title, DataEntryCallback callback,
                                        PieceOfMusic.Builder builder, List<DataEntry> data) {
@@ -90,8 +91,8 @@ public class DataEntryFragment extends Fragment {
         setHasOptionsMenu(true);
 
         // set up variables
-        if(mDataList == null) {
-            mDataList = new ArrayList<>();
+        if(mDataList.size() == 0) {
+//            mDataList = new ArrayList<>();
             mMeasureNumber = 0;
             mDataList.add(new DataEntry(++mMeasureNumber, true));
         } else {

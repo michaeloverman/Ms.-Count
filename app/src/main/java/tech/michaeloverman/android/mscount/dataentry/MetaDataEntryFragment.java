@@ -74,6 +74,7 @@ public class MetaDataEntryFragment extends Fragment
     @BindView(R.id.countoff_subdivision_entry) EditText mCountoffSubdivisionEntry;
     @BindView(R.id.default_tempo_label) TextView mDefaultTempoLabel;
     @BindView(R.id.default_tempo_entry) EditText mDefaultTempoEntry;
+    @BindView(R.id.options_button) Button mMetaDataOptionsButton;
     @BindView(R.id.enter_beats_button) Button mEnterBeatsButton;
     @BindView(R.id.baseline_rhythmic_value_recycler) RecyclerView mBaselineRhythmicValueEntry;
     private NoteValuesAdapter mBaselineRhythmicValueAdapter;
@@ -205,6 +206,7 @@ public class MetaDataEntryFragment extends Fragment
         mBaselineRhythmicValueEntry.setAdapter(mBaselineRhythmicValueAdapter);
         mBaselineRhythmicValueAdapter.setSelectedPosition(mTemporaryBaselineRhythm);
 
+        // Remove soft keyboard when display on recycler
         mBaselineRhythmicValueEntry.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -249,6 +251,19 @@ public class MetaDataEntryFragment extends Fragment
         } else {
             fragment = DataEntryFragment.newInstance(title, this, mBuilder, mDataEntries);
         }
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @OnClick(R.id.options_button)
+    public void optionsButtonClicked() {
+
+        mTemporaryBaselineRhythm = mBaselineRhythmicValueAdapter.getSelectedRhythm();
+
+        Fragment fragment = MetaDataOptionsFragment.newInstance(mActivity,
+                mBuilder, mTemporaryBaselineRhythm);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);

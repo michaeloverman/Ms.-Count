@@ -79,4 +79,18 @@
     <string name="incorrect_format_database_id">Database id not correct integer format...</string>
     <string name="delete_from_firebase_toast">Deleting from cloud database...</string>
     <string name="not_authorized_to_delete_toast">You are not authorized to delete this program.</string>
+    <string name="rhythm_of_primary_click">Rhythm of primary click</string>
+    <string name="default_tempo">Default Tempo</string>
+    <string name="subdivisions_in_primary_beat">Subdivisions in primary beat</string>
+    <string name="title_hint_string">Sonata No 3, Allegro</string>
+    <string name="title">Title:</string>
+    <string name="composer">Composer:</string>
+    <string name="options">Options</string>
+    <string name="save_program">Save Program</string>
+    <string name="program_beats_2lines">Program\nBeats</string>
+    <string name="tempo_multiplier">Tempo multiplier:</string>
+    <string name="zero_point_five">0.5</string>
+    <string name="rhythm_of_display_click">Rhythm of display click:</string>
+    <string name="fortytwo">42</string>
+    <string name="measure_number_offset">Measure number offset:</string>
 </resources>

@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="#"
+            android:contentDescription="@string/tempo_in_whole_numbers_radio_button"
             android:id="@+id/whole_numbers"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -27,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="#.#"
+            android:contentDescription="@string/tempo_in_tenths_radio_button"
             android:id="@+id/decimals"
             app:layout_constraintLeft_toRightOf="@+id/whole_numbers"
             app:layout_constraintTop_toTopOf="parent"
@@ -35,6 +37,7 @@
     </RadioGroup>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/normal_start_stop_fab"
+        android:contentDescription="@string/start_stop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:transitionName="@string/round_button_transition"
@@ -78,6 +81,7 @@
         app:layout_constraintLeft_toLeftOf="parent">
         <ImageButton
             android:id="@+id/tempo_down_button"
+            android:contentDescription="@string/tempo_down_button"
             android:visibility="gone"
             app:srcCompat="@android:drawable/arrow_down_float"
             android:background="@drawable/roundcorner_primary"
@@ -90,6 +94,7 @@
 
         <ImageButton
             android:id="@+id/tempo_up_button"
+            android:contentDescription="@string/tempo_up_button"
             android:visibility="gone"
             app:srcCompat="@android:drawable/arrow_up_float"
             android:background="@drawable/roundcorner_primary"
@@ -229,6 +234,7 @@
     </LinearLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_subdivisions_fab"
+        android:contentDescription="@string/add_a_subdivision"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -250,6 +256,7 @@
         />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/expanded_add_subdivisions_fab"
+        android:contentDescription="@string/add_a_subdivision"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -264,6 +271,7 @@
         app:elevation="@dimen/fab_elevation"/>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/expanded_subtract_subdivisions_fab"
+        android:contentDescription="@string/subtract_a_subdivision"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

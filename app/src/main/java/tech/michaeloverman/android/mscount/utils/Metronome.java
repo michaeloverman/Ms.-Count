@@ -33,7 +33,6 @@ public class Metronome {
     private AssetManager mAssets;
     private List<Click> mClicks = new ArrayList<>();
     private SoundPool mSoundPool;
-//    private Click mDownBeatClick, mOtherBeatClick;
     private int mDownBeatClickId, mInnerBeatClickId, mSubdivisionBeatClickId;
     private float[] mClickVolumes;
     private Context mContext;
@@ -58,14 +57,11 @@ public class Metronome {
         return instance;
     }
     private Metronome() {
-//        mContext = context;
-//        mAssets = mContext.getAssets();
-//        setMetronomeStartStopListener(ml);
+
         mClicking = false;
 
         mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-//        mSoundPool = builder.build();
-//        loadSounds();
+
         mClickVolumes = new float[MAX_SUBDIVISIONS];
         for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
             mClickVolumes[i] = 1.0f;

@@ -28,6 +28,7 @@
 
     <EditText
         android:id="@+id/measure_offset_entry"
+        android:contentDescription="Enter number of first measure"
         android:layout_width="105dp"
         android:layout_height="42dp"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
@@ -54,6 +55,7 @@
 
     <EditText
         android:id="@+id/tempo_multiplier_entry"
+        android:contentDescription="Enter tempo multiplier"
         android:layout_width="105dp"
         android:layout_height="42dp"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
@@ -98,6 +100,7 @@
         android:id="@+id/options_cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:text="@string/cancel"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="56dp"
@@ -108,6 +111,7 @@
         android:id="@+id/save_options_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorAccent"
         android:text="@string/save"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="0dp"

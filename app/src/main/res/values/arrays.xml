@@ -43,4 +43,17 @@
         <item>@drawable/ic_dotted_2th</item>
         <item>@drawable/ic_whole</item>
     </integer-array>
+
+    <string-array name="note_value_content_descriptions">
+        <item>@string/sixteenth_content_description</item>
+        <item>@string/dotted_sixteenth_content_description</item>
+        <item>@string/eighth_content_description</item>
+        <item>@string/dotted_eighth_content_description</item>
+        <item>@string/quarter_content_description</item>
+        <item>@string/dotted_quarter_content_description</item>
+        <item>@string/half_content_description</item>
+        <item>@string/dotted_half_content_description</item>
+        <item>@string/whole_content_description</item>
+    </string-array>
+
 </resources>

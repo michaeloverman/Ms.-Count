@@ -10,6 +10,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/oddmeter_start_stop_fab"
+        android:contentDescription="@string/start_stop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:transitionName="@string/round_button_transition"
@@ -51,6 +52,7 @@
 
     <ImageView
         android:id="@+id/delete_button"
+        android:contentDescription="@string/remove_a_beat"
         android:layout_width="40dp"
         android:layout_height="40dp"
         app:srcCompat="@android:drawable/ic_delete"
@@ -64,6 +66,7 @@
 
     <TextView
         android:id="@+id/two_subs_button"
+        android:contentDescription="@string/add_two_subs"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/roundcorner_primary"
@@ -80,6 +83,7 @@
 
     <TextView
         android:id="@+id/three_subs_button"
+        android:contentDescription="@string/add_three_subs"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/roundcorner_primary"
@@ -98,6 +102,7 @@
 
     <TextView
         android:id="@+id/four_subs_button"
+        android:contentDescription="@string/add_beat_of_four_subdivisions"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/roundcorner_primary"
@@ -114,6 +119,7 @@
 
     <TextView
         android:id="@+id/other_subs_button"
+        android:contentDescription="@string/open_other_subdivision_options_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/roundcorner_primary"
@@ -142,6 +148,7 @@
 
         <TextView
             android:id="@+id/one_subs_button"
+            android:contentDescription="@string/one_sub_beat"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="8dp"
@@ -157,6 +164,7 @@
 
         <TextView
             android:id="@+id/five_subs_button"
+            android:contentDescription="@string/add_five_beat"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="8dp"
@@ -172,6 +180,7 @@
 
         <TextView
             android:id="@+id/six_subs_button"
+            android:contentDescription="@string/add_beat_of_six_subdivisions"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="8dp"
@@ -187,6 +196,7 @@
 
         <TextView
             android:id="@+id/seven_subs_button"
+            android:contentDescription="@string/add_beat_of_seven_subdivisions"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="8dp"
@@ -202,6 +212,7 @@
 
         <TextView
             android:id="@+id/eight_subs_button"
+            android:contentDescription="@string/add_beat_of_eight_subdivisions"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="8dp"
@@ -217,6 +228,7 @@
 
         <TextView
             android:id="@+id/nine_subs_button"
+            android:contentDescription="@string/add_beat_of_nine_subdivisions"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="8dp"
@@ -232,6 +244,7 @@
 
         <TextView
             android:id="@+id/ten_subs_button"
+            android:contentDescription="@string/add_beat_of_ten_subdivisions"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="8dp"

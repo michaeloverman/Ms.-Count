@@ -21,6 +21,7 @@
 
     <EditText
         android:id="@+id/composer_name_text_entry"
+        android:contentDescription="Enter composer, last name first"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/data_entry_outside_margin"
@@ -49,6 +50,7 @@
 
     <EditText
         android:id="@+id/title_text_entry"
+        android:contentDescription="Enter title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="textCapWords"
@@ -89,6 +91,7 @@
 
     <EditText
         android:id="@+id/baseline_subdivision_entry"
+        android:contentDescription="Enter number of subdivisions in primary beat"
         android:layout_width="105dp"
         android:layout_height="42dp"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
@@ -104,6 +107,7 @@
 
     <EditText
         android:id="@+id/countoff_subdivision_entry"
+        android:contentDescription="Enter number of subdivisions in count off click"
         android:layout_width="105dp"
         android:layout_height="42dp"
         android:ems="6"
@@ -142,6 +146,7 @@
 
     <EditText
         android:id="@+id/default_tempo_entry"
+        android:contentDescription="Enter default tempo"
         android:layout_width="63dp"
         android:layout_height="43dp"
         android:layout_marginEnd="8dp"

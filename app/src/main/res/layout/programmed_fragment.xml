@@ -10,6 +10,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/start_stop_fab"
+        android:contentDescription="@string/start_stop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:transitionName="@string/round_button_transition"
@@ -81,6 +82,7 @@
         app:layout_constraintLeft_toLeftOf="parent">
         <ImageButton
             android:id="@+id/tempo_down_button"
+            android:contentDescription="@string/tempo_down_button"
             app:srcCompat="@android:drawable/arrow_down_float"
             android:background="@drawable/roundcorner_primary"
             android:layout_width="@dimen/tempo_button_size"
@@ -92,6 +94,7 @@
 
         <ImageButton
             android:id="@+id/tempo_up_button"
+            android:contentDescription="@string/tempo_up_button"
             app:srcCompat="@android:drawable/arrow_up_float"
             android:background="@drawable/roundcorner_primary"
             android:layout_width="@dimen/tempo_button_size"

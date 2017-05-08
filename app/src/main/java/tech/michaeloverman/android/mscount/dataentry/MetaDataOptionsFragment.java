@@ -103,6 +103,8 @@ public class MetaDataOptionsFragment extends Fragment {
 
         TypedArray noteValueImages;
         private int selectedPosition;
+        private String[] descriptions = getResources()
+                .getStringArray(R.array.note_value_content_descriptions);
 
         public DisplayNoteValuesAdapter(TypedArray images) {
 //            Timber.d("NoteValuesAdapter CREATED!!!");
@@ -187,6 +189,8 @@ public class MetaDataOptionsFragment extends Fragment {
                     notifyItemChanged(selectedPosition);
                 }
             });
+
+            holder.itemView.setContentDescription(descriptions[position]);
         }
 
         @Override

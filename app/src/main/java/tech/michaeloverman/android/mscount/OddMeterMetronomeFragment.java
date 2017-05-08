@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
-import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import tech.michaeloverman.android.mscount.utils.MetronomeStartStopListener;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import tech.michaeloverman.android.mscount.utils.WearNotification;
 import timber.log.Timber;
@@ -42,7 +42,7 @@ import timber.log.Timber;
  * Created by Michael on 3/14/2017.
  */
 
-public class OddMeterMetronomeFragment extends Fragment implements MetronomeListener {
+public class OddMeterMetronomeFragment extends Fragment implements MetronomeStartStopListener {
     
     private static final float MAX_TEMPO_BPM = Metronome.MAX_TEMPO;
     private static final float MIN_TEMPO_BPM = Metronome.MIN_TEMPO;
@@ -104,7 +104,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
 
     private void setMetronome(Metronome m) {
         mMetronome = m;
-        mMetronome.setMetronomeListener(this);
+        mMetronome.setMetronomeStartStopListener(this);
     }
 
     private void updateWearNotif() {
@@ -275,11 +275,6 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeList
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
         if(mHasWearDevice) mWearNotification.sendStartStop();
-    }
-
-    @Override
-    public void metronomeMeasureNumber(String mm) {
-        // not used in this metronome
     }
 
     private void changeTempo(float tempoChange) {

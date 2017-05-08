@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
-import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import tech.michaeloverman.android.mscount.utils.MetronomeStartStopListener;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import tech.michaeloverman.android.mscount.utils.WearNotification;
 import timber.log.Timber;
@@ -44,7 +44,7 @@ import static android.view.MotionEvent.ACTION_UP;
  * Created by Michael on 2/24/2017.
  */
 
-public class NormalMetronomeFragment extends Fragment implements MetronomeListener {
+public class NormalMetronomeFragment extends Fragment implements MetronomeStartStopListener {
 
     private static final int MAX_SUBDIVISIONS = Metronome.MAX_SUBDIVISIONS;
     private static final int MAX_TEMPO_BPM_INT = Metronome.MAX_TEMPO;
@@ -155,7 +155,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
 
     private void setMetronome(Metronome m) {
         mMetronome = m;
-        mMetronome.setMetronomeListener(this);
+        mMetronome.setMetronomeStartStopListener(this);
     }
 
     @Nullable
@@ -341,12 +341,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeListen
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
         if(mHasWearDevice) mWearNotification.sendStartStop();
-    }
-
-
-    @Override
-    public void metronomeMeasureNumber(String mm) {
-        // method not used
     }
 
     @OnClick( { R.id.whole_numbers, R.id.decimals } )

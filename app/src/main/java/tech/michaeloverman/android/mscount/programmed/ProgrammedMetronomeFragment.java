@@ -35,8 +35,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -55,8 +56,9 @@ import tech.michaeloverman.android.mscount.favorites.FavoritesDBHelper;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeBroadcastReceiver;
-import tech.michaeloverman.android.mscount.utils.MetronomeListener;
+import tech.michaeloverman.android.mscount.utils.MetronomeStartStopListener;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
+import tech.michaeloverman.android.mscount.utils.ProgrammedMetronomeListener;
 import tech.michaeloverman.android.mscount.utils.Utilities;
 import tech.michaeloverman.android.mscount.utils.WearNotification;
 import timber.log.Timber;
@@ -68,7 +70,8 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class ProgrammedMetronomeFragment extends Fragment
-        implements MetronomeListener, LoaderManager.LoaderCallbacks<Cursor> {
+        implements MetronomeStartStopListener, ProgrammedMetronomeListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final boolean UP = true;
     private static final boolean DOWN = false;
@@ -104,7 +107,8 @@ public class ProgrammedMetronomeFragment extends Fragment
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
     @BindView(R.id.tempo_down_button) ImageButton mTempoDownButton;
     @BindView(R.id.current_measure_number) TextView mCurrentMeasureNumber;
-    @BindView(R.id.programmed_adView) AdView mAdView;
+//    @BindView(R.id.programmed_adView) AdView mAdView;
+    private InterstitialAd mInterstitialAd;
 
     private Handler mRunnableHandler;
     private Runnable mDownRunnable;
@@ -128,7 +132,8 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     private void setMetronome(Metronome m) {
         mMetronome = m;
-        mMetronome.setMetronomeListener(this);
+        mMetronome.setMetronomeStartStopListener(this);
+        mMetronome.setProgrammedMetronomeListener(this);
     }
 
     @Override
@@ -196,12 +201,21 @@ public class ProgrammedMetronomeFragment extends Fragment
         mActivity.setTitle(R.string.app_name);
 //        Timber.d("using firebase? " + mActivity.useFirebase);
 
-        AdRequest.Builder adRequest = new AdRequest.Builder();
+        mInterstitialAd = new InterstitialAd(mActivity);
+        mInterstitialAd.setAdUnitId(getString(R.string.programmed_banner_ad_unit_id));
+        AdRequest.Builder adBuilder = new AdRequest.Builder();
         if(BuildConfig.DEBUG) {
-            adRequest.addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B");
+            adBuilder.addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B");
         }
-        mAdView.loadAd(adRequest.build());
-
+        final AdRequest adRequest = adBuilder.build();
+        mInterstitialAd.loadAd(adRequest);
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                mInterstitialAd.loadAd(adRequest);
+            }
+        });
 
 
         mTempoDownButton.setOnTouchListener(new View.OnTouchListener() {
@@ -262,9 +276,9 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void onPause() {
         Timber.d("onPause()");
         if(mMetronomeRunning) metronomeStartStop();
-        if(mAdView != null) {
-            mAdView.pause();
-        }
+//        if(mAdView != null) {
+//            mAdView.pause();
+//        }
         cancelWearNotification();
         super.onPause();
     }
@@ -273,9 +287,9 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void onResume() {
         Timber.d("onResume()");
         super.onResume();
-        if(mAdView != null) {
-            mAdView.resume();
-        }
+//        if(mAdView != null) {
+//            mAdView.resume();
+//        }
         if(mCurrentPiece != null) {
             updateWearNotif();
         }
@@ -306,9 +320,9 @@ public class ProgrammedMetronomeFragment extends Fragment
 
         cancelWearNotification();
 
-        if(mAdView != null) {
-            mAdView.destroy();
-        }
+//        if(mAdView != null) {
+//            mAdView.destroy();
+//        }
 
         super.onDestroy();
     }
@@ -399,6 +413,16 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void metronomeMeasureNumber(String mm) {
         mCurrentMeasureNumber.setText(mm);
     }
+
+    @Override
+    public void metronomeStopAndShowAd() {
+        metronomeStartStop();
+
+        if(mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        }
+    }
+
 
     private void checkKeyFormat() {
         Timber.d("Firebase: " + mActivity.useFirebase + " :: key: " + mCurrentPieceKey.charAt(0));

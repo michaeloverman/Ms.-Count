@@ -43,7 +43,8 @@ public class Metronome {
     private long mDelay;
     private boolean mClicking;
 
-    private MetronomeListener mListener;
+    private MetronomeStartStopListener mListener;
+    private ProgrammedMetronomeListener mPListener;
 
     /**
      * Constructor accepts context, though for what is not immediately apparent.
@@ -59,7 +60,7 @@ public class Metronome {
     private Metronome() {
 //        mContext = context;
 //        mAssets = mContext.getAssets();
-//        setMetronomeListener(ml);
+//        setMetronomeStartStopListener(ml);
         mClicking = false;
 
         mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
@@ -77,8 +78,12 @@ public class Metronome {
         mAssets = mContext.getAssets();
         loadSounds();
     }
-    public void setMetronomeListener(MetronomeListener ml) {
+    public void setMetronomeStartStopListener(MetronomeStartStopListener ml) {
         mListener = ml;
+    }
+
+    public void setProgrammedMetronomeListener(ProgrammedMetronomeListener pl) {
+        mPListener = pl;
     }
 
     public boolean isRunning() {
@@ -167,10 +172,6 @@ public class Metronome {
         Timber.d(sb.toString());
     }
 
-    private void logClickIds() {
-        Timber.d("mDownbeatClickId = " + mDownBeatClickId);
-        Timber.d("mInnerBeatClickId = " + mInnerBeatClickId);
-    }
     /**
      * Programmed click, accepts a PieceOfMusic to define changing click patterns, and a
      * tempo marking.
@@ -179,7 +180,6 @@ public class Metronome {
      */
     public void play(PieceOfMusic p, int tempo) {
         getClicksFromSharedPrefs();
-        logClickIds();
         Timber.d("metronome play()");
         if(p.getTempoMultiplier() != 0) {
             Timber.d("tempo multiplier!! " + p.getTempoMultiplier());
@@ -207,7 +207,7 @@ public class Metronome {
                         mSoundPool.play(mDownBeatClickId, 1.0f, 1.0f, 1, 0, 1.0f);
                         // start counting until next downbeat
                         beatsPerMeasureCount = downBeats[measurePointer];
-                        mListener.metronomeMeasureNumber( (measureNumberOffset + measurePointer++) + "");
+                        mPListener.metronomeMeasureNumber( (measureNumberOffset + measurePointer++) + "");
                     } else { // inner beat
                         mSoundPool.play(mInnerBeatClickId, 1.0f, 1.0f, 1, 0, 1.0f);
 
@@ -215,7 +215,7 @@ public class Metronome {
                     // if we've reached the end of the piece, stop the metronome.
                     if(beatPointer == beats.length - 1) {
                         stop();
-                        mListener.metronomeStartStop();
+                        mPListener.metronomeStopAndShowAd();
                     }
                     nextClick += beats[beatPointer++]; // set the subdivision counter for next beat
                     beatsPerMeasureCount--; // count down one beat in the measure
@@ -223,11 +223,11 @@ public class Metronome {
                     if(measurePointer == 1) {
 //                        Log.d(TAG, "Countoff Measure, beat" + beatPointer);
                         if(beatPointer >= 3 + countOffSubs) {
-                            mListener.metronomeMeasureNumber("GO");
+                            mPListener.metronomeMeasureNumber("GO");
                         } else if (beatPointer >= 3) {
-                            mListener.metronomeMeasureNumber("READY");
+                            mPListener.metronomeMeasureNumber("READY");
                         } else {
-                            mListener.metronomeMeasureNumber((beatPointer) + "");
+                            mPListener.metronomeMeasureNumber((beatPointer) + "");
                         }
                     }
                 }
@@ -238,8 +238,8 @@ public class Metronome {
             public void onFinish() {
                 this.cancel();
                 mClicking = false;
-//                mListener.metronomeStartStop();
             }
+
         };
         mClicking = true;
         mTimer.start();

@@ -157,14 +157,14 @@
         android:layout_marginLeft="50dp"
         android:layout_marginStart="50dp"/>
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/programmed_adView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/programmed_banner_ad_unit_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </com.google.android.gms.ads.AdView>
+    <!--<com.google.android.gms.ads.AdView-->
+        <!--android:id="@+id/programmed_adView"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--ads:adSize="BANNER"-->
+        <!--ads:adUnitId="@string/programmed_banner_ad_unit_id"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content">-->
+    <!--</com.google.android.gms.ads.AdView>-->
 </android.support.constraint.ConstraintLayout>

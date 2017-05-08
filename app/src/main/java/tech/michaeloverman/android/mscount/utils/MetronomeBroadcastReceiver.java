@@ -13,9 +13,9 @@ import timber.log.Timber;
 
 public class MetronomeBroadcastReceiver extends BroadcastReceiver {
 
-    private MetronomeListener mListener;
+    private MetronomeStartStopListener mListener;
 
-    public MetronomeBroadcastReceiver(MetronomeListener ml) {
+    public MetronomeBroadcastReceiver(MetronomeStartStopListener ml) {
         Timber.d("BroadcastReceiver created");
         mListener = ml;
     }

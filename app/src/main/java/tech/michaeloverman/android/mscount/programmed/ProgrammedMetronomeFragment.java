@@ -7,14 +7,12 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -77,7 +75,8 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final boolean DOWN = false;
     private static final int MAXIMUM_TEMPO = 350;
     private static final int MINIMUM_TEMPO = 1;
-    private static final String CURRENT_PIECE_TITLE_KEY = "current_piece_key";
+    private static final String CURRENT_PIECE_TITLE_KEY = "current_piece_title_key";
+    private static final String CURRENT_PIECE_KEY_KEY = "current_piece_key_key";
     private static final String CURRENT_TEMPO_KEY = "current_tempo_key";
     private static final String CURRENT_COMPOSER_KEY = "current_composer_key";
     private static final int ID_PIECE_LOADER = 434;
@@ -142,6 +141,14 @@ public class ProgrammedMetronomeFragment extends Fragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
+        if(mActivity == null) {
+            Timber.d("mActivity is null....");
+            Intent i = getActivity().getBaseContext().getPackageManager()
+                    .getLaunchIntentForPackage( getActivity().getBaseContext().getPackageName() );
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+        }
+
         mHasWearDevice = PrefUtils.wearPresent(mActivity);
         if(mHasWearDevice) {
             createAndRegisterBroadcastReceiver();
@@ -152,13 +159,13 @@ public class ProgrammedMetronomeFragment extends Fragment
         if(savedInstanceState != null) {
             Timber.d("found savedInstanceState");
 //            mCurrentTempo = savedInstanceState.getInt(CURRENT_TEMPO_KEY);
-            mCurrentPieceKey = savedInstanceState.getString(CURRENT_PIECE_TITLE_KEY);
+            mCurrentPieceKey = savedInstanceState.getString(CURRENT_PIECE_KEY_KEY);
 //            mCurrentComposer = savedInstanceState.getString(CURRENT_COMPOSER_KEY);
             Timber.d("savedInstanceState retrieved: composer: " + mCurrentComposer);
             getPieceFromKey();
         } else {
             Timber.d("savedInstanceState not found - looking to SharedPrefs");
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             mCurrentPieceKey = PrefUtils.getSavedPieceKey(mActivity);
 
             if(mCurrentPieceKey != null) {
@@ -205,7 +212,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         mInterstitialAd.setAdUnitId(getString(R.string.programmed_banner_ad_unit_id));
         AdRequest.Builder adBuilder = new AdRequest.Builder();
         if(BuildConfig.DEBUG) {
-            adBuilder.addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B");
+            adBuilder.addTestDevice(getString(R.string.test_device_code));
         }
         final AdRequest adRequest = adBuilder.build();
         mInterstitialAd.loadAd(adRequest);
@@ -280,6 +287,8 @@ public class ProgrammedMetronomeFragment extends Fragment
 //            mAdView.pause();
 //        }
         cancelWearNotification();
+        PrefUtils.saveCurrentProgramToPrefs(mActivity, mActivity.useFirebase,
+                mCurrentPieceKey, mCurrentTempo);
         super.onPause();
     }
 
@@ -298,9 +307,10 @@ public class ProgrammedMetronomeFragment extends Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if(mCurrentPiece != null) {
-            Timber.d("onSaveInstanceState() " + mCurrentPiece.getTitle() + " by " + mCurrentComposer);
-            Timber.d("..... Current Tempo: " + mCurrentTempo);
+//            Timber.d("onSaveInstanceState() " + mCurrentPiece.getTitle() + " by " + mCurrentComposer);
+//            Timber.d("..... Current Tempo: " + mCurrentTempo);
             outState.putString(CURRENT_PIECE_TITLE_KEY, mCurrentPiece.getTitle());
+            outState.putString(CURRENT_PIECE_KEY_KEY, mCurrentPieceKey);
             outState.putInt(CURRENT_TEMPO_KEY, mCurrentTempo);
             outState.putString(CURRENT_COMPOSER_KEY, mCurrentComposer);
         }
@@ -318,7 +328,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 
         mCursor = null;
 
-        cancelWearNotification();
+//        cancelWearNotification();
 
 //        if(mAdView != null) {
 //            mAdView.destroy();
@@ -443,7 +453,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     private void getPieceFromKey() {
         Timber.d("getPieceFromKey() " + mCurrentPieceKey);
-        Timber.d("activity's useFirebase: " + mActivity.useFirebase);
+//        Timber.d("activity's useFirebase: " + mActivity.useFirebase);
 //        boolean firebase = PrefUtils.usingFirebase(mActivity);
         if(mCurrentPieceKey.charAt(0) == '-') {
             getPieceFromFirebase();
@@ -609,9 +619,11 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void cancelWearNotification() {
-        if(mMetronomeBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
+        if(mWearNotification != null) {
             mWearNotification.cancel();
+            LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
+        } else {
+            LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
         }
     }
 

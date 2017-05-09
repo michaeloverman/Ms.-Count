@@ -167,7 +167,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         //        AdRequest adRequest = new AdRequest.Builder().build();
         AdRequest.Builder adRequest = new AdRequest.Builder();
         if(BuildConfig.DEBUG) {
-            adRequest.addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B");
+            adRequest.addTestDevice(getString(R.string.test_device_code));
         }
         mAdView.loadAd(adRequest.build());
 
@@ -240,6 +240,12 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         if(mAdView != null) {
             mAdView.pause();
         }
+
+        if(mBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+            mWearNotification.cancel();
+        }
+
         super.onPause();
     }
 
@@ -259,11 +265,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         prefs.putInt(PREF_KEY_SUBDIVISIONS, mNumSubdivisions);
         prefs.putBoolean(PREF_WHOLE_NUMBERS, mWholeNumbersSelected);
         prefs.commit();
-
-        if(mBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
-            mWearNotification.cancel();
-        }
 
         if (mAdView != null) {
             mAdView.destroy();

@@ -411,9 +411,15 @@ public class DataEntryFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(DataViewHolder holder, final int position) {
-            holder.dataEntry.setText(mDataList.get(position).getData() + "");
+            int data = mDataList.get(position).getData();
 
-            if(selectedPosition == position) {
+            holder.dataEntry.setText(Integer.toString(data));
+            if(mDataList.get(position).isBarline()) {
+                holder.itemView.setContentDescription(getString(
+                        R.string.barline_content_description, data));
+            }
+
+            if(position == selectedPosition) {
                 holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
             } else {
                 holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
@@ -423,7 +429,6 @@ public class DataEntryFragment extends Fragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     // Update views
                     notifyItemChanged(selectedPosition);
                     if(selectedPosition == position) {

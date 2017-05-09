@@ -129,7 +129,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
 
         AdRequest.Builder adRequest = new AdRequest.Builder();
         if(BuildConfig.DEBUG) {
-            adRequest.addTestDevice("D1F66D39AE17E7077D0804CCD3F8129B");
+            adRequest.addTestDevice(getString(R.string.test_device_code));
         }
         mAdView.loadAd(adRequest.build());
 
@@ -236,6 +236,17 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     }
 
     @Override
+    public void onPause() {
+
+        if(mBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+            mWearNotification.cancel();
+        }
+
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         SharedPreferences.Editor prefs = PreferenceManager
                 .getDefaultSharedPreferences(getContext()).edit();
@@ -249,10 +260,6 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         }
         prefs.commit();
 
-        if(mBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
-            mWearNotification.cancel();
-        }
 
         super.onDestroy();
     }

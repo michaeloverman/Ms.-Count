@@ -125,4 +125,6 @@
     <string name="add_beat_of_eight_subdivisions">add beat of eight subdivisions</string>
     <string name="add_beat_of_nine_subdivisions">add beat of nine subdivisions</string>
     <string name="add_beat_of_ten_subdivisions">add beat of ten subdivisions</string>
+    <string name="barline_content_description" formatted="false">barline, measure number %d</string>
+    <string name="test_device_code">D1F66D39AE17E7077D0804CCD3F8129B</string>
 </resources>

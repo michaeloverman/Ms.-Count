@@ -88,13 +88,25 @@ public class MetaDataOptionsFragment extends Fragment {
 
     @OnClick(R.id.save_options_button)
     public void save() {
-        int offset = Integer.parseInt(mMeasureOffsetEntry.getText().toString());
-        float multiplier = Float.parseFloat(mTempoMultiplierEntry.getText().toString());
-        int display = mDisplayValueAdapter.getSelectedRhythm();
+        String temp = mMeasureOffsetEntry.getText().toString();
+        try {
+            int offset = Integer.parseInt(temp);
+            mBuilder.firstMeasureNumber(offset);
+        } catch (NumberFormatException nfe) {
 
-        mBuilder.firstMeasureNumber(offset)
-                .tempoMultiplier(multiplier)
-                .displayNoteValue(display);
+        }
+
+        temp = mTempoMultiplierEntry.getText().toString();
+        try {
+            float multiplier = Float.parseFloat(temp);
+            mBuilder.tempoMultiplier(multiplier);
+            Timber.d("mBuilder should have 0.5 multiplier...");
+        } catch (NumberFormatException nfe) {
+
+        }
+
+        int display = mDisplayValueAdapter.getSelectedRhythm();
+        mBuilder.displayNoteValue(display);
 
         getFragmentManager().popBackStackImmediate();
     }

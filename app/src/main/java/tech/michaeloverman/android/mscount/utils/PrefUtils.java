@@ -95,8 +95,13 @@ public final class PrefUtils {
     }
 
     public static boolean wearPresent(Context context) {
-        SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean wearStatus = shp.getBoolean(PREF_WEAR_STATUS_KEY, false);
-        return wearStatus;
+        try {
+            SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
+            boolean wearStatus = shp.getBoolean(PREF_WEAR_STATUS_KEY, false);
+            return wearStatus;
+        } catch (NullPointerException npe) {
+            Timber.d("Here's a problem ... what's going to happen next?");
+            return false;
+        }
     }
 }

@@ -164,7 +164,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         }
 
     }
-    
+
     private void actuallyGoBack() {
 
         super.onBackPressed();

@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.view.GestureDetector;
@@ -43,7 +42,7 @@ import timber.log.Timber;
  */
 
 public class OddMeterMetronomeFragment extends Fragment implements MetronomeStartStopListener {
-    
+
     private static final float MAX_TEMPO_BPM = Metronome.MAX_TEMPO;
     private static final float MIN_TEMPO_BPM = Metronome.MIN_TEMPO;
     private static final float SUBDIVISION_DISPLAY_SIZE = 40;
@@ -63,24 +62,30 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     private BroadcastReceiver mBroadcastReceiver;
     private boolean mHasWearDevice;
 
-    @BindView(R.id.oddmeter_start_stop_fab) FloatingActionButton mStartStopFab;
-    @BindView(R.id.oddmeter_tempo_view) TextView mTempoSetting;
-    @BindView(R.id.include_subdivisions_checkBox) CheckBox mSubdivisionsCheckbox;
-    @BindView(R.id.extra_subdivision_buttons) LinearLayout mOtherButtons;
-    @BindView(R.id.pulse_multiplier_view) TextView mPulseMultiplierView;
-    @BindView(R.id.odd_adView) AdView mAdView;
+    @BindView(R.id.oddmeter_start_stop_fab)
+    FloatingActionButton mStartStopFab;
+    @BindView(R.id.oddmeter_tempo_view)
+    TextView mTempoSetting;
+    @BindView(R.id.include_subdivisions_checkBox)
+    CheckBox mSubdivisionsCheckbox;
+    @BindView(R.id.extra_subdivision_buttons)
+    LinearLayout mOtherButtons;
+    @BindView(R.id.pulse_multiplier_view)
+    TextView mPulseMultiplierView;
+    @BindView(R.id.odd_adView)
+    AdView mAdView;
     private boolean mMultiplierSelected;
 
     private List<Integer> mSubdivisionsList;
     private List<View> mSubdivisionViews;
-    @BindView(R.id.subdivision_layout) LinearLayout mSubdivisionLayout;
+    @BindView(R.id.subdivision_layout)
+    LinearLayout mSubdivisionLayout;
 //    private LinearLayout mSubdivisionLayout;
 
     private GestureDetectorCompat mDetector;
 
-    public static Fragment newInstance(Metronome m) {
+    public static Fragment newInstance() {
         OddMeterMetronomeFragment fragment = new OddMeterMetronomeFragment();
-        fragment.setMetronome(m);
         return fragment;
     }
 
@@ -90,8 +95,10 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
+        mMetronome = new Metronome(getContext());
+
         mHasWearDevice = PrefUtils.wearPresent(getContext());
-        if(mHasWearDevice) {
+        if (mHasWearDevice) {
             createAndRegisterBroadcastReceiver();
         }
 
@@ -102,13 +109,8 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
 
     }
 
-    private void setMetronome(Metronome m) {
-        mMetronome = m;
-        mMetronome.setMetronomeStartStopListener(this);
-    }
-
     private void updateWearNotif() {
-        if(mHasWearDevice) {
+        if (mHasWearDevice) {
             mWearNotification = new WearNotification(getContext(),
                     getString(R.string.app_name), (int) mBPM + " bpm");
             mWearNotification.sendStartStop();
@@ -118,9 +120,9 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     private void createAndRegisterBroadcastReceiver() {
         mBroadcastReceiver = new MetronomeBroadcastReceiver(this);
         IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
-//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
         getActivity().registerReceiver(mBroadcastReceiver, filter);
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -128,21 +130,20 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         ButterKnife.bind(this, view);
 
         AdRequest.Builder adRequest = new AdRequest.Builder();
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             adRequest.addTestDevice(getString(R.string.test_device_code));
         }
         mAdView.loadAd(adRequest.build());
 
-//        mSubdivisionLayout = (LinearLayout) this.getActivity().findViewById(R.id.subdivision_layout);
-        // use the "naked" listener to catch ACTION_UP (release) for resetting tempo
-        // otherwise defer to GestureDetector to handle scrolling
+        // use the "naked" listener to catch ACTION_UP (release) to reset tempo
+        // defer to GestureDetector to handle scrolling/changing tempo
         mTempoSetting.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int action = MotionEventCompat.getActionMasked(event);
-                switch(action) {
+                switch (action) {
                     case MotionEvent.ACTION_UP:
-                        if(mMetronomeRunning) {
+                        if (mMetronomeRunning) {
                             // stop the met
                             metronomeStartStop();
                             // restart at new tempo
@@ -162,7 +163,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         boolean subdivCheck = prefs.getBoolean(PREF_KEY_INCLUDE_SUBDIVISIONS, false);
         mSubdivisionsCheckbox.setChecked(subdivCheck);
         int listlength = prefs.getInt(PREF_LIST_LENGTH, 0);
-        for(int i = 0; i < listlength; i++) {
+        for (int i = 0; i < listlength; i++) {
             int subdiv = prefs.getInt(PREF_KEY_LIST + i, 2);
             mSubdivisionsList.add(subdiv);
             mSubdivisionViews.add(getNewSubdivisionView(subdiv));
@@ -172,18 +173,18 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         return view;
     }
 
-    @OnClick( { R.id.one_subs_button, R.id.two_subs_button, R.id.three_subs_button,
+    @OnClick({R.id.one_subs_button, R.id.two_subs_button, R.id.three_subs_button,
             R.id.four_subs_button, R.id.five_subs_button, R.id.six_subs_button,
             R.id.seven_subs_button, R.id.eight_subs_button, R.id.nine_subs_button,
-            R.id.ten_subs_button,} )
+            R.id.ten_subs_button,})
     public void addSubdivision(TextView button) {
         boolean wasRunning = false;
-        if(mMetronomeRunning) {
+        if (mMetronomeRunning) {
             metronomeStartStop();
             wasRunning = true;
         }
         int beat = Integer.parseInt(button.getText().toString());
-        if(mMultiplierSelected) {
+        if (mMultiplierSelected) {
             mMultiplier = beat;
             mPulseMultiplierView.setText(getString(R.string.pulse_equals, beat));
             multiplierSelected();
@@ -192,15 +193,15 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         mSubdivisionsList.add(beat);
         mSubdivisionViews.add(getNewSubdivisionView(beat));
 
-        if(mOtherButtons.isShown()) mOtherButtons.setVisibility(View.GONE);
+        if (mOtherButtons.isShown()) mOtherButtons.setVisibility(View.GONE);
 
-        if(wasRunning) metronomeStartStop();
+        if (wasRunning) metronomeStartStop();
     }
 
     @OnClick(R.id.other_subs_button)
     public void addUnusualSubdivision() {
         Timber.d("add a different length of subdivision");
-        if(mOtherButtons.isShown()) {
+        if (mOtherButtons.isShown()) {
             mOtherButtons.setVisibility(View.GONE);
         } else {
             mOtherButtons.setVisibility(View.VISIBLE);
@@ -210,9 +211,9 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     @OnClick(R.id.delete_button)
     public void deleteSubdivision() {
         Timber.d("remove a subdivision");
-        if(mSubdivisionsList.size() == 0) return;
+        if (mSubdivisionsList.size() == 0) return;
         boolean wasRunning = false;
-        if(mMetronomeRunning) {
+        if (mMetronomeRunning) {
             wasRunning = true;
             metronomeStartStop();
         }
@@ -220,15 +221,15 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         mSubdivisionLayout.removeView(mSubdivisionViews.get(mSubdivisionViews.size() - 1));
         mSubdivisionViews.remove(mSubdivisionViews.size() - 1);
 
-        if(wasRunning && mSubdivisionsList.size() > 0) metronomeStartStop();
+        if (wasRunning && mSubdivisionsList.size() > 0) metronomeStartStop();
     }
 
     @OnClick(R.id.pulse_multiplier_view)
     public void multiplierSelected() {
-        if(mMultiplierSelected) {
+        if (mMultiplierSelected) {
             mMultiplierSelected = false;
             mPulseMultiplierView.setBackground(getResources().getDrawable(R.drawable.roundcorner_light));
-            if(mOtherButtons.isShown()) mOtherButtons.setVisibility(View.GONE);
+            if (mOtherButtons.isShown()) mOtherButtons.setVisibility(View.GONE);
         } else {
             mPulseMultiplierView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
             mMultiplierSelected = true;
@@ -238,9 +239,12 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     @Override
     public void onPause() {
 
-        if(mBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+        if(mMetronomeRunning) {
+            metronomeStartStop();
+        }
+        if (mBroadcastReceiver != null) {
             mWearNotification.cancel();
+            getActivity().unregisterReceiver(mBroadcastReceiver);
         }
 
         super.onPause();
@@ -254,7 +258,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         prefs.putInt(PREF_KEY_MULTIPLIER, mMultiplier);
         prefs.putInt(PREF_LIST_LENGTH, mSubdivisionsList.size());
         prefs.putBoolean(PREF_KEY_INCLUDE_SUBDIVISIONS, mSubdivisionsCheckbox.isChecked());
-        for(int i = 0; i < mSubdivisionsList.size(); i++) {
+        for (int i = 0; i < mSubdivisionsList.size(); i++) {
             prefs.remove(PREF_KEY_LIST + i);
             prefs.putInt(PREF_KEY_LIST + i, mSubdivisionsList.get(i));
         }
@@ -266,7 +270,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
 
     @OnClick(R.id.include_subdivisions_checkBox)
     public void subdivisionsOnOff() {
-        if(!mMetronome.isRunning()) {
+        if (!mMetronome.isRunning()) {
             return;
         } else {
             metronomeStartStop();
@@ -274,16 +278,17 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         }
 
     }
+
     @Override
     @OnClick(R.id.oddmeter_start_stop_fab)
     public void metronomeStartStop() {
         Timber.d("Loop length: " + mSubdivisionsList.size() + ", view size: " + mSubdivisionViews.size());
-        if(mMetronomeRunning) {
+        if (mMetronomeRunning) {
             mMetronome.stop();
             mMetronomeRunning = false;
             mStartStopFab.setImageResource(android.R.drawable.ic_media_play);
         } else {
-            if(mSubdivisionsList.size() == 0) {
+            if (mSubdivisionsList.size() == 0) {
                 Toast.makeText(getContext(), "You must enter subdivisions to click subdivisions...", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -291,13 +296,13 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
             mMetronome.play(((int) mBPM * mMultiplier), mSubdivisionsList, mSubdivisionsCheckbox.isChecked());
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
-        if(mHasWearDevice) mWearNotification.sendStartStop();
+        if (mHasWearDevice) mWearNotification.sendStartStop();
     }
 
     private void changeTempo(float tempoChange) {
         mBPM += tempoChange;
-        if(mBPM > MAX_TEMPO_BPM) mBPM = MAX_TEMPO_BPM;
-        else if(mBPM < MIN_TEMPO_BPM) mBPM = MIN_TEMPO_BPM;
+        if (mBPM > MAX_TEMPO_BPM) mBPM = MAX_TEMPO_BPM;
+        else if (mBPM < MIN_TEMPO_BPM) mBPM = MIN_TEMPO_BPM;
         updateTempoDisplay();
     }
 
@@ -328,7 +333,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if(Math.abs(distanceY) > MINIMUM_Y_FOR_FAST_CHANGE) {
+            if (Math.abs(distanceY) > MINIMUM_Y_FOR_FAST_CHANGE) {
                 changeTempo(distanceY / 10);
             } else {
                 changeTempo(-distanceX / 100);

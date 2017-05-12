@@ -20,7 +20,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -298,9 +297,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void onPause() {
         Timber.d("onPause()");
         if(mMetronomeRunning) metronomeStartStop();
-//        if(mAdView != null) {
-//            mAdView.pause();
-//        }
+
         cancelWearNotification();
         PrefUtils.saveCurrentProgramToPrefs(mActivity, mActivity.useFirebase,
                 mCurrentPieceKey, mCurrentTempo);
@@ -634,12 +631,9 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void cancelWearNotification() {
-        if(mWearNotification != null) {
-            mWearNotification.cancel();
-            LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
-        } else {
-            LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mMetronomeBroadcastReceiver);
-        }
+        mWearNotification.cancel();
+        mActivity.unregisterReceiver(mMetronomeBroadcastReceiver);
+
     }
 
     private void openProgramEditor() {

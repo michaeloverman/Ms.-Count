@@ -21,7 +21,7 @@ public class OddMeterMetronomeActivity extends MetronomeActivity {
     @Override
     protected Fragment createFragment() {
         mMetronome = new Metronome(this);
-        return OddMeterMetronomeFragment.newInstance(mMetronome);
+        return OddMeterMetronomeFragment.newInstance();
     }
 
     @Override
@@ -31,15 +31,15 @@ public class OddMeterMetronomeActivity extends MetronomeActivity {
             setupWindowAnimations();
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if(mMetronome.isRunning()) {
-            // stop metronome
-            mMetronome.stop();
-        }
-    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        if(mMetronome.isRunning()) {
+//            // stop metronome
+//            mMetronome.stop();
+//        }
+//    }
 
     @TargetApi(21)
     private void setupWindowAnimations() {

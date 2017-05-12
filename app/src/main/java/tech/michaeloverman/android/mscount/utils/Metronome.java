@@ -44,7 +44,7 @@ public class Metronome {
 
         mContext = context;
 
-        mSoundPool = ClickSounds.getSoundPool();
+        mSoundPool = ClickSounds.getSoundPool(mContext);
 
         mClicking = false;
 

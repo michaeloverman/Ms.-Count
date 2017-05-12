@@ -27,6 +27,7 @@ public class ClickSounds {
     private static SoundPool mSoundPool;
 
     public static void loadSounds(Context context) {
+        if(mSoundPool != null) return;
         mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         mAssets = context.getAssets();
         new LoadSoundsTask().execute();
@@ -36,7 +37,10 @@ public class ClickSounds {
         return mClicks;
     }
 
-    public static SoundPool getSoundPool() {
+    public static SoundPool getSoundPool(Context context) {
+        if(mSoundPool == null) {
+            loadSounds(context);
+        }
         return mSoundPool;
     }
 

@@ -264,6 +264,16 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         super.onDestroy();
     }
 
+    @OnClick(R.id.include_subdivisions_checkBox)
+    public void subdivisionsOnOff() {
+        if(!mMetronome.isRunning()) {
+            return;
+        } else {
+            metronomeStartStop();
+            metronomeStartStop();
+        }
+
+    }
     @Override
     @OnClick(R.id.oddmeter_start_stop_fab)
     public void metronomeStartStop() {

@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.view.GestureDetector;
@@ -68,7 +67,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
     @BindView(R.id.normal_start_stop_fab) FloatingActionButton mStartStopFab;
     @BindView(R.id.current_tempo) TextView mTempoSetting;
-    private boolean mWholeNumbersSelected = true;
     @BindView(R.id.tempo_down_button) ImageButton mTempoDownButton;
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
 
@@ -97,15 +95,16 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 //    Animation fadingFabAnim, unFadingFabAnim;
 
     private float mBPM;
+    private boolean mWholeNumbersSelected = true;
     private int mNumSubdivisions;
     private float[] mSubdivisionFloatVolumes;
     private int[] mSubdivisionVolumes;
 
     private GestureDetectorCompat mDetector;
 
-    public static Fragment newInstance(Metronome m) {
+    public static Fragment newInstance() {
         NormalMetronomeFragment fragment = new NormalMetronomeFragment();
-        fragment.setMetronome(m);
+//        fragment.setMetronome(m);
         return fragment;
     }
 
@@ -114,6 +113,8 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+
+        mMetronome = new Metronome(getContext());
 
         mHasWearDevice = PrefUtils.wearPresent(getContext());
         if (mHasWearDevice) {
@@ -138,27 +139,11 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
 
     }
-
-
-    private void updateWearNotif() {
-        if (mHasWearDevice) {
-            mWearNotification = new WearNotification(getContext(),
-                    getString(R.string.app_name), (int) mBPM + " bpm");
-            mWearNotification.sendStartStop();
-        }
-    }
-
-    private void createAndRegisterBroadcastReceiver() {
-        mBroadcastReceiver = new MetronomeBroadcastReceiver(this);
-        IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
-//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
-        getActivity().registerReceiver(mBroadcastReceiver, filter);
-    }
-
-    private void setMetronome(Metronome m) {
-        mMetronome = m;
-        mMetronome.setMetronomeStartStopListener(this);
-    }
+//
+//    private void setMetronome(Metronome m) {
+//        mMetronome = m;
+//        mMetronome.setMetronomeStartStopListener(this);
+//    }
 
     @Nullable
     @Override
@@ -244,8 +229,12 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         }
 
         if (mBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
             mWearNotification.cancel();
+            getActivity().unregisterReceiver(mBroadcastReceiver);
+        }
+
+        if(mMetronomeRunning) {
+            metronomeStartStop();
         }
 
         super.onPause();
@@ -273,6 +262,21 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         }
 
         super.onDestroy();
+    }
+
+    private void updateWearNotif() {
+        if (mHasWearDevice) {
+            mWearNotification = new WearNotification(getContext(),
+                    getString(R.string.app_name), (int) mBPM + " bpm");
+            mWearNotification.sendStartStop();
+        }
+    }
+
+    private void createAndRegisterBroadcastReceiver() {
+        mBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
+//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
+        getActivity().registerReceiver(mBroadcastReceiver, filter);
     }
 
     @OnClick({R.id.add_subdivisions_fab, R.id.expanded_add_subdivisions_fab})

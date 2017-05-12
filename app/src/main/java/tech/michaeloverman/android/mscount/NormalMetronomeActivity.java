@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.transition.Fade;
 import android.transition.TransitionInflater;
 
-import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeActivity;
 
 /**
@@ -20,8 +19,8 @@ public class NormalMetronomeActivity extends MetronomeActivity {
 
     @Override
     protected Fragment createFragment() {
-        mMetronome = new Metronome(this);
-        return NormalMetronomeFragment.newInstance(mMetronome);
+//        mMetronome = new Metronome(this);
+        return NormalMetronomeFragment.newInstance();
     }
 
     @Override
@@ -31,14 +30,14 @@ public class NormalMetronomeActivity extends MetronomeActivity {
             setupWindowAnimations();
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if(mMetronome.isRunning()) {
-            mMetronome.stop();
-        }
-    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        if(mMetronome != null && mMetronome.isRunning()) {
+//            mMetronome.stop();
+//        }
+//    }
 
     @TargetApi(21)
     private void setupWindowAnimations() {

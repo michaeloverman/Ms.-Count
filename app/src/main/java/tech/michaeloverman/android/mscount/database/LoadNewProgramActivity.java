@@ -33,10 +33,10 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
     public static final String EXTRA_NEW_PROGRAM = "new_program_extra";
     private static final int FIREBASE_SIGN_IN = 451;
 
-    protected FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    protected boolean useFirebase;
-    protected String mCurrentComposer;
+    boolean useFirebase;
+    String mCurrentComposer;
 
 
     @Override
@@ -84,7 +84,7 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         }
     }
 
-    protected void setProgramResult(String pieceId) {
+    void setProgramResult(String pieceId) {
         if(pieceId == null) {
             Timber.d("null piece recieved to return");
         } else {

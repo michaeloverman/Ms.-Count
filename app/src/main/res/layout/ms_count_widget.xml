@@ -36,7 +36,7 @@
         android:gravity="center"
         android:fontFamily="sans-serif"
         android:textAppearance="?android:textAppearanceLarge"
-        android:text="There are no current favorite programs."
+        android:text="@string/there_are_no_current_favorite_programs"
         />
 
 </RelativeLayout>

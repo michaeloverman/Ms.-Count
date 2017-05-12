@@ -31,10 +31,10 @@ public class Metronome {
 
     /* Sounds and Such */
     private AssetManager mAssets;
-    private List<Click> mClicks = new ArrayList<>();
-    private SoundPool mSoundPool;
+    private final List<Click> mClicks = new ArrayList<>();
+    private final SoundPool mSoundPool;
     private int mDownBeatClickId, mInnerBeatClickId, mSubdivisionBeatClickId;
-    private float[] mClickVolumes;
+    private final float[] mClickVolumes;
     private Context mContext;
 
     /* Timer, clicker variables */
@@ -161,9 +161,9 @@ public class Metronome {
     }
 
     private void logSubdivisionVolumes(int subs) {
-        StringBuffer sb = new StringBuffer("Subdivision Volumes: ");
+        StringBuilder sb = new StringBuilder("Subdivision Volumes: ");
         for(int i = 0; i < subs; i++) {
-            sb.append(mClickVolumes[i] + ", ");
+            sb.append(mClickVolumes[i]).append(", ");
         }
         Timber.d(sb.toString());
     }

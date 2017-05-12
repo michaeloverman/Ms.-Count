@@ -35,4 +35,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="widget_item_padding_top_bottom">2dp</dimen>
     <dimen name="widget_item_padding_start">4dp</dimen>
     <dimen name="widget_item_font_size">18sp</dimen>
+    <dimen name="metadata_vertical_margin">8dp</dimen>
+    <dimen name="metadata_normal_horizontal_margin">16dp</dimen>
+    <dimen name="oddmet_vertical_margin">16dp</dimen>
 </resources>

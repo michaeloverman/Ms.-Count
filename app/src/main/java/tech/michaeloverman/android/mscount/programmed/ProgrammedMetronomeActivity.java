@@ -1,8 +1,10 @@
 /* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount.programmed;
 
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,7 +40,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
     private static final int FIREBASE_SIGN_IN = 456;
     private static final String KEY_USE_FIREBASE = "use_firebase_key";
-    protected FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     public boolean useFirebase;
     public static final String PROGRAM_ID_EXTRA = "program_id_extra_from_widget";
@@ -53,7 +55,9 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setupWindowAnimations();
+        if(Build.VERSION.SDK_INT >= 21) {
+            setupWindowAnimations();
+        }
 
         useFirebase = PrefUtils.usingFirebase(this);
 
@@ -163,6 +167,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
     }
 
+    @TargetApi(21)
     private void setupWindowAnimations() {
         Fade slide = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade_enter);
         getWindow().setEnterTransition(slide);
@@ -239,12 +244,6 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         actuallyGoBack();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
                     }
                 })
                 .show();

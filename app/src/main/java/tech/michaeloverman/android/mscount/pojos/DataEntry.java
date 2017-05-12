@@ -11,14 +11,13 @@ public class DataEntry implements Serializable {
     private static int measureNumberCount;
     private int mData;
     private boolean isBarline;
-    private int measureNumber;
 
     public DataEntry(int data, boolean bar) {
-        mData = data;
         isBarline = bar;
         if(isBarline) {
-            measureNumberCount++;
-            measureNumber = measureNumberCount;
+            mData = measureNumberCount++;
+        } else {
+            mData = data;
         }
     }
 
@@ -39,13 +38,13 @@ public class DataEntry implements Serializable {
     public void setData(int data) {
         mData = data;
     }
-
-    public void decreaseMeasureNumber() {
-        if(isBarline) mData--;
-    }
-    public void increaseMeasureNumber() {
-        if(isBarline) mData++;
-    }
+//
+//    public void decreaseMeasureNumber() {
+//        if(isBarline) mData--;
+//    }
+//    public void increaseMeasureNumber() {
+//        if(isBarline) mData++;
+//    }
 
     @Override
     public String toString() {

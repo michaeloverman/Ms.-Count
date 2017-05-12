@@ -12,7 +12,7 @@ import android.provider.BaseColumns;
 public class FavoritesContract {
     
     public static final String CONTENT_AUTHORITY = "tech.michaeloverman.android.mscount";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_FAVORITES = "favorites";
     
     private FavoritesContract() {}

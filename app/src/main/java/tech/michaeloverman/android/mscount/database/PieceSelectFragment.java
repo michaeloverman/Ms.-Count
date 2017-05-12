@@ -63,7 +63,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     @BindView(R.id.program_select_progress_bar) ProgressBar mProgressSpinner;
     @BindView(R.id.select_composer_button) Button mSelectComposerButton;
 
-    MenuItem mDeleteCancelMenuItem;
+    private MenuItem mDeleteCancelMenuItem;
 
     private String mCurrentComposer;
     private WorksListAdapter mAdapter;
@@ -124,7 +124,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         mDeleteCancelMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     }
 
-    public void cleanUpProgramDelete() {
+    private void cleanUpProgramDelete() {
         mDeleteFlag = false;
         mDeleteCancelMenuItem.setTitle(R.string.delete_program);
         mDeleteCancelMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
@@ -429,10 +429,10 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         String message;
         switch(code) {
             case NO_DATA_ERROR_CODE:
-                message = "No programs currently in database.";
+                message = getString(R.string.no_programs_currently_in_database);
                 break;
             default:
-                message = "Unknown error occurred...";
+                message = getString(R.string.unknown_error_occurred);
         }
         mErrorView.setText(message);
     }
@@ -448,8 +448,8 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     }
 
     class DeleteFromSqlTask extends AsyncTask {
-        private int _id;
-        private String mTitle;
+        private final int _id;
+        private final String mTitle;
         private final ProgressDialog dialog = new ProgressDialog(mActivity);
 
         private DeleteFromSqlTask(int itemId, String title) {

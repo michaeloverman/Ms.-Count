@@ -113,9 +113,9 @@ public class MetaDataOptionsFragment extends Fragment {
 
     class DisplayNoteValuesAdapter extends RecyclerView.Adapter<DisplayNoteValuesAdapter.NoteViewHolder> {
 
-        TypedArray noteValueImages;
+        final TypedArray noteValueImages;
         private int selectedPosition;
-        private String[] descriptions = getResources()
+        private final String[] descriptions = getResources()
                 .getStringArray(R.array.note_value_content_descriptions);
 
         public DisplayNoteValuesAdapter(TypedArray images) {
@@ -211,7 +211,7 @@ public class MetaDataOptionsFragment extends Fragment {
         }
 
         class NoteViewHolder extends RecyclerView.ViewHolder {
-            ImageView image;
+            final ImageView image;
 
             public NoteViewHolder(View itemView) {
                 super(itemView);

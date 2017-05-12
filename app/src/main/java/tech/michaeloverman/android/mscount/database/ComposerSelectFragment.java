@@ -51,7 +51,7 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
     private LoadNewProgramActivity mActivity;
 
     /** Listener for returning selection to PreprogrammedMetronomeFragment */
-    static ComposerCallback sComposerCallback = null;
+    private static ComposerCallback sComposerCallback = null;
 
     /** Interface for PreprogrammedMetronomeFragment to implement in order to
      *  listen for selection.
@@ -221,7 +221,7 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
      */
     class ComposerListAdapter extends RecyclerView.Adapter<ComposerListAdapter.ComposerViewHolder> {
 
-        Context mContext;
+        final Context mContext;
         private List<String> composers;
 
         public ComposerListAdapter(Context context) {
@@ -285,11 +285,9 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
             @Override
             public void onClick(View v) {
                 int position = getAdapterPosition();
-                String name = composers.get(position);
 
-                // send selected composer name to PreprogrammedMetronomeFragment via callback
-//                sComposerCallback.newComposer(name);
-                mActivity.mCurrentComposer = name;
+                // send selected composer name to PreprogrammedMetronomeFragment
+                mActivity.mCurrentComposer = composers.get(position);
 
                 // close this fragment and return
                 getFragmentManager().popBackStackImmediate();

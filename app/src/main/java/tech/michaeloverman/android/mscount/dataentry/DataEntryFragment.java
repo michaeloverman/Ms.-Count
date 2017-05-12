@@ -41,9 +41,6 @@ public class DataEntryFragment extends Fragment {
 
 
     private PieceOfMusic.Builder mBuilder;
-//    private PieceOfMusic mPieceOfMusic;
-
-    static DataEntryCallback sDataEntryCallback;
 
     @BindView(R.id.data_title_view) TextView mTitleView;
     @BindView(R.id.entered_data_recycler_view) RecyclerView mEnteredDataRecycler;
@@ -54,25 +51,14 @@ public class DataEntryFragment extends Fragment {
     private int mMeasureNumber;
     private DataListAdapter mAdapter;
     private boolean mDataItemSelected;
-//    private int mSelectedDataItemPosition;
-//    private DataListAdapter.DataViewHolder mSelectedDataItem;
 
-    /**
-     * Callback to return the raw data to the previous fragment
-     */
-    interface DataEntryCallback {
-        void returnDataList(List<DataEntry> data, float multiplier);
+    public static Fragment newInstance(String title, PieceOfMusic.Builder builder) {
+        return newInstance(title, builder, new ArrayList<DataEntry>());
     }
-
-    public static Fragment newInstance(String title, DataEntryCallback callback,
-                                       PieceOfMusic.Builder builder) {
-        return newInstance(title, callback, builder, new ArrayList<DataEntry>());
-    }
-    public static Fragment newInstance(String title, DataEntryCallback callback,
-                                       PieceOfMusic.Builder builder, List<DataEntry> data) {
+    public static Fragment newInstance(String title, PieceOfMusic.Builder builder,
+                                       List<DataEntry> data) {
         DataEntryFragment fragment = new DataEntryFragment();
         fragment.mTitle = title;
-        sDataEntryCallback = callback;
         fragment.mBuilder = builder;
         fragment.mDataList = data;
         return fragment;
@@ -127,19 +113,21 @@ public class DataEntryFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.double_data_values:
                 doubleValues();
-                return true;
+                break;
             case R.id.halve_data_values:
                 halveValues();
-                return true;
+                break;
             case R.id.triple_data_values:
                 tripleValues();
-                return true;
+                break;
             case R.id.third_data_values:
                 thirdValues();
-                return true;
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        mBuilder.tempoMultiplier(mMultiplier);
+        return true;
     }
 
     private void doubleValues() {
@@ -250,7 +238,8 @@ public class DataEntryFragment extends Fragment {
         if(!mDataList.get(mDataList.size() - 1).isBarline()) {
             mDataList.add(new DataEntry(++mMeasureNumber, true));
         }
-        sDataEntryCallback.returnDataList(mDataList, mMultiplier);
+        mBuilder.dataEntries(mDataList);
+//        sDataEntryMultiplierCallback.returnMultiplier(mMultiplier);
         getFragmentManager().popBackStackImmediate();
     }
 
@@ -275,12 +264,6 @@ public class DataEntryFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getFragmentManager().popBackStackImmediate();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
                     }
                 })
                 .show();
@@ -346,11 +329,12 @@ public class DataEntryFragment extends Fragment {
 
         dialog.show();
         // force keyboard to show automatically
-        dialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        dialog.getWindow().setSoftInputMode(WindowManager
+                .LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     /**
-     * Backs up the data list until finding the previous barline, copies from there back to the
+     * Proceeds up the data list until finding the previous barline, copies from there back to the
      * end again.
      */
     @OnClick(R.id.repeat_sign)
@@ -410,7 +394,7 @@ public class DataEntryFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(DataViewHolder holder, final int position) {
+        public void onBindViewHolder(final DataViewHolder holder, int position) {
             int data = mDataList.get(position).getData();
 
             holder.dataEntry.setText(Integer.toString(data));
@@ -431,11 +415,11 @@ public class DataEntryFragment extends Fragment {
                 public void onClick(View v) {
                     // Update views
                     notifyItemChanged(selectedPosition);
-                    if(selectedPosition == position) {
+                    if(selectedPosition == holder.getAdapterPosition()) {
                         selectedPosition = -1;
                         mDataItemSelected = false;
                     } else {
-                        selectedPosition = position;
+                        selectedPosition = holder.getAdapterPosition();
                         mDataItemSelected = true;
                     }
                     notifyItemChanged(selectedPosition);

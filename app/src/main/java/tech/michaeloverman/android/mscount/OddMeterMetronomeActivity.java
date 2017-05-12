@@ -1,6 +1,8 @@
 /* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,7 +27,9 @@ public class OddMeterMetronomeActivity extends MetronomeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupWindowAnimations();
+        if(Build.VERSION.SDK_INT >= 21) {
+            setupWindowAnimations();
+        }
     }
 
     @Override
@@ -37,6 +41,7 @@ public class OddMeterMetronomeActivity extends MetronomeActivity {
         }
     }
 
+    @TargetApi(21)
     private void setupWindowAnimations() {
         Fade slide = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade_enter);
         getWindow().setEnterTransition(slide);

@@ -1,7 +1,9 @@
 /* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.transition.Slide;
@@ -22,7 +24,7 @@ import timber.log.Timber;
 
 public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleFragmentActivity {
 
-    public Metronome mMetronome;
+    private Metronome mMetronome;
     private GoogleApiClient client;
     private static final long CONNECTION_TIME_OUT_MS = 3000;
 
@@ -44,12 +46,14 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
         mMetronome = Metronome.getInstance();
         mMetronome.setContext(this);
 
-        setupWindowAnimations();
+        if(Build.VERSION.SDK_INT >= 21) {
+            setupWindowAnimations();
+        }
     }
 
 
-    public void checkIfWearableConnected() {
-        Timber.d("checking in wearable present");
+    private void checkIfWearableConnected() {
+        Timber.d("checking if wearable present");
         retrieveDeviceNode(new Callback() {
             @Override
             public void success(String nodeId) {
@@ -58,7 +62,7 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
             }
 
             @Override
-            public void failed(String message) {
+            public void failed() {
                 Timber.d("No Wear node detected");
                 PrefUtils.saveWearStatus(MsCountActivity.this, false);
             }
@@ -77,7 +81,7 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
 
     private interface Callback {
         void success(final String nodeId);
-        void failed(final String message);
+        void failed();
     }
 
     private void retrieveDeviceNode(final Callback callback) {
@@ -97,7 +101,7 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
                     String nodeId = nodes.get(0).getId();
                     callback.success(nodeId);
                 } else {
-                    callback.failed("no wearables found");
+                    callback.failed();
                 }
                 Timber.d("disconnecting client");
                 client.disconnect();
@@ -105,6 +109,7 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
         }).start();
     }
 
+    @TargetApi(21)
     private void setupWindowAnimations() {
         Slide slide = (Slide) TransitionInflater.from(this).inflateTransition(R.transition.activity_slide_out);
         getWindow().setExitTransition(slide);

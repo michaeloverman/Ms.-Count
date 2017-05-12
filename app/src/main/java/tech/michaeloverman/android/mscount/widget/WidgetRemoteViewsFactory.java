@@ -20,19 +20,19 @@ import timber.log.Timber;
  * Created by Michael on 4/14/2017.
  */
 
-public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
+class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private Context mContext;
+    private final Context mContext;
     private Cursor data = null;
-    AppWidgetManager widgetManager;
+    private AppWidgetManager widgetManager;
     private int appWidgetId;
 
     private static final String[] PROGRAM_COLUMNS = {
             ProgramDatabaseSchema.MetProgram._ID,
             ProgramDatabaseSchema.MetProgram.COLUMN_TITLE
     };
-    static final int INDEX_PROGRAM_ID = 0;
-    static final int INDEX_PROGRAM_TITLE = 1;
+    private static final int INDEX_PROGRAM_ID = 0;
+    private static final int INDEX_PROGRAM_TITLE = 1;
 
 
     public WidgetRemoteViewsFactory(Context context, Intent intent) {

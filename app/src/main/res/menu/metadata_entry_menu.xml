@@ -3,7 +3,7 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/edit_existing_program_option"
-          android:title="Edit existing program"
+          android:title="@string/edit_existing_program"
           android:icon="@android:drawable/ic_menu_edit"
           app:showAsAction="never"/>
 </menu>

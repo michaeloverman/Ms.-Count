@@ -11,29 +11,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         tools:layout_editor_absoluteY="0dp"
         tools:layout_editor_absoluteX="0dp">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="#"
+            android:text="@string/pound_sign"
             android:contentDescription="@string/tempo_in_whole_numbers_radio_button"
             android:id="@+id/whole_numbers"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:checked="true"
-            android:onClick="onRadioButtonClicked"/>
+            android:checked="true"/>
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="#.#"
+            android:text="@string/pound_sign_point_pound_sign"
             android:contentDescription="@string/tempo_in_tenths_radio_button"
             android:id="@+id/decimals"
             app:layout_constraintLeft_toRightOf="@+id/whole_numbers"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="@dimen/generic_8dp_margin"
-            android:onClick="onRadioButtonClicked"/>
+            android:layout_marginStart="@dimen/generic_8dp_margin"/>
     </RadioGroup>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/normal_start_stop_fab"
@@ -58,7 +58,7 @@
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/normal_met_tempo_vertical_padding"
         android:paddingBottom="@dimen/normal_met_tempo_vertical_padding"
-        android:text="120"
+        android:text="@string/_120"
         android:textColor="@color/primaryText"
         android:textSize="100dp"
         app:layout_constraintLeft_toLeftOf="parent"

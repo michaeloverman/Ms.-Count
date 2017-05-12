@@ -12,8 +12,8 @@ import timber.log.Timber;
 
 public class TitleKeyObject implements Comparable {
     
-    String mTitle;
-    String mKey;
+    private String mTitle;
+    private String mKey;
 
     public TitleKeyObject(String title, String key) {
         Timber.d("TitleKeyObject constructor(): " + title + ", " + key);

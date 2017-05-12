@@ -56,7 +56,6 @@ public class MetronomeSelectorFragment extends Fragment {
         mUnbinder.unbind();
     }
 
-    // R.id.sticking_patters_metronome_button,
     @OnClick( { R.id.normal_metronome_button, R.id.preprogrammed_metronome_button,
             R.id.odd_meter_metronome_button})
     public void buttonClicked(View button) {

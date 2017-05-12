@@ -22,7 +22,7 @@ import timber.log.Timber;
 
 public class PieceOfMusic implements Serializable {
 
-    public static final int COUNTOFF_LENGTH = 4;
+    private static final int COUNTOFF_LENGTH = 4;
     public static final int SIXTEENTH = 1;
     public static final int DOTTED_SIXTEENTH = 5;
     public static final int EIGHTH = 2;
@@ -194,7 +194,7 @@ public class PieceOfMusic implements Serializable {
     /**
      * Uses the 'length' of first beat to generate count off measure
      */
-    public void buildCountoff() {
+    private void buildCountoff() {
         mCountOffMeasureLength = COUNTOFF_LENGTH + mCountOffSubdivision - 1;
         mCountOff = new int[mCountOffMeasureLength];
         int i;

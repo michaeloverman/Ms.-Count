@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/composers_name_label"
-        android:text=" "
+        android:text="@string/single_space"
         tools:text="Last Name, First Name"
         android:textSize="24sp"
         android:textColor="@color/secondaryText"

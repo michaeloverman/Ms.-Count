@@ -9,7 +9,7 @@
         android:textSize="@dimen/list_time_text_size"
         android:minHeight="@dimen/list_item_min_height"
         android:padding="@dimen/list_item_padding"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

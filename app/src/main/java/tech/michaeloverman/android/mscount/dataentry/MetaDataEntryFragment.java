@@ -63,8 +63,7 @@ import static android.app.Activity.RESULT_OK;
  *
  */
 public class MetaDataEntryFragment extends Fragment
-        implements DataEntryFragment.DataEntryCallback,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_NEW_PROGRAM = 1984;
 
@@ -79,7 +78,6 @@ public class MetaDataEntryFragment extends Fragment
     @BindView(R.id.baseline_rhythmic_value_recycler) RecyclerView mBaselineRhythmicValueEntry;
     private NoteValuesAdapter mBaselineRhythmicValueAdapter;
     private int mTemporaryBaselineRhythm = 4;
-    private float mBaselineMultiplier = 1.0f;
 
     private PieceOfMusic mPieceOfMusic;
     private PieceOfMusic.Builder mBuilder;
@@ -167,10 +165,9 @@ public class MetaDataEntryFragment extends Fragment
                         Toast.makeText(getContext(),
                                 R.string.countoff_must_fit_subdivisions,
                                 Toast.LENGTH_SHORT).show();
-                        return;
                     }
                 } catch (NumberFormatException n) {
-                    return;
+
                 }
             }
         });
@@ -188,11 +185,9 @@ public class MetaDataEntryFragment extends Fragment
                                             Metronome.MIN_TEMPO, Metronome.MAX_TEMPO),
                                     Toast.LENGTH_SHORT).show();
                             mDefaultTempoEntry.setText("");
-                            return;
                         }
                     } catch (NumberFormatException n) {
                         Toast.makeText(getContext(), R.string.tempo_must_be_integer, Toast.LENGTH_SHORT).show();
-                        return;
                     }
                 }
             }
@@ -246,9 +241,9 @@ public class MetaDataEntryFragment extends Fragment
     private void gotoDataEntryFragment(String title) {
         Fragment fragment;
         if(mDataEntries == null) {
-            fragment = DataEntryFragment.newInstance(title, this, mBuilder);
+            fragment = DataEntryFragment.newInstance(title, mBuilder);
         } else {
-            fragment = DataEntryFragment.newInstance(title, this, mBuilder, mDataEntries);
+            fragment = DataEntryFragment.newInstance(title, mBuilder, mDataEntries);
         }
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
@@ -510,7 +505,7 @@ public class MetaDataEntryFragment extends Fragment
                     Toast.LENGTH_SHORT).show();
             return false;
         }
-        mBuilder.dataEntries(mDataEntries);
+//        mBuilder.dataEntries(mDataEntries);
         return true;
     }
 
@@ -619,7 +614,7 @@ public class MetaDataEntryFragment extends Fragment
         alert.show();
     }
 
-    public void saveToFirebase(final PieceOfMusic p) {
+    private void saveToFirebase(final PieceOfMusic p) {
         Timber.d("Saving to local database, or to Firebase: " + p.getTitle() + " by " + p.getAuthor());
 //        Timber.d("Pieces is " + p.getDownBeats().size() + " measures long.");
 
@@ -667,21 +662,6 @@ public class MetaDataEntryFragment extends Fragment
                 Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * Callback from the DataEntryFragment. Takes the raw data and the reference to the original
-     * Builder object, and assigns to local variables.
-     */
-    @Override
-    public void returnDataList(List<DataEntry> dataEntries, float baselineMultiplier) {
-//        mBuilder = builder;
-        mDataEntries = dataEntries;
-        Timber.d("mTemporaryBaselineRhythm: " + mTemporaryBaselineRhythm);
-        mBaselineRhythmicValueAdapter.setSelectedPosition(mTemporaryBaselineRhythm);
-        if(baselineMultiplier != 1) {
-            mBaselineMultiplier = baselineMultiplier;
-        }
-//        mBaselineRhythmicValueAdapter.notifyDataSetChanged();
-    }
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Timber.d("loader creation...");
@@ -724,9 +704,9 @@ public class MetaDataEntryFragment extends Fragment
 
     class NoteValuesAdapter extends RecyclerView.Adapter<NoteValuesAdapter.NoteViewHolder> {
 
-        TypedArray noteValueImages;
+        final TypedArray noteValueImages;
         private int selectedPosition;
-        private String[] descriptions = getResources()
+        private final String[] descriptions = getResources()
                 .getStringArray(R.array.note_value_content_descriptions);
 
         public NoteValuesAdapter(TypedArray images) {
@@ -822,7 +802,7 @@ public class MetaDataEntryFragment extends Fragment
         }
 
         class NoteViewHolder extends RecyclerView.ViewHolder {
-            ImageView image;
+            final ImageView image;
 
             public NoteViewHolder(View itemView) {
                 super(itemView);

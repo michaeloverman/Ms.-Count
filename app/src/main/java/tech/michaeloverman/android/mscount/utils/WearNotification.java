@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 
 import tech.michaeloverman.android.mscount.R;
 import timber.log.Timber;
@@ -20,10 +21,10 @@ public class WearNotification {
 
     private final String EXTRA_WEAR_INTENT_ID = "tech.michaeloverman.android.mscount.wearable.extra_message";
 
-    private Context mContext;
+    private final Context mContext;
     private boolean mPlaying;
-    private String mTitle;
-    private String mMessage;
+    private final String mTitle;
+    private final String mMessage;
 
     public WearNotification(Context context, String title, String message) {
         mContext = context;
@@ -59,7 +60,7 @@ public class WearNotification {
 //                .setHintAmbientBigPicture(true)
                 .addAction(action);
 
-        int color = mContext.getResources().getColor(R.color.colorPrimary);
+        int color = ContextCompat.getColor(mContext, R.color.colorPrimary);
 //        NotificationCompat.Style style = new android.support.v7.app.NotificationCompat.MediaStyle();
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(getIcon())

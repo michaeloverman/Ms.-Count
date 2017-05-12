@@ -83,8 +83,8 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
                         data.getString(ProgramDatabaseSchema.MetProgram.POSITION_ID)));
                 data.moveToNext();
             }
-        } finally {
-//            data.close();
+        } catch (Exception exception) {
+            Timber.d("Problem here: check this out...");
         }
         setTitles(titles);
     }

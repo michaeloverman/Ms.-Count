@@ -13,7 +13,7 @@ import static tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema
  * Created by Michael on 3/27/2017.
  */
 
-public class ProgramDatabaseHelper extends SQLiteOpenHelper {
+class ProgramDatabaseHelper extends SQLiteOpenHelper {
 
     private static final int VERSION = 2;
     private static final String DATABASE_NAME = "programDatabase.db";

@@ -185,7 +185,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         int beat = Integer.parseInt(button.getText().toString());
         if(mMultiplierSelected) {
             mMultiplier = beat;
-            mPulseMultiplierView.setText(beat + "=");
+            mPulseMultiplierView.setText(getString(R.string.pulse_equals, beat));
             multiplierSelected();
             return;
         }
@@ -292,14 +292,14 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     }
 
     private void updateTempoDisplay() {
-        mTempoSetting.setText((int) mBPM + "");
-        mPulseMultiplierView.setText(mMultiplier + "=");
+        mTempoSetting.setText(Integer.toString((int) mBPM));
+        mPulseMultiplierView.setText(getString(R.string.pulse_equals, mMultiplier));
         updateWearNotif();
     }
 
     private View getNewSubdivisionView(int value) {
         TextView view = new TextView(getContext());
-        view.setText(value + "");
+        view.setText(Integer.toString(value));
         view.setTextSize(SUBDIVISION_DISPLAY_SIZE);
         view.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
         view.setPadding(MARGIN, 0, MARGIN, 0);

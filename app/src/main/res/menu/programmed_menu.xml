@@ -8,7 +8,7 @@
         android:title="@string/mark_as_favorite_menu"
         app:showAsAction="always"/>
     <item android:id="@+id/create_new_program_option"
-          android:title="Create new program"
+          android:title="@string/create_new_program"
           android:icon="@android:drawable/ic_menu_edit"
           app:showAsAction="ifRoom"/>
 

@@ -15,7 +15,7 @@ public class FavoritesDBHelper extends SQLiteOpenHelper {
     
     public static final String TAG = FavoritesDBHelper.class.getSimpleName();
     
-    public static final String DATABASE_NAME = "favorite_pieces.db";
+    private static final String DATABASE_NAME = "favorite_pieces.db";
     private static final int DATABASE_VERSION = 1;
     
     public FavoritesDBHelper(Context context) {

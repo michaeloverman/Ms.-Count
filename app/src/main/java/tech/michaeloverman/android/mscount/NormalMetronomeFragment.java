@@ -87,11 +87,13 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
     @BindView(R.id.subdivision_indicator10) FloatingActionButton sub10;
     @BindView(R.id.normal_adView) AdView mAdView;
 
-    FloatingActionButton[] mSubdivisionIndicators;
+    private FloatingActionButton[] mSubdivisionIndicators;
     private int[] mSubdivisionFabColors;
 
-    Animation expandingAddFabAnim, expandingSubFabAnim;
-    Animation collapsingAddFabAnim, collapsingSubFabAnim;
+    private Animation expandingAddFabAnim;
+    private Animation expandingSubFabAnim;
+    private Animation collapsingAddFabAnim;
+    private Animation collapsingSubFabAnim;
 //    Animation fadingFabAnim, unFadingFabAnim;
 
     private float mBPM;
@@ -114,7 +116,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         setHasOptionsMenu(true);
 
         mHasWearDevice = PrefUtils.wearPresent(getContext());
-        if(mHasWearDevice) {
+        if (mHasWearDevice) {
             createAndRegisterBroadcastReceiver();
         }
 
@@ -128,7 +130,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
         mSubdivisionVolumes = new int[MAX_SUBDIVISIONS];
         mSubdivisionFloatVolumes = new float[MAX_SUBDIVISIONS];
-        for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
+        for (int i = 0; i < MAX_SUBDIVISIONS; i++) {
             mSubdivisionVolumes[i] = 10;
             mSubdivisionFloatVolumes[i] = MAX_FLOAT_VOLUME;
         }
@@ -139,7 +141,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
 
     private void updateWearNotif() {
-        if(mHasWearDevice) {
+        if (mHasWearDevice) {
             mWearNotification = new WearNotification(getContext(),
                     getString(R.string.app_name), (int) mBPM + " bpm");
             mWearNotification.sendStartStop();
@@ -166,7 +168,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
         //        AdRequest adRequest = new AdRequest.Builder().build();
         AdRequest.Builder adRequest = new AdRequest.Builder();
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             adRequest.addTestDevice(getString(R.string.test_device_code));
         }
         mAdView.loadAd(adRequest.build());
@@ -177,9 +179,9 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int action = MotionEventCompat.getActionMasked(event);
-                switch(action) {
+                switch (action) {
                     case MotionEvent.ACTION_UP:
-                        if(mMetronomeRunning) {
+                        if (mMetronomeRunning) {
                             // stop the met
                             metronomeStartStop();
                             // restart at new tempo
@@ -215,17 +217,17 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         });
 
         mSubdivisionIndicators = new FloatingActionButton[]
-                { sub1, sub2, sub3, sub4, sub5, sub6, sub7, sub8, sub9, sub10 };
+                {sub1, sub2, sub3, sub4, sub5, sub6, sub7, sub8, sub9, sub10};
         addSubdivisionVolumeChangeListeners();
 
-        if(mNumSubdivisions > 1) {
+        if (mNumSubdivisions > 1) {
             expandFabs();
-            for(int i = 1; i < mNumSubdivisions; i++) {
+            for (int i = 1; i < mNumSubdivisions; i++) {
                 mSubdivisionIndicators[i].setVisibility(View.VISIBLE);
             }
         }
 
-        if(!mWholeNumbersSelected) {
+        if (!mWholeNumbersSelected) {
             RadioButton b = (RadioButton) view.findViewById(R.id.decimals);
             b.setChecked(true);
         }
@@ -237,11 +239,11 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
     @Override
     public void onPause() {
-        if(mAdView != null) {
+        if (mAdView != null) {
             mAdView.pause();
         }
 
-        if(mBroadcastReceiver != null) {
+        if (mBroadcastReceiver != null) {
             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
             mWearNotification.cancel();
         }
@@ -273,17 +275,17 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         super.onDestroy();
     }
 
-    @OnClick( { R.id.add_subdivisions_fab, R.id.expanded_add_subdivisions_fab } )
+    @OnClick({R.id.add_subdivisions_fab, R.id.expanded_add_subdivisions_fab})
     public void addASubdivision() {
 //        if(mMetronomeRunning) return;
         boolean restart = false;
-        if(mMetronomeRunning) {
+        if (mMetronomeRunning) {
             metronomeStartStop();
             restart = true;
         }
-        if(mNumSubdivisions == 1) {
+        if (mNumSubdivisions == 1) {
             expandFabs();
-        } else if(mNumSubdivisions == MAX_SUBDIVISIONS) {
+        } else if (mNumSubdivisions == MAX_SUBDIVISIONS) {
             Toast.makeText(getActivity(), R.string.too_many_subdivisions, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -291,23 +293,23 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
         mNumSubdivisions++;
 
-        if(restart) metronomeStartStop();
+        if (restart) metronomeStartStop();
     }
 
     @OnClick(R.id.expanded_subtract_subdivisions_fab)
     public void subtractASubdivision() {
         boolean restart = false;
-        if(mMetronomeRunning) {
+        if (mMetronomeRunning) {
             metronomeStartStop();
             restart = true;
         }
         mNumSubdivisions--;
         mSubdivisionIndicators[mNumSubdivisions].setVisibility(View.GONE);
-        if(mNumSubdivisions == 1) {
+        if (mNumSubdivisions == 1) {
             collapseFabs();
         }
 
-        if(restart) metronomeStartStop();
+        if (restart) metronomeStartStop();
     }
 
     private void expandFabs() {
@@ -317,6 +319,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         mExpandedAddSubFab.startAnimation(expandingAddFabAnim);
         mSubtractSubFab.startAnimation(expandingSubFabAnim);
     }
+
     private void collapseFabs() {
         mExpandedAddSubFab.startAnimation(collapsingAddFabAnim);
         mSubtractSubFab.startAnimation(collapsingSubFabAnim);
@@ -326,29 +329,29 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
     }
 
     @Override
-    @OnClick( R.id.normal_start_stop_fab )
+    @OnClick(R.id.normal_start_stop_fab)
     public void metronomeStartStop() {
-        if(mMetronomeRunning) {
+        if (mMetronomeRunning) {
             mMetronome.stop();
             mMetronomeRunning = false;
             mStartStopFab.setImageResource(android.R.drawable.ic_media_play);
         } else {
             mMetronomeRunning = true;
-            if(mWholeNumbersSelected) {
-                mMetronome.play((int)mBPM, mNumSubdivisions);
+            if (mWholeNumbersSelected) {
+                mMetronome.play((int) mBPM, mNumSubdivisions);
             } else {
                 mMetronome.play(mBPM, mNumSubdivisions);
             }
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
         }
-        if(mHasWearDevice) mWearNotification.sendStartStop();
+        if (mHasWearDevice) mWearNotification.sendStartStop();
     }
 
-    @OnClick( { R.id.whole_numbers, R.id.decimals } )
+    @OnClick({R.id.whole_numbers, R.id.decimals})
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
 
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.whole_numbers:
                 if (checked) {
                     mWholeNumbersSelected = true;
@@ -373,26 +376,28 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 //        updateDisplay();
         changeTempo(-0.1f);
     }
+
     @OnClick(R.id.tempo_up_button)
     public void onUpButtonClick() {
 //        mBPM += 0.1f;
 //        updateDisplay();
         changeTempo(0.1f);
     }
+
     private void changeTempo(float tempoChange) {
         mBPM += tempoChange;
-        if(mBPM > MAX_TEMPO_BPM_INT) mBPM = MAX_TEMPO_BPM_FLOAT;
-        else if(mBPM < MIN_TEMPO_BPM_INT) mBPM = MIN_TEMPO_BPM_FLOAT;
+        if (mBPM > MAX_TEMPO_BPM_INT) mBPM = MAX_TEMPO_BPM_FLOAT;
+        else if (mBPM < MIN_TEMPO_BPM_INT) mBPM = MIN_TEMPO_BPM_FLOAT;
         updateDisplay();
 
     }
 
     private void updateDisplay() {
 
-        if(mWholeNumbersSelected) {
-            mTempoSetting.setText((int) mBPM + "");
+        if (mWholeNumbersSelected) {
+            mTempoSetting.setText(Integer.toString((int) mBPM));
         } else {
-            mTempoSetting.setText((float)((int)(mBPM * 10)) / 10  + "");
+            mTempoSetting.setText(Float.toString((float) ((int) (mBPM * 10)) / 10));
         }
         updateWearNotif();
     }
@@ -400,29 +405,30 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
     private void addSubdivisionVolumeChangeListeners() {
 //        mSubdivisionDetector = new GestureDetectorCompat[MAX_SUBDIVISIONS];
 
-        for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
+        for (int i = 0; i < MAX_SUBDIVISIONS; i++) {
             final int subdivisionID = i;
 //            mSubdivisionDetector[subdivisionID] = new GestureDetectorCompat(this.getContext(),
 //                    new SubdivisionGestureListener(subdivisionID));
             mSubdivisionIndicators[subdivisionID].setOnTouchListener(new View.OnTouchListener() {
                 float firstY;
+
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     int action = MotionEventCompat.getActionMasked(event);
-                    switch(action) {
+                    switch (action) {
                         case (MotionEvent.ACTION_DOWN): {
                             displayVolumeSub(subdivisionID);
                             firstY = event.getY();
                             break;
                         }
-                        case (MotionEvent.ACTION_MOVE) :
+                        case (MotionEvent.ACTION_MOVE):
                             final float y = event.getY();
                             float distanceY = y - firstY;
                             firstY = y;
                             changeSubdivisionVolume(subdivisionID, -distanceY);
 //                            mSubdivisionDetector[subdivisionID].onTouchEvent(event);
                             break;
-                        case (ACTION_UP) :
+                        case (ACTION_UP):
                             updateDisplay();
                             break;
                         default:
@@ -433,21 +439,26 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
             });
         }
     }
+
     private void displayVolumeSub(int subdiv) {
-        mTempoSetting.setText("vol: " + mSubdivisionVolumes[subdiv]);
+        mTempoSetting.setText(getString(R.string.vol_abbrev_colon, mSubdivisionVolumes[subdiv]));
     }
+
     private void changeSubdivisionVolume(int id, float volumeChange) {
         mSubdivisionFloatVolumes[id] += volumeChange;
-        if(mSubdivisionFloatVolumes[id] > MAX_FLOAT_VOLUME) mSubdivisionFloatVolumes[id] = MAX_FLOAT_VOLUME;
-        else if(mSubdivisionFloatVolumes[id] < MIN_FLOAT_VOLUME) mSubdivisionFloatVolumes[id] = MIN_FLOAT_VOLUME;
+        if (mSubdivisionFloatVolumes[id] > MAX_FLOAT_VOLUME)
+            mSubdivisionFloatVolumes[id] = MAX_FLOAT_VOLUME;
+        else if (mSubdivisionFloatVolumes[id] < MIN_FLOAT_VOLUME)
+            mSubdivisionFloatVolumes[id] = MIN_FLOAT_VOLUME;
         Timber.d("float volume measured: " + mSubdivisionFloatVolumes[id]);
 
         mSubdivisionVolumes[id] = (int) (mSubdivisionFloatVolumes[id] / FLOAT_VOLUME_DIVIDER);
 
-        mTempoSetting.setText("vol: " + mSubdivisionVolumes[id]);
+        mTempoSetting.setText(getString(R.string.vol_abbrev_colon, mSubdivisionVolumes[id]));
         setFabAppearance(mSubdivisionIndicators[id], mSubdivisionVolumes[id]);
         mMetronome.setClickVolumes(mSubdivisionVolumes);
     }
+
     private void setFabAppearance(FloatingActionButton fab, int level) {
         fab.setBackgroundTintList(ColorStateList.valueOf(mSubdivisionFabColors[level]));
     }
@@ -458,7 +469,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if(Math.abs(distanceY) > MINIMUM_Y_FOR_FAST_CHANGE) {
+            if (Math.abs(distanceY) > MINIMUM_Y_FOR_FAST_CHANGE) {
                 changeTempo(distanceY / 10);
             } else {
                 changeTempo(-distanceX / 100);

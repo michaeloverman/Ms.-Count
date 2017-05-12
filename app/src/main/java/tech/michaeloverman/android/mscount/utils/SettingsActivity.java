@@ -15,8 +15,8 @@ import tech.michaeloverman.android.mscount.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    protected String[] mEntries;
-    protected String[] mValues;
+    String[] mEntries;
+    String[] mValues;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

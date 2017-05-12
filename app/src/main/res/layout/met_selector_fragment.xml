@@ -9,6 +9,7 @@
 
     <Button
         android:text="@string/normal_metronome"
+        android:contentDescription="@string/large_yellow_circle_content_description"
         android:id="@+id/normal_metronome_button"
         android:background="@drawable/roundcorner_primary"
         android:layout_width="wrap_content"
@@ -24,7 +25,7 @@
         app:layout_constraintHorizontal_bias="0.502"/>
 
     <Button
-        android:text="Odd Metronome"
+        android:text="@string/odd_metronome"
         android:id="@+id/odd_meter_metronome_button"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/home_screen_button_height"

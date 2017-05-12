@@ -6,8 +6,8 @@ package tech.michaeloverman.android.mscount.pojos;
  */
 
 public class Click {
-    private String mAssetPath;
-    private String mName;
+    private final String mAssetPath;
+    private final String mName;
     private Integer mSoundId;
 
     public Integer getSoundId() {

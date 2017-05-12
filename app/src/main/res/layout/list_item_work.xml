@@ -12,6 +12,5 @@
         android:layout_height="wrap_content"
         android:minHeight="@dimen/list_item_min_height"
         android:padding="@dimen/list_item_padding"
-        android:text="Temporary Filler Title"
         android:textSize="@dimen/list_time_text_size"/>
 </LinearLayout>

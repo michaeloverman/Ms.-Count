@@ -15,9 +15,9 @@ import timber.log.Timber;
 public final class PrefUtils {
 
     public static final String PREF_FAVORITE_PROGRAM = "favorite";
-    public static final String PREF_DOWNBEAT_CLICK_DEFAULT = "4";
-    public static final String PREF_INNERBEAT_CLICK_DEFAULT = "2";
-    public static final String PREF_SUBDIVISION_CLICK_DEFAULT = "6";
+    private static final String PREF_DOWNBEAT_CLICK_DEFAULT = "4";
+    private static final String PREF_INNERBEAT_CLICK_DEFAULT = "2";
+    private static final String PREF_SUBDIVISION_CLICK_DEFAULT = "6";
     private static final String PREF_USE_FIREBASE = "use_firebase";
     private static final String PREF_CURRENT_TEMPO = "programmable_tempo_key";
     private static final String PREF_PIECE_KEY = "programmable_piece_id";
@@ -53,7 +53,7 @@ public final class PrefUtils {
         prefs.putBoolean(PREF_USE_FIREBASE, useFirebase);
         prefs.putString(PREF_PIECE_KEY, key);
         prefs.putInt(PREF_CURRENT_TEMPO, tempo);
-        prefs.commit();
+        prefs.apply();
     }
 
     public static void saveWidgetSelectedPieceToPrefs(Context context, int key) {
@@ -62,14 +62,12 @@ public final class PrefUtils {
 
     public static String getSavedPieceKey(Context context) {
         SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
-        String key = shp.getString(PREF_PIECE_KEY, null);
-        return key;
+        return shp.getString(PREF_PIECE_KEY, null);
     }
 
     public static int getSavedTempo(Context context) {
         SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
-        int id = shp.getInt(PREF_CURRENT_TEMPO, 120);
-        return id;
+        return shp.getInt(PREF_CURRENT_TEMPO, 120);
     }
 
     public static void saveFirebaseStatus(Context context, boolean firebase) {
@@ -77,7 +75,7 @@ public final class PrefUtils {
         SharedPreferences.Editor prefs = PreferenceManager
                 .getDefaultSharedPreferences(context).edit();
         prefs.putBoolean(PREF_USE_FIREBASE, firebase);
-        prefs.commit();
+        prefs.apply();
     }
 
     public static boolean usingFirebase(Context context) {
@@ -91,14 +89,13 @@ public final class PrefUtils {
         SharedPreferences.Editor prefs = PreferenceManager
                 .getDefaultSharedPreferences(context).edit();
         prefs.putBoolean(PREF_WEAR_STATUS_KEY, status);
-        prefs.commit();
+        prefs.apply();
     }
 
     public static boolean wearPresent(Context context) {
         try {
             SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
-            boolean wearStatus = shp.getBoolean(PREF_WEAR_STATUS_KEY, false);
-            return wearStatus;
+            return shp.getBoolean(PREF_WEAR_STATUS_KEY, false);
         } catch (NullPointerException npe) {
             Timber.d("Here's a problem ... what's going to happen next?");
             return false;

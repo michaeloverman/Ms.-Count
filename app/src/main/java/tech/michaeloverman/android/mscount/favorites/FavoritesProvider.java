@@ -20,12 +20,12 @@ public class FavoritesProvider extends ContentProvider {
     
     public static final String TAG = FavoritesProvider.class.getSimpleName();
     
-    public static final int CODE_FAVORITES = 222;
+    private static final int CODE_FAVORITES = 222;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     public static final String ACTION_DATA_UPDATED = "tech.michaeloverman.android.mscount.ACTION_DATA_UPDATED";
     private FavoritesDBHelper mDBHelper;
 
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = FavoritesContract.CONTENT_AUTHORITY;
         
@@ -90,7 +90,7 @@ public class FavoritesProvider extends ContentProvider {
                     }
                     db.setTransactionSuccessful();
                 } finally {
-                    db.endTransaction();;
+                    db.endTransaction();
                 }
                 if(rowsInserted > 0) {
                     getContext().getContentResolver().notifyChange(uri, null);

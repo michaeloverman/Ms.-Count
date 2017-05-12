@@ -23,14 +23,14 @@ import static tech.michaeloverman.android.mscount.favorites.FavoritesProvider.AC
 
 public class ProgramProvider extends ContentProvider {
 
-    public static final int CODE_ALL_OF_IT = 100;
-    public static final int CODE_COMPOSER = 101;
-    public static final int CODE_COMPOSER_WITH_PIECE = 102;
+    private static final int CODE_ALL_OF_IT = 100;
+    private static final int CODE_COMPOSER = 101;
+    private static final int CODE_COMPOSER_WITH_PIECE = 102;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private ProgramDatabaseHelper mHelper;
 
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         Timber.d("UriMatcher creation...");
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = ProgramDatabaseSchema.AUTHORITY;
@@ -170,7 +170,7 @@ public class ProgramProvider extends ContentProvider {
         Intent dataUpdateIntent = new Intent(ACTION_DATA_UPDATED);
         getContext().sendBroadcast(dataUpdateIntent);
     }
-    public int getLineNumberInDatabase(SQLiteDatabase db, String composer, String title) {
+    private int getLineNumberInDatabase(SQLiteDatabase db, String composer, String title) {
         Cursor c = db.query(ProgramDatabaseSchema.MetProgram.TABLE_NAME,
                 new String[]{"_id"}, ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER + "=? AND "
                 + ProgramDatabaseSchema.MetProgram.COLUMN_TITLE + "=?", new String[]{composer, title},

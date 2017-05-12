@@ -106,7 +106,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
     @BindView(R.id.tempo_down_button) ImageButton mTempoDownButton;
     @BindView(R.id.current_measure_number) TextView mCurrentMeasureNumber;
-//    @BindView(R.id.programmed_adView) AdView mAdView;
+
     private InterstitialAd mInterstitialAd;
 
     private Handler mRunnableHandler;
@@ -141,13 +141,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        if(mActivity == null) {
-            Timber.d("mActivity is null....");
-            Intent i = getActivity().getBaseContext().getPackageManager()
-                    .getLaunchIntentForPackage( getActivity().getBaseContext().getPackageName() );
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-        }
+
 
         mHasWearDevice = PrefUtils.wearPresent(mActivity);
         if(mHasWearDevice) {
@@ -199,11 +193,32 @@ public class ProgrammedMetronomeFragment extends Fragment
         };
     }
 
+    private boolean viewcreated = true;
+    private LayoutInflater tempInflater;
+    private ViewGroup tempViewGroup;
+    private Bundle tempSavedInstanceState;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.programmed_fragment, container, false);
         ButterKnife.bind(this, view);
+
+        if(mActivity == null) {
+//            Timber.d("mActivity is null....");
+//            Intent i = new Intent(getActivity(), MsCountActivity.class);
+//            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(i);
+//            mActivity.finish();
+
+            //send this all back in onActivityCreated()
+//            viewcreated = false;
+//            tempInflater = inflater;
+//            tempViewGroup = container;
+//            tempSavedInstanceState = savedInstanceState;
+//            return null;
+
+//            Timber.d("shouldn't have gotten this far...");
+        }
 
         mActivity.setTitle(R.string.app_name);
 //        Timber.d("using firebase? " + mActivity.useFirebase);

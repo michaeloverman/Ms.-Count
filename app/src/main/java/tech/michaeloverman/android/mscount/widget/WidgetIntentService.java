@@ -31,7 +31,7 @@ public class WidgetIntentService extends IntentService {
             ProgramDatabaseSchema.MetProgram.COLUMN_TITLE
     };
     static final int INDEX_PROGRAM_ID = 0;
-    static final int INDEX_COLUMN_TITLE = 1;
+    private static final int INDEX_COLUMN_TITLE = 1;
 
     public WidgetIntentService() {
         super("WidgetIntentService");

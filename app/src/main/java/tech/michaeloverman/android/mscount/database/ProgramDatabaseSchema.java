@@ -12,7 +12,7 @@ import timber.log.Timber;
 
 public class ProgramDatabaseSchema {
     static final String AUTHORITY = "tech.michaeloverman.android.mscount";
-    public static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
+    private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_PROGRAMS = "programs";
 
     public static final class MetProgram implements BaseColumns {

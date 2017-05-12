@@ -46,7 +46,7 @@ public class Utilities {
     public static void printArray(int[] array) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
-            sb.append(array[i] + ", ");
+            sb.append(array[i]).append(", ");
         }
         Timber.d(sb.toString());
     }

@@ -68,7 +68,6 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     private String mCurrentComposer;
     private WorksListAdapter mAdapter;
     private List<TitleKeyObject> mTitlesList;
-    private Cursor mCursor;
     private PieceOfMusic mPieceOfMusic;
     private boolean mDeleteFlag;
     private LoadNewProgramActivity mActivity;
@@ -382,15 +381,14 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         if(data == null) {
             Timber.d("data == null");
             mErrorView.setVisibility(View.VISIBLE);
-            updateEmptyProgramList(NO_DATA_ERROR_CODE);
+            updateEmptyProgramList();
         } else if (data.getCount() == 0) {
             Timber.d("data.getCount() == 0");
             mErrorView.setVisibility(View.VISIBLE);
-            updateEmptyProgramList(NO_DATA_ERROR_CODE);
+            updateEmptyProgramList();
         } else {
-            mCursor = data;
             mErrorView.setVisibility(View.GONE);
-            mAdapter.newCursor(mCursor);
+            mAdapter.newCursor(data);
         }
     }
 
@@ -425,16 +423,8 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         mActivity.setTitle(getString(R.string.select_a_piece));
     }
 
-    private void updateEmptyProgramList(int code) {
-        String message;
-        switch(code) {
-            case NO_DATA_ERROR_CODE:
-                message = getString(R.string.no_programs_currently_in_database);
-                break;
-            default:
-                message = getString(R.string.unknown_error_occurred);
-        }
-        mErrorView.setText(message);
+    private void updateEmptyProgramList() {
+        mErrorView.setText(getString(R.string.no_programs_currently_in_database));
     }
 
     private void progressSpinner(boolean on) {

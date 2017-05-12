@@ -2,18 +2,11 @@
 package tech.michaeloverman.android.mscount.utils;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
-import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.AsyncTask;
 import android.os.CountDownTimer;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import tech.michaeloverman.android.mscount.pojos.Click;
 import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import timber.log.Timber;
 
@@ -23,16 +16,13 @@ import timber.log.Timber;
 
 public class Metronome {
     public static final String ACTION_METRONOME_START_STOP = "metronome_start_stop_action";
-    private static final String SOUNDS_FOLDER = "sample_sounds";
     private static final long TWENTY_MINUTES = 60000 * 20;
     public static final int MAX_SUBDIVISIONS = 10;
     public static final int MAX_TEMPO = 400;
     public static final int MIN_TEMPO = 15;
 
     /* Sounds and Such */
-    private AssetManager mAssets;
-    private final List<Click> mClicks = new ArrayList<>();
-    private final SoundPool mSoundPool;
+    private SoundPool mSoundPool;
     private int mDownBeatClickId, mInnerBeatClickId, mSubdivisionBeatClickId;
     private final float[] mClickVolumes;
     private Context mContext;
@@ -45,22 +35,18 @@ public class Metronome {
     private MetronomeStartStopListener mListener;
     private ProgrammedMetronomeListener mPListener;
 
-    /**
-     * Constructor accepts context, though for what is not immediately apparent.
-     * Loads sound files for clicking...
-     *
-     * @param context
-     */
-    private static final Metronome instance = new Metronome();
+//    private static final Metronome instance = new Metronome();
+//
+//    public static Metronome getInstance() {
+//        return instance;
+//    }
+    public Metronome(Context context) {
 
-    public static Metronome getInstance() {
-        return instance;
-    }
-    private Metronome() {
+        mContext = context;
+
+        mSoundPool = ClickSounds.getSoundPool();
 
         mClicking = false;
-
-        mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 
         mClickVolumes = new float[MAX_SUBDIVISIONS];
         for(int i = 0; i < MAX_SUBDIVISIONS; i++) {
@@ -68,12 +54,11 @@ public class Metronome {
         }
 
     }
+//
+//    public void setContext(Context context) {
+//        mContext = context;
+//    }
 
-    public void setContext(Context context) {
-        mContext = context;
-        mAssets = mContext.getAssets();
-        loadSounds();
-    }
     public void setMetronomeStartStopListener(MetronomeStartStopListener ml) {
         mListener = ml;
     }
@@ -125,6 +110,7 @@ public class Metronome {
             @Override
             public void onFinish() {
                 mClicking = false;
+//                mListener.metronomeStartStop(); Do something to change UI on listener end...
             }
         };
         mClicking = true;
@@ -136,7 +122,7 @@ public class Metronome {
      * @param subs
      */
     private void playSubdivisions(final int subs) {
-        logSubdivisionVolumes(subs);
+//        logSubdivisionVolumes(subs);
 
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
             int subCount = 0;
@@ -159,14 +145,14 @@ public class Metronome {
         mClicking = true;
         mTimer.start();
     }
-
-    private void logSubdivisionVolumes(int subs) {
-        StringBuilder sb = new StringBuilder("Subdivision Volumes: ");
-        for(int i = 0; i < subs; i++) {
-            sb.append(mClickVolumes[i]).append(", ");
-        }
-        Timber.d(sb.toString());
-    }
+//
+//    private void logSubdivisionVolumes(int subs) {
+//        StringBuilder sb = new StringBuilder("Subdivision Volumes: ");
+//        for(int i = 0; i < subs; i++) {
+//            sb.append(mClickVolumes[i]).append(", ");
+//        }
+//        Timber.d(sb.toString());
+//    }
 
     /**
      * Programmed click, accepts a PieceOfMusic to define changing click patterns, and a
@@ -304,50 +290,6 @@ public class Metronome {
         for(int i = 0; i < num; i++) {
             mClickVolumes[i] = vols[i] / 10.0f;
         }
-    }
-    private void loadSounds() {
-        new LoadSoundsTask().execute();
-    }
-
-    private class LoadSoundsTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String[] soundNames;
-            try {
-                soundNames = mAssets.list(SOUNDS_FOLDER);
-                Timber.d("Found " + soundNames.length + " sounds");
-            } catch (IOException ioe) {
-                Timber.d("Could not list assets", ioe);
-                return null;
-            }
-            for (String filename : soundNames) {
-                try {
-                    String assetPath = SOUNDS_FOLDER + "/" + filename;
-                    Click click = new Click(assetPath);
-                    load(click);
-                    mClicks.add(click);
-                    Timber.d("  Loaded: " + filename);
-                } catch (IOException ioe) {
-                    Timber.d("Could not load sound " + filename, ioe);
-                    return null;
-                }
-            }
-            return null;
-        }
-
-        private void load(Click click) throws IOException {
-            AssetFileDescriptor afd = mAssets.openFd(click.getAssetPath());
-            int soundId = mSoundPool.load(afd, 1);
-            click.setSoundId(soundId);
-        }
-    }
-
-
-
-
-    public List<Click> getClicks() {
-        return mClicks;
     }
 
     private void getClicksFromSharedPrefs() {

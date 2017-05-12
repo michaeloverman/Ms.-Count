@@ -43,7 +43,7 @@ public abstract class MetronomeActivity extends SingleFragmentActivity {
      * Attaches click file names to Settings intent for setting menu
      */
     private void gotoSettings() {
-        List<Click> list = mMetronome.getClicks();
+        List<Click> list = ClickSounds.getClicks();
         int size = list.size();
         String[] entries = new String[size];
         String[] values = new String[size];

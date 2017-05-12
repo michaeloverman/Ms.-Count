@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        releaseConfig {
+            keyAlias 'nohands_key'
+            keyPassword 'Mar.mba5'
+//            storeFile file("$rootdir/nohands_keystore.jks")
+            storePassword 'Mar.mba5'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
-
     defaultConfig {
         applicationId "tech.michaeloverman.android.stickit"
         minSdkVersion 19
@@ -12,18 +19,17 @@ android {
         versionName "1.6"
         vectorDrawables.useSupportLibrary = true
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseConfig
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:25.3.1'

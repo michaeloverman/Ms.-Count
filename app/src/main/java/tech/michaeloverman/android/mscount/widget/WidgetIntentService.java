@@ -70,6 +70,7 @@ public class WidgetIntentService extends IntentService {
 
             widgetManager.updateAppWidget(widgetId, views);
         }
+        data.close();
     }
 
 //    private int getWidgetWidth(AppWidgetManager manager, int id) {

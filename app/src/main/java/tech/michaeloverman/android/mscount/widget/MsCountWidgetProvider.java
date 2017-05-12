@@ -46,6 +46,7 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.widget, pendingIntent);
 
+        // IF DROP MIN SDK THIS IS NEEDED, OTHERWISE, CAN DROP...
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             setRemoteAdapter(context, views, appWidgetId);
         } else {

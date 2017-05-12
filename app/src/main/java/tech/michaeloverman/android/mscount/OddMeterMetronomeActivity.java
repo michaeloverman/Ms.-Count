@@ -20,7 +20,7 @@ public class OddMeterMetronomeActivity extends MetronomeActivity {
 
     @Override
     protected Fragment createFragment() {
-        mMetronome = Metronome.getInstance();
+        mMetronome = new Metronome(this);
         return OddMeterMetronomeFragment.newInstance(mMetronome);
     }
 

@@ -18,6 +18,7 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import tech.michaeloverman.android.mscount.utils.ClickSounds;
 import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
@@ -43,8 +44,7 @@ public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleF
 
         checkIfWearableConnected();
 
-        mMetronome = Metronome.getInstance();
-        mMetronome.setContext(this);
+        ClickSounds.loadSounds(this);
 
         if(Build.VERSION.SDK_INT >= 21) {
             setupWindowAnimations();

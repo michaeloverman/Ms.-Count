@@ -1,7 +1,6 @@
 /* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -24,8 +23,6 @@ class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory 
 
     private final Context mContext;
     private Cursor data = null;
-    private AppWidgetManager widgetManager;
-    private int appWidgetId;
 
     private static final String[] PROGRAM_COLUMNS = {
             ProgramDatabaseSchema.MetProgram._ID,
@@ -39,21 +36,18 @@ class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory 
         Timber.d("WidgetRemoteViewsFactory");
         mContext = context;
 
-        if(intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID)) {
-            Timber.d("EXXXXXXXXXXXXXXXXXtra found: ");
-            Timber.d("   int found: " + intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID));
-            appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
-//            appWidgetId = 131;
-        }
+//        if(intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID)) {
+//            Timber.d("EXXXXXXXXXXXXXXXXXtra found: ");
+//            Timber.d("   int found: " + intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+//                    AppWidgetManager.INVALID_APPWIDGET_ID));
+//        }
     }
 
 
     @Override
     public void onCreate() {
         Timber.d("onCreate()");
-        widgetManager = AppWidgetManager.getInstance(mContext);
+//        widgetManager = AppWidgetManager.getInstance(mContext);
     }
 
     @Override

@@ -57,11 +57,11 @@ public class ProgramProvider extends ContentProvider {
 
         Timber.d("query()");
 
-        switch(sUriMatcher.match(uri)) {
+        switch (sUriMatcher.match(uri)) {
             case CODE_COMPOSER:
                 Timber.d("UriMatcher: CODE_COMPOSER");
                 String composer = uri.getLastPathSegment();
-                selectionArgs = new String[] { composer };
+                selectionArgs = new String[]{composer};
 
                 cursor = mHelper.getReadableDatabase().query(
                         ProgramDatabaseSchema.MetProgram.TABLE_NAME,
@@ -77,7 +77,7 @@ public class ProgramProvider extends ContentProvider {
             case CODE_COMPOSER_WITH_PIECE:
                 Timber.d("UriMatcher: CODE_COMPOSER_WITH_PIECE");
                 String title = uri.getLastPathSegment();
-                selectionArgs = new String[] { title };
+                selectionArgs = new String[]{title};
                 cursor = mHelper.getReadableDatabase().query(
                         ProgramDatabaseSchema.MetProgram.TABLE_NAME,
                         null,
@@ -122,8 +122,8 @@ public class ProgramProvider extends ContentProvider {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Uri returnUri;
 
-        Timber.d("switch(sUriMatcher.match(uri) " + sUriMatcher.match(uri) );
-        switch(sUriMatcher.match(uri)) {
+        Timber.d("switch(sUriMatcher.match(uri) " + sUriMatcher.match(uri));
+        switch (sUriMatcher.match(uri)) {
             case CODE_ALL_OF_IT:
                 Timber.d("case CODE_ALL_OF_IT");
                 db.beginTransaction();
@@ -132,13 +132,13 @@ public class ProgramProvider extends ContentProvider {
                             values.get(ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER).toString(),
                             values.get(ProgramDatabaseSchema.MetProgram.COLUMN_TITLE).toString());
                     long _id;
-                    if(lineNumber == -1) {
+                    if (lineNumber == -1) {
                         _id = db.insert(ProgramDatabaseSchema.MetProgram.TABLE_NAME,
                                 null, values);
                     } else {
 
                         _id = db.update(ProgramDatabaseSchema.MetProgram.TABLE_NAME, values,
-                                "_id=?", new String[]{ Integer.toString(lineNumber) });
+                                "_id=?", new String[]{Integer.toString(lineNumber)});
                     }
                     Timber.d("long returned = " + _id);
                     if (_id == -1) {
@@ -170,14 +170,18 @@ public class ProgramProvider extends ContentProvider {
         Intent dataUpdateIntent = new Intent(ACTION_DATA_UPDATED);
         getContext().sendBroadcast(dataUpdateIntent);
     }
+
     private int getLineNumberInDatabase(SQLiteDatabase db, String composer, String title) {
         Cursor c = db.query(ProgramDatabaseSchema.MetProgram.TABLE_NAME,
                 new String[]{"_id"}, ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER + "=? AND "
-                + ProgramDatabaseSchema.MetProgram.COLUMN_TITLE + "=?", new String[]{composer, title},
-                null,null,null,null);
+                        + ProgramDatabaseSchema.MetProgram.COLUMN_TITLE + "=?", new String[]{composer, title},
+                null, null, null, null);
         if (c.moveToFirst()) {
-            return c.getInt(ProgramDatabaseSchema.MetProgram.POSITION_ID);
+            int position = c.getInt(ProgramDatabaseSchema.MetProgram.POSITION_ID);
+            c.close();
+            return position;
         }
+        c.close();
         return -1;
     }
 
@@ -187,7 +191,7 @@ public class ProgramProvider extends ContentProvider {
         final SQLiteDatabase db = mHelper.getWritableDatabase();
         int rowsDeleted;
 
-        switch(sUriMatcher.match(uri)) {
+        switch (sUriMatcher.match(uri)) {
             case CODE_ALL_OF_IT:
                 rowsDeleted = db.delete(ProgramDatabaseSchema.MetProgram.TABLE_NAME,
                         selection,
@@ -198,7 +202,7 @@ public class ProgramProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown URI: " + uri);
         }
 
-        if(rowsDeleted != 0) {
+        if (rowsDeleted != 0) {
             Context context = getContext();
             if (context != null) {
                 context.getContentResolver().notifyChange(uri, null);

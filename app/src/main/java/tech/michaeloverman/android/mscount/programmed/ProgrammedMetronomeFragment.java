@@ -118,18 +118,16 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final int ONE_LESS = INITIAL_TEMPO_CHANGE_DELAY - 2;
     private static final int MIN_TEMPO_CHANGE_DELAY = 20;
 
-    private static ProgrammedMetronomeActivity mActivity;
+    private ProgrammedMetronomeActivity mActivity;
     private static Cursor mCursor;
 
-    public static Fragment newInstance(Metronome m, ProgrammedMetronomeActivity a) {
+    public static Fragment newInstance() {
         ProgrammedMetronomeFragment fragment = new ProgrammedMetronomeFragment();
-        mActivity = a;
-        fragment.setMetronome(m);
         return fragment;
     }
 
-    private void setMetronome(Metronome m) {
-        mMetronome = m;
+    private void setUpMetronome() {
+        mMetronome = new Metronome(mActivity);
         mMetronome.setMetronomeStartStopListener(this);
         mMetronome.setProgrammedMetronomeListener(this);
     }
@@ -140,14 +138,16 @@ public class ProgrammedMetronomeFragment extends Fragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
+        mActivity = (ProgrammedMetronomeActivity) getActivity();
 
+        setUpMetronome();
 
         mHasWearDevice = PrefUtils.wearPresent(mActivity);
         if(mHasWearDevice) {
             createAndRegisterBroadcastReceiver();
         }
 
-        getActivity().setTitle(getString(R.string.app_name));
+        mActivity.setTitle(getString(R.string.app_name));
 
         if(savedInstanceState != null) {
             Timber.d("found savedInstanceState");
@@ -192,17 +192,13 @@ public class ProgrammedMetronomeFragment extends Fragment
         };
     }
 
-    private boolean viewcreated = true;
-    private LayoutInflater tempInflater;
-    private ViewGroup tempViewGroup;
-    private Bundle tempSavedInstanceState;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.programmed_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        if(mActivity == null) {
+//        if(mActivity == null) {
 //            Timber.d("mActivity is null....");
 //            Intent i = new Intent(getActivity(), MsCountActivity.class);
 //            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -217,9 +213,9 @@ public class ProgrammedMetronomeFragment extends Fragment
 //            return null;
 
 //            Timber.d("shouldn't have gotten this far...");
-        }
+//        }
 
-        mActivity.setTitle(R.string.app_name);
+//        mActivity.setTitle(R.string.app_name);
 //        Timber.d("using firebase? " + mActivity.useFirebase);
 
         mInterstitialAd = new InterstitialAd(mActivity);
@@ -274,7 +270,6 @@ public class ProgrammedMetronomeFragment extends Fragment
             }
         });
 
-
         if(mCurrentPiece != null) {
             updateGUI();
         }
@@ -299,6 +294,8 @@ public class ProgrammedMetronomeFragment extends Fragment
         if(mMetronomeRunning) metronomeStartStop();
 
         cancelWearNotification();
+        getActivity().unregisterReceiver(mMetronomeBroadcastReceiver);
+
         PrefUtils.saveCurrentProgramToPrefs(mActivity, mActivity.useFirebase,
                 mCurrentPieceKey, mCurrentTempo);
         super.onPause();
@@ -310,6 +307,9 @@ public class ProgrammedMetronomeFragment extends Fragment
         super.onResume();
 //        if(mAdView != null) {
 //            mAdView.resume();
+//        }
+//        if(mMetronomeBroadcastReceiver == null) {
+        createAndRegisterBroadcastReceiver();
 //        }
         if(mCurrentPiece != null) {
             updateWearNotif();
@@ -339,12 +339,6 @@ public class ProgrammedMetronomeFragment extends Fragment
         Timber.d("Should have just saved " + mCurrentPieceKey + " at " + mCurrentTempo + " BPM");
 
         mCursor = null;
-
-//        cancelWearNotification();
-
-//        if(mAdView != null) {
-//            mAdView.destroy();
-//        }
 
         super.onDestroy();
     }
@@ -616,7 +610,9 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void createAndRegisterBroadcastReceiver() {
-        mMetronomeBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        if(mMetronomeBroadcastReceiver == null) {
+            mMetronomeBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        }
         IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
 //        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
         mActivity.registerReceiver(mMetronomeBroadcastReceiver, filter);
@@ -632,8 +628,9 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     private void cancelWearNotification() {
         mWearNotification.cancel();
-        mActivity.unregisterReceiver(mMetronomeBroadcastReceiver);
-
+//        if(mMetronomeBroadcastReceiver != null) {
+//            mActivity.unregisterReceiver(mMetronomeBroadcastReceiver);
+//        }
     }
 
     private void openProgramEditor() {

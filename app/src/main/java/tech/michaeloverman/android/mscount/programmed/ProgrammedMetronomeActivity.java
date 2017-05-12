@@ -27,7 +27,6 @@ import com.google.firebase.auth.FirebaseUser;
 import tech.michaeloverman.android.mscount.BuildConfig;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.dataentry.MetaDataEntryFragment;
-import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeActivity;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
@@ -47,15 +46,14 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
 
     @Override
     protected Fragment createFragment() {
-        mMetronome =  new Metronome(this);
-        return ProgrammedMetronomeFragment.newInstance(mMetronome, this);
+        return ProgrammedMetronomeFragment.newInstance();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= 21) {
             setupWindowAnimations();
         }
 
@@ -166,6 +164,12 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         }
 
     }
+    
+    private void actuallyGoBack() {
+
+        super.onBackPressed();
+
+    }
 
     @TargetApi(21)
     private void setupWindowAnimations() {
@@ -202,39 +206,31 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
                 // Sign in failed
                 if (response == null) {
                     // User pressed back button
-                    showSnackbar(R.string.sign_in_cancelled);
+                    showToast(R.string.sign_in_cancelled);
                     return;
                 }
 
                 if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    showSnackbar(R.string.no_internet_connection);
+                    showToast(R.string.no_internet_connection);
                     return;
                 }
 
                 if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    showSnackbar(R.string.unknown_error);
+                    showToast(R.string.unknown_error);
                     return;
                 }
             }
 
-            showSnackbar(R.string.unknown_sign_in_response);
+            showToast(R.string.unknown_sign_in_response);
         }
     }
 
-    private void showSnackbar(int message) {
+    private void showToast(int message) {
         String m = getString(message);
         Toast.makeText(this, m, Toast.LENGTH_SHORT).show();
         Timber.d(m);
     }
 
-    private void actuallyGoBack() {
-
-        super.onBackPressed();
-
-        if (mMetronome.isRunning()) {
-            mMetronome.stop();
-        }
-    }
 
     private void losingDataAlertDialog() {
         new AlertDialog.Builder(this)

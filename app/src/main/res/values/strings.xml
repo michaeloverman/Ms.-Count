@@ -183,6 +183,7 @@
     <string name="program_beats_content_description">program beats</string>
     <string name="repeat_measure">repeat measure</string>
     <string name="app_name_content_description">ms count metronome</string>
+    <string name="programmed_interstitial_unit_id">ca-app-pub-9915736656105375/9963638641</string>
 
 
 </resources>

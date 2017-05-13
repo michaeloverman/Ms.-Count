@@ -217,7 +217,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 //        Timber.d("using firebase? " + mActivity.useFirebase);
 
         mInterstitialAd = new InterstitialAd(mActivity);
-        mInterstitialAd.setAdUnitId(getString(R.string.programmed_banner_ad_unit_id));
+        mInterstitialAd.setAdUnitId(getString(R.string.programmed_interstitial_unit_id));
         AdRequest.Builder adBuilder = new AdRequest.Builder();
         if(BuildConfig.DEBUG) {
             adBuilder.addTestDevice(getString(R.string.test_device_code));

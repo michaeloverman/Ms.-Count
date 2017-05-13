@@ -18,4 +18,12 @@
         <item name="popupTheme">@style/Theme.AppCompat.Light</item>
     </style>
 
+    <style name="OddmeterButtonStyle" parent="AppTheme.Main">
+        <item name="android:layout_width">@dimen/odd_met_subdiv_button_size</item>
+        <item name="android:layout_height">@dimen/odd_met_subdiv_button_size</item>
+        <item name="android:background">@drawable/roundcorner_primary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/odd_met_subdiv_button_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

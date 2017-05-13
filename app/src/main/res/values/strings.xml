@@ -2,7 +2,7 @@
     <string name="app_name">Ms. Count</string>
     <string name="start">Start</string>
     <!--<string name="bpm">BPM</string>-->
-    <string name="unformatted_bpm" formatted="false">%d bpm</string>
+    <string name="unformatted_bpm" formatted="false">%1$d bpm</string>
     <!--<string name="stop">Stop</string>-->
     <!--<string name="programmed_metronome">Programmed Metronome</string>-->
     <!--<string name="choose_etude">Select an etude</string>-->
@@ -57,9 +57,9 @@
     <string name="cancel_delete">Cancel delete</string>
     <string name="select_to_delete">Select Program to Delete…</string>
     <string name="cancel">Cancel</string>
-    <string name="delete_confirmation_question" formatted="false">Are you sure you want to delete %s from the database?</string>
+    <string name="delete_confirmation_question" formatted="false">Are you sure you want to delete %1$s from the database?</string>
     <string name="delete_program_dialog_title">Delete Program?</string>
-    <string name="deleting_title" formatted="false">Deleting %s…</string>
+    <string name="deleting_title" formatted="false">Deleting %1$s…</string>
     <string name="no_composer_empty_space"/>
     <string name="select_a_program">select a program…</string>
     <string name="transition_composer_name_view">transition_composer_name_view</string>
@@ -129,7 +129,7 @@
     <string name="add_beat_of_ten_subdivisions">add beat of ten subdivisions</string>
     <string name="barline_content_description" formatted="false">barline, measure number %1$d</string>
     <string name="add_barline_button_content_description">add barline button</string>
-    <string name="note_value_note_equals" formatted="false">%s equals</string>
+    <string name="note_value_note_equals" formatted="false">%1$s equals</string>
 
     <!--Data Input Layout Buttons-->
     <string name="barline_character">|</string>
@@ -173,7 +173,7 @@
     <string name="select_composer">Select Composer</string>
 
     <!--Normal Metronome-->
-    <string name="vol_abbrev_colon" formatted="false">vol: %d</string>
+    <string name="vol_abbrev_colon" formatted="false">vol: %1$d</string>
 
     <!--Oddmeter Metronome-->
     <string name="pulse_equals">%1$d=</string>

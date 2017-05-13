@@ -184,8 +184,8 @@ public class MetaDataEntryFragment extends Fragment
                         int tempo = Integer.parseInt(mDefaultTempoEntry.getText().toString());
                         if(tempo < Metronome.MIN_TEMPO || tempo > Metronome.MAX_TEMPO) {
                             Toast.makeText(getContext(), getString(R.string.tempo_between_min_max,
-                                            Metronome.MIN_TEMPO, Metronome.MAX_TEMPO),
-                                    Toast.LENGTH_SHORT).show();
+                                    Metronome.MIN_TEMPO, Metronome.MAX_TEMPO), Toast.LENGTH_SHORT)
+                                    .show();
                             mDefaultTempoEntry.setText("");
                         }
                     } catch (NumberFormatException n) {

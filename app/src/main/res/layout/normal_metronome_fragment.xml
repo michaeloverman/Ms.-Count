@@ -13,9 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintLeft_toLeftOf="parent">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,9 +46,7 @@
         android:src="@android:drawable/ic_media_play"
         app:fabSize="normal"
         app:rippleColor="@color/colorPrimaryLight"
-        app:elevation="@dimen/fab_elevation"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
+        app:elevation="@dimen/fab_elevation"/>
 
     <TextView
         android:id="@+id/current_tempo"
@@ -61,7 +57,7 @@
         android:paddingBottom="@dimen/normal_met_tempo_vertical_padding"
         android:text="@string/_120"
         android:textColor="@color/primaryText"
-        android:textSize="100dp"
+        android:textSize="@dimen/normal_met_tempo_font_size"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/normal_start_stop_fab"
@@ -72,14 +68,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginRight="@dimen/generic_8dp_margin"
         android:layout_marginStart="@dimen/generic_8dp_margin"
         android:layout_marginEnd="@dimen/generic_8dp_margin"
-        android:layout_marginTop="180dp"
-        android:layout_marginLeft="@dimen/generic_8dp_margin"
-        app:layout_constraintTop_toTopOf="@+id/current_tempo"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="@dimen/normal_met_tempo_buttons_bottom_margin"
+        app:layout_constraintBottom_toTopOf="@+id/subdivisions_frame">
         <ImageButton
             android:id="@+id/tempo_down_button"
             android:contentDescription="@string/tempo_down_button"
@@ -88,8 +82,8 @@
             android:background="@drawable/roundcorner_primary"
             android:layout_width="@dimen/tempo_button_size"
             android:layout_height="@dimen/tempo_button_size"
-            android:layout_marginLeft="@dimen/generic_8dp_margin"
-            android:layout_marginRight="@dimen/generic_8dp_margin"
+            android:layout_marginEnd="@dimen/generic_8dp_margin"
+            android:layout_marginStart="@dimen/generic_8dp_margin"
             android:layout_marginTop="@dimen/generic_8dp_margin"/>
         <!--app:layout_constraintBottom_toTopOf="@+id/tempo_down_button"-->
 
@@ -101,8 +95,8 @@
             android:background="@drawable/roundcorner_primary"
             android:layout_width="@dimen/tempo_button_size"
             android:layout_height="@dimen/tempo_button_size"
-            android:layout_marginRight="@dimen/generic_8dp_margin"
-            android:layout_marginLeft="@dimen/generic_8dp_margin"
+            android:layout_marginStart="@dimen/generic_8dp_margin"
+            android:layout_marginEnd="@dimen/generic_8dp_margin"
             android:layout_marginTop="@dimen/generic_8dp_margin"
             />
         <!--app:layout_constraintTop_toBottomOf="@+id/tempo_up_button"-->
@@ -260,7 +254,7 @@
         android:contentDescription="@string/add_a_subdivision"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/normal_met_subdiv_plus_minus_bottom_margin"
         app:layout_constraintBottom_toTopOf="@+id/normal_adView"
         app:layout_constraintLeft_toRightOf="@+id/guideline"
         app:layout_constraintRight_toRightOf="parent"
@@ -275,7 +269,7 @@
         android:contentDescription="@string/subtract_a_subdivision"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/normal_met_subdiv_plus_minus_bottom_margin"
         app:layout_constraintBottom_toTopOf="@+id/normal_adView"
         app:layout_constraintRight_toLeftOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"

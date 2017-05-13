@@ -73,7 +73,7 @@
         app:layout_constraintTop_toBottomOf="@+id/title_text_entry"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="@dimen/data_entry_outside_margin"/>
 
     <TextView
         android:id="@+id/countoff_subdivision_label"
@@ -88,8 +88,8 @@
     <EditText
         android:id="@+id/baseline_subdivision_entry"
         android:contentDescription="@string/enter_number_of_subdivisions_in_primary_beat"
-        android:layout_width="105dp"
-        android:layout_height="42dp"
+        android:layout_width="@dimen/meta_data_edittext_width"
+        android:layout_height="@dimen/metadata_edittext_height"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
         android:ems="6"
         android:gravity="center"
@@ -103,8 +103,8 @@
     <EditText
         android:id="@+id/countoff_subdivision_entry"
         android:contentDescription="@string/enter_number_of_subdivisions_in_count_off_click"
-        android:layout_width="105dp"
-        android:layout_height="42dp"
+        android:layout_width="@dimen/meta_data_edittext_width"
+        android:layout_height="@dimen/metadata_edittext_height"
         android:ems="6"
         android:gravity="center"
         android:hint="@string/_2"
@@ -128,25 +128,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/default_tempo"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/meta_data_horz_margin"
+        android:layout_marginEnd="@dimen/meta_data_horz_margin"
         app:layout_constraintRight_toLeftOf="@+id/guideline"
-        android:layout_marginRight="8dp"
-        app:layout_constraintHorizontal_bias="0.558"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/metadata_vertical_margin"
         app:layout_constraintTop_toBottomOf="@+id/countoff_subdivision_entry"/>
 
     <EditText
         android:id="@+id/default_tempo_entry"
         android:contentDescription="@string/enter_default_tempo"
-        android:layout_width="63dp"
-        android:layout_height="43dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="@dimen/meta_data_short_edittext_width"
+        android:layout_height="@dimen/metadata_edittext_height"
+        android:layout_marginEnd="@dimen/metadata_normal_horizontal_margin"
+        android:layout_marginStart="@dimen/metadata_normal_horizontal_margin"
         android:ems="10"
         android:gravity="center"
         android:hint="@string/_120"
@@ -155,8 +150,7 @@
         android:nextFocusForward="@+id/baseline_rhythmic_value_recycler"
         app:layout_constraintLeft_toLeftOf="@+id/default_tempo_label"
         app:layout_constraintRight_toRightOf="@+id/default_tempo_label"
-        app:layout_constraintTop_toBottomOf="@+id/default_tempo_label"
-        app:layout_constraintHorizontal_bias="0.501"/>
+        app:layout_constraintTop_toBottomOf="@+id/default_tempo_label" />
 
     <TextView
         android:id="@+id/baseline_rhythmic_value_label"
@@ -169,23 +163,18 @@
         android:layout_marginTop="0dp"
         android:layout_marginStart="@dimen/metadata_normal_horizontal_margin"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/baseline_rhythmic_value_recycler"
-        android:layout_width="151dp"
-        android:layout_height="56dp"
+        android:layout_width="@dimen/rhythm_value_recycler_width"
+        android:layout_height="@dimen/rhythm_value_recycler_height"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/baseline_rhythmic_value_label"
-        android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="@+id/baseline_rhythmic_value_label"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="@+id/baseline_rhythmic_value_label"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="-5dp"
-        app:layout_constraintHorizontal_bias="0.521"
-        >
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_marginStart="@dimen/metadata_normal_horizontal_margin"
+        android:layout_marginEnd="@dimen/metadata_normal_horizontal_margin"
+        />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/enter_beats_button"
@@ -193,14 +182,12 @@
         android:layout_height="wrap_content"
         android:text="@string/program_beats_2lines"
         app:backgroundTint="@color/colorPrimary"
-        android:layout_marginTop="38dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginTop="@dimen/meta_data_program_button_top_margin"
         app:layout_constraintRight_toRightOf="@+id/baseline_rhythmic_value_recycler"
         app:layout_constraintLeft_toLeftOf="@+id/baseline_rhythmic_value_recycler"
         app:layout_constraintTop_toBottomOf="@+id/default_tempo_entry"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/metadata_normal_horizontal_margin"
+        android:layout_marginEnd="@dimen/metadata_normal_horizontal_margin"
         />
 
     <android.support.v7.widget.AppCompatButton
@@ -210,13 +197,11 @@
         android:text="@string/save_program"
         app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginBottom="@dimen/meta_data_save_button_bottom_margin"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginStart="@dimen/metadata_normal_horizontal_margin"
+        android:layout_marginEnd="@dimen/metadata_normal_horizontal_margin"/>
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/options_button"
@@ -224,11 +209,8 @@
         android:layout_height="wrap_content"
         android:text="@string/options"
         app:backgroundTint="@color/colorPrimary"
-        android:layout_marginRight="0dp"
         app:layout_constraintRight_toRightOf="@+id/default_tempo_label"
-        android:layout_marginLeft="0dp"
         app:layout_constraintLeft_toLeftOf="@+id/default_tempo_label"
-        android:layout_marginTop="0dp"
         app:layout_constraintTop_toTopOf="@+id/enter_beats_button"
         />
 

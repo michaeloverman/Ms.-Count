@@ -30,7 +30,7 @@
         android:id="@+id/current_composer_name"
         android:text="@string/no_composer_empty_space"
         android:textColor="@color/secondaryText"
-        android:textSize="14sp"
+        android:textSize="@dimen/pro_met_name_label_font_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/generic_8dp_margin"
@@ -42,7 +42,7 @@
     <TextView
         android:id="@+id/current_program_title"
         android:text="@string/select_a_program"
-        android:textSize="24sp"
+        android:textSize="@dimen/pro_met_title_label_font_size"
         android:textColor="@color/primaryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,14 +55,12 @@
         android:id="@+id/current_tempo_setting"
         android:text="@string/_120"
         android:textColor="@color/primaryText"
-        android:textSize="40sp"
+        android:textSize="@dimen/pro_met_tempo_font_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/generic_8dp_margin"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="@dimen/generic_8dp_margin"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="@dimen/pro_met_tempo_label_top_margin"
         app:layout_constraintTop_toBottomOf="@+id/current_program_title"
         android:layout_marginStart="@dimen/generic_8dp_margin"
         android:layout_marginEnd="@dimen/generic_8dp_margin"/>
@@ -71,11 +69,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginRight="@dimen/generic_8dp_margin"
         android:layout_marginStart="@dimen/generic_8dp_margin"
         android:layout_marginEnd="@dimen/generic_8dp_margin"
         android:id="@+id/linearLayout"
-        android:layout_marginLeft="@dimen/generic_8dp_margin"
         app:layout_constraintTop_toBottomOf="@+id/current_tempo_setting"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
@@ -86,8 +82,8 @@
             android:background="@drawable/roundcorner_primary"
             android:layout_width="@dimen/tempo_button_size"
             android:layout_height="@dimen/tempo_button_size"
-            android:layout_marginLeft="@dimen/generic_8dp_margin"
-            android:layout_marginRight="@dimen/generic_8dp_margin"
+            android:layout_marginStart="@dimen/generic_8dp_margin"
+            android:layout_marginEnd="@dimen/generic_8dp_margin"
             android:layout_marginTop="@dimen/generic_8dp_margin"/>
             <!--app:layout_constraintBottom_toTopOf="@+id/tempo_down_button"-->
 
@@ -98,8 +94,8 @@
             android:background="@drawable/roundcorner_primary"
             android:layout_width="@dimen/tempo_button_size"
             android:layout_height="@dimen/tempo_button_size"
-            android:layout_marginRight="@dimen/generic_8dp_margin"
-            android:layout_marginLeft="@dimen/generic_8dp_margin"
+            android:layout_marginEnd="@dimen/generic_8dp_margin"
+            android:layout_marginStart="@dimen/generic_8dp_margin"
             android:layout_marginTop="@dimen/generic_8dp_margin"
             />
             <!--app:layout_constraintTop_toBottomOf="@+id/tempo_up_button"-->
@@ -111,14 +107,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/current_measure_colon"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="@dimen/pro_met_measure_label_top_margin"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginStart="@dimen/generic_8dp_margin"
+        android:layout_marginEnd="@dimen/generic_8dp_margin"/>
 
     <TextView
         android:id="@+id/current_measure_number"
@@ -128,33 +122,31 @@
         android:textSize="90dp"
         android:textColor="@color/primaryText"
         app:layout_constraintTop_toBottomOf="@+id/measure_number_label"
-        android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginStart="@dimen/generic_8dp_margin"
+        android:layout_marginEnd="@dimen/generic_8dp_margin"/>
 
     <ImageView
         android:id="@+id/primary_beat_length_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/pro_met_primary_beat_image_size"
+        android:layout_height="@dimen/pro_met_primary_beat_image_size"
         app:srcCompat="@drawable/ic_dotted_4th"
         app:layout_constraintTop_toTopOf="@+id/current_tempo_setting"
         app:layout_constraintBottom_toBottomOf="@+id/current_tempo_setting"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="48dp"/>
+        android:layout_marginStart="@dimen/pro_met_primary_beat_image_margin"/>
 
     <TextView
         android:id="@+id/equals_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/equals"
-        android:textSize="40dp"
+        android:textSize="@dimen/pro_met_equal_sign_font_size"
         android:textColor="@color/primaryText"
         app:layout_constraintTop_toTopOf="@+id/primary_beat_length_image"
         app:layout_constraintBottom_toBottomOf="@+id/primary_beat_length_image"
         app:layout_constraintLeft_toLeftOf="@+id/primary_beat_length_image"
-        android:layout_marginStart="50dp"/>
+        android:layout_marginStart="@dimen/pro_met_equal_sign_margin"/>
 
 </android.support.constraint.ConstraintLayout>

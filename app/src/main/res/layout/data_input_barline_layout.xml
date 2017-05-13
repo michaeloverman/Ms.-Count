@@ -8,14 +8,14 @@
               android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/actual_line_barline"
-        android:layout_width="3dp"
-        android:layout_height="44dp"
-        android:paddingTop="6dp"
+        android:layout_width="@dimen/data_entry_barline_image_width"
+        android:layout_height="@dimen/data_entry_barline_image_height"
+        android:paddingTop="@dimen/data_entry_barline_padding"
         android:src="@color/colorPrimaryDark"/>
     <TextView
         android:id="@+id/data_entry"
         tools:text="12"
-        android:textSize="12sp"
+        android:textSize="@dimen/data_entry_text_view_font_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </LinearLayout>

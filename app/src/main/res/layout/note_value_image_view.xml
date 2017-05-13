@@ -7,6 +7,6 @@
         android:id="@+id/note_value_image"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"/>
+        android:layout_marginStart="@dimen/note_value_image_view_margin"
+        android:layout_marginEnd="@dimen/note_value_image_view_margin"/>
 </LinearLayout>

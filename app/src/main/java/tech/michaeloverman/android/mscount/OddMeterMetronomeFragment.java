@@ -106,9 +106,17 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     private void updateWearNotif() {
         if (mHasWearDevice) {
             mWearNotification = new WearNotification(getContext(),
-                    getString(R.string.app_name), getString(R.string.unformatted_bpm, (int) mBPM));
+                    getString(R.string.unformatted_bpm, (int) mBPM), getGroupingString());
             mWearNotification.sendStartStop();
         }
+    }
+
+    private String getGroupingString() {
+        StringBuilder sb = new StringBuilder();
+        for(Integer i : mSubdivisionsList) {
+            sb.append(i).append("   ");
+        }
+        return sb.toString();
     }
 
     private void createAndRegisterBroadcastReceiver() {

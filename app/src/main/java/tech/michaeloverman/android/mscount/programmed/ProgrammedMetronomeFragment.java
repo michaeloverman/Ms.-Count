@@ -83,7 +83,6 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static final int REQUEST_NEW_PROGRAM = 44;
     public static final String EXTRA_COMPOSER_NAME = "composer_name_extra";
     public static final String EXTRA_USE_FIREBASE = "program_database_option";
-    private static final String EXTRA_WEAR_INTENT_ID = "program_wear_notif";
 
     private PieceOfMusic mCurrentPiece;
     private String mCurrentPieceKey;
@@ -415,14 +414,13 @@ public class ProgrammedMetronomeFragment extends Fragment
             mMetronomeRunning = false;
             mStartStopButton.setImageResource(android.R.drawable.ic_media_play);
             mCurrentMeasureNumber.setText("--");
-            if(mHasWearDevice) mWearNotification.sendStartStop();
         } else {
             Timber.d("metronomeStart() " + mCurrentPiece.getTitle());
             mMetronomeRunning = true;
             mStartStopButton.setImageResource(android.R.drawable.ic_media_pause);
             mMetronome.play(mCurrentPiece, mCurrentTempo);
-            if(mHasWearDevice) mWearNotification.sendStartStop();
         }
+        if(mHasWearDevice) mWearNotification.sendStartStop();
     }
 
     @Override
@@ -627,7 +625,9 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void cancelWearNotification() {
-        mWearNotification.cancel();
+        if(mWearNotification != null) {
+            mWearNotification.cancel();
+        }
 //        if(mMetronomeBroadcastReceiver != null) {
 //            mActivity.unregisterReceiver(mMetronomeBroadcastReceiver);
 //        }

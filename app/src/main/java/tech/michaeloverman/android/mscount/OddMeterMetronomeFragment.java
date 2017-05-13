@@ -62,18 +62,12 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     private BroadcastReceiver mBroadcastReceiver;
     private boolean mHasWearDevice;
 
-    @BindView(R.id.oddmeter_start_stop_fab)
-    FloatingActionButton mStartStopFab;
-    @BindView(R.id.oddmeter_tempo_view)
-    TextView mTempoSetting;
-    @BindView(R.id.include_subdivisions_checkBox)
-    CheckBox mSubdivisionsCheckbox;
-    @BindView(R.id.extra_subdivision_buttons)
-    LinearLayout mOtherButtons;
-    @BindView(R.id.pulse_multiplier_view)
-    TextView mPulseMultiplierView;
-    @BindView(R.id.odd_adView)
-    AdView mAdView;
+    @BindView(R.id.oddmeter_start_stop_fab) FloatingActionButton mStartStopFab;
+    @BindView(R.id.oddmeter_tempo_view) TextView mTempoSetting;
+    @BindView(R.id.include_subdivisions_checkBox) CheckBox mSubdivisionsCheckbox;
+    @BindView(R.id.extra_subdivision_buttons) LinearLayout mOtherButtons;
+    @BindView(R.id.pulse_multiplier_view) TextView mPulseMultiplierView;
+    @BindView(R.id.odd_adView) AdView mAdView;
     private boolean mMultiplierSelected;
 
     private List<Integer> mSubdivisionsList;
@@ -95,10 +89,11 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        mMetronome = new Metronome(getContext());
+        mMetronome = new Metronome(getActivity());
+        mMetronome.setMetronomeStartStopListener(this);
 
         mHasWearDevice = PrefUtils.wearPresent(getContext());
-        if (mHasWearDevice) {
+        if(mHasWearDevice) {
             createAndRegisterBroadcastReceiver();
         }
 
@@ -112,13 +107,15 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     private void updateWearNotif() {
         if (mHasWearDevice) {
             mWearNotification = new WearNotification(getContext(),
-                    getString(R.string.app_name), (int) mBPM + " bpm");
+                    getString(R.string.app_name), getString(R.string.unformatted_bpm, (int) mBPM));
             mWearNotification.sendStartStop();
         }
     }
 
     private void createAndRegisterBroadcastReceiver() {
-        mBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        if(mBroadcastReceiver == null) {
+            mBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        }
         IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
         getActivity().registerReceiver(mBroadcastReceiver, filter);
     }
@@ -242,12 +239,21 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         if(mMetronomeRunning) {
             metronomeStartStop();
         }
-        if (mBroadcastReceiver != null) {
+        if (mWearNotification != null) {
             mWearNotification.cancel();
-            getActivity().unregisterReceiver(mBroadcastReceiver);
         }
 
+        getActivity().unregisterReceiver(mBroadcastReceiver);
+
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        createAndRegisterBroadcastReceiver();
+        updateWearNotif();
     }
 
     @Override
@@ -282,19 +288,22 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     @Override
     @OnClick(R.id.oddmeter_start_stop_fab)
     public void metronomeStartStop() {
-        Timber.d("Loop length: " + mSubdivisionsList.size() + ", view size: " + mSubdivisionViews.size());
+        Timber.d("Loop length: " + mSubdivisionsList.size() + ", view size: "
+                + mSubdivisionViews.size());
         if (mMetronomeRunning) {
             mMetronome.stop();
             mMetronomeRunning = false;
             mStartStopFab.setImageResource(android.R.drawable.ic_media_play);
         } else {
             if (mSubdivisionsList.size() == 0) {
-                Toast.makeText(getContext(), "You must enter subdivisions to click subdivisions...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.need_subdivs_to_click_subdivs,
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
             mMetronomeRunning = true;
-            mMetronome.play(((int) mBPM * mMultiplier), mSubdivisionsList, mSubdivisionsCheckbox.isChecked());
             mStartStopFab.setImageResource(android.R.drawable.ic_media_pause);
+            mMetronome.play(((int) mBPM * mMultiplier), mSubdivisionsList,
+                    mSubdivisionsCheckbox.isChecked());
         }
         if (mHasWearDevice) mWearNotification.sendStartStop();
     }

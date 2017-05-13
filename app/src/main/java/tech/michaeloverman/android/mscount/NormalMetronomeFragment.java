@@ -104,7 +104,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
     public static Fragment newInstance() {
         NormalMetronomeFragment fragment = new NormalMetronomeFragment();
-//        fragment.setMetronome(m);
         return fragment;
     }
 
@@ -114,14 +113,14 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        mMetronome = new Metronome(getContext());
+        mMetronome = new Metronome(getActivity());
+        mMetronome.setMetronomeStartStopListener(this);
 
         mHasWearDevice = PrefUtils.wearPresent(getContext());
         if (mHasWearDevice) {
             createAndRegisterBroadcastReceiver();
         }
 
-//        mMetronome = new Metronome(getActivity(), this);
         mDetector = new GestureDetectorCompat(this.getContext(), new MetronomeGestureListener());
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -139,11 +138,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
 
     }
-//
-//    private void setMetronome(Metronome m) {
-//        mMetronome = m;
-//        mMetronome.setMetronomeStartStopListener(this);
-//    }
 
     @Nullable
     @Override
@@ -228,14 +222,15 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
             mAdView.pause();
         }
 
-        if (mBroadcastReceiver != null) {
-            mWearNotification.cancel();
-            getActivity().unregisterReceiver(mBroadcastReceiver);
-        }
-
         if(mMetronomeRunning) {
             metronomeStartStop();
         }
+
+        if (mWearNotification != null) {
+            mWearNotification.cancel();
+        }
+
+        getActivity().unregisterReceiver(mBroadcastReceiver);
 
         super.onPause();
     }
@@ -246,6 +241,9 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         if (mAdView != null) {
             mAdView.resume();
         }
+
+        createAndRegisterBroadcastReceiver();
+        updateWearNotif();
     }
 
     @Override
@@ -267,15 +265,16 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
     private void updateWearNotif() {
         if (mHasWearDevice) {
             mWearNotification = new WearNotification(getContext(),
-                    getString(R.string.app_name), (int) mBPM + " bpm");
+                    getString(R.string.app_name), getString(R.string.unformatted_bpm, (int) mBPM));
             mWearNotification.sendStartStop();
         }
     }
 
     private void createAndRegisterBroadcastReceiver() {
-        mBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        if(mBroadcastReceiver == null) {
+            mBroadcastReceiver = new MetronomeBroadcastReceiver(this);
+        }
         IntentFilter filter = new IntentFilter(Metronome.ACTION_METRONOME_START_STOP);
-//        BroadcastManager manager = LocalBroadcastManager.getInstance(mActivity);
         getActivity().registerReceiver(mBroadcastReceiver, filter);
     }
 

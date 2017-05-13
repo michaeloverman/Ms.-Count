@@ -81,7 +81,7 @@ public class Metronome {
         if(beats == 1) {
             startClicking();
         } else {
-            playSubdivisions(beats);
+            playMeasures(beats);
         }
     }
     public void play(float tempo, int beats) {
@@ -91,7 +91,7 @@ public class Metronome {
         if(beats == 1) {
             startClicking();
         } else {
-            playSubdivisions(beats);
+            playMeasures(beats);
         }
     }
 
@@ -121,7 +121,7 @@ public class Metronome {
      * Click with number of subdivisions metronome start
      * @param subs
      */
-    private void playSubdivisions(final int subs) {
+    private void playMeasures(final int subs) {
 //        logSubdivisionVolumes(subs);
 
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {

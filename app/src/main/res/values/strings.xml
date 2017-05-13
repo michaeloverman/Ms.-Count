@@ -2,6 +2,7 @@
     <string name="app_name">Ms. Count</string>
     <string name="start">Start</string>
     <string name="bpm">BPM</string>
+    <string name="unformatted_bpm" formatted="false">%1$d bpm</string>
     <string name="stop">Stop</string>
     <string name="programmed_metronome">Programmed Metronome</string>
     <string name="choose_etude">Select an etude</string>
@@ -34,6 +35,9 @@
     <string name="down_beat_click_key">down_beat_click</string>
     <string name="inner_beat_click_key">inner_beat_click</string>
     <string name="subdivision_beat_click_key">subdivision_beat_click</string>
+    <string name="down_beat_click">Down beat click</string>
+    <string name="inner_beat_click">Inner beat click</string>
+    <string name="subdivision_click">Subdivision click</string>
 
     <string name="mark_as_favorite_menu">Mark as favorite</string>
     <string name="mark_as_unfavorite_menu">Unmark as favorite</string>
@@ -187,6 +191,7 @@
     <string name="pulse_equals">%1$d=</string>
     <string name="no_programs_currently_in_database">No programs currently in local database.</string>
     <string name="unknown_error_occurred">Unknown error occurred…</string>
+    <string name="need_subdivs_to_click_subdivs">You must enter subdivisions to click subdivisions...</string>
 
 
 </resources>

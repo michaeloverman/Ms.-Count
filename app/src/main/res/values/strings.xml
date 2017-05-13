@@ -1,20 +1,20 @@
 <resources>
     <string name="app_name">Ms. Count</string>
     <string name="start">Start</string>
-    <string name="bpm">BPM</string>
-    <string name="unformatted_bpm" formatted="false">%1$d bpm</string>
-    <string name="stop">Stop</string>
-    <string name="programmed_metronome">Programmed Metronome</string>
-    <string name="choose_etude">Select an etude</string>
-    <string name="work_titles_label">    </string>
+    <!--<string name="bpm">BPM</string>-->
+    <string name="unformatted_bpm" formatted="false">%d bpm</string>
+    <!--<string name="stop">Stop</string>-->
+    <!--<string name="programmed_metronome">Programmed Metronome</string>-->
+    <!--<string name="choose_etude">Select an etude</string>-->
+    <!--<string name="work_titles_label">    </string>-->
 
-    <string name="beats_in_current_measure">Beats in Current Measure: %d</string>
+    <!--<string name="beats_in_current_measure">Beats in Current Measure: %d</string>-->
     <string name="valid_characters_string">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ,-;:!?+=()#</string>
     <string name="select_piece_by">Select a piece by…</string>
     <string name="select_a_composer">Select a composer:</string>
     <string name="normal_metronome">Normal Metronome</string>
     <string name="pre_programmed_metronome">Ms. Count Metronome</string>
-    <string name="create_edit_program">Create/Edit Program</string>
+    <!--<string name="create_edit_program">Create/Edit Program</string>-->
     <string name="whole_num_format">#</string>
     <string name="tenths_num_format">#.#</string>
     <string name="too_many_subdivisions">No more than ten beats per measure.</string>
@@ -22,13 +22,12 @@
     <string name="no_internet_connection">Connect to internet, and sign again.</string>
     <string name="unknown_error">An error has occurred signing in to the database. Please try again.</string>
     <string name="unknown_sign_in_response">A response from the database has come back that we don\'t understand. Not sure if you\'re signed in or not…</string>
-    <string name="overwrite_data_confirmation" formatted="false">%1$s by %2$s already exists in the database. Are you sure you want to overwrite new data?</string>
+    <string name="overwrite_data_confirmation" formatted="false">%1$s by %2$s already exists in the database. Are you sure you want to overwrite with new data?</string>
     <string name="title_of_the_piece_dummy_data">Title Of the Piece</string>
     <string name="save">Save</string>
-    <string name="no_program_selected_instruction_toast">Select a program for metronome</string>
+    <!--<string name="no_program_selected_instruction_toast">Select a program for metronome</string>-->
     <string name="use_local_database">Access local database</string>
     <string name="use_cloud_database">Access cloud database</string>
-    <string name="change_clicks">Change Click Sounds</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
@@ -58,11 +57,10 @@
     <string name="cancel_delete">Cancel delete</string>
     <string name="select_to_delete">Select Program to Delete…</string>
     <string name="cancel">Cancel</string>
-    <string name="delete_confirmation_question" formatted="false">Are you sure you want to delete %1$s from the database?</string>
+    <string name="delete_confirmation_question" formatted="false">Are you sure you want to delete %s from the database?</string>
     <string name="delete_program_dialog_title">Delete Program?</string>
-    <string name="deleting_title" formatted="false">Deleting %1$s…</string>
+    <string name="deleting_title" formatted="false">Deleting %s…</string>
     <string name="appwidget_text">Ms. Count</string>
-    <string name="add_widget">Add widget</string>
     <string name="no_composer_empty_space"/>
     <string name="select_a_program">select a program…</string>
     <string name="transition_composer_name_view">transition_composer_name_view</string>
@@ -130,9 +128,9 @@
     <string name="add_beat_of_eight_subdivisions">add beat of eight subdivisions</string>
     <string name="add_beat_of_nine_subdivisions">add beat of nine subdivisions</string>
     <string name="add_beat_of_ten_subdivisions">add beat of ten subdivisions</string>
-    <string name="barline_content_description" formatted="false">barline, measure number %1$d</string>
+    <string name="barline_content_description" formatted="false">barline, measure number %d</string>
     <string name="add_barline_button_content_description">add barline button</string>
-    <string name="large_yellow_circle_content_description">large yellow circle image</string>
+    <string name="note_value_note_equals" formatted="false">%s equals</string>
 
     <!--Data Input Layout Buttons-->
     <string name="barline_character">|</string>
@@ -145,15 +143,8 @@
     <string name="odd_metronome">Odd Metronome</string>
 
     <!--Metadata Input-->
-    <string name="enter_composer_last_name_first">Enter composer, last name first</string>
     <string name="last_name_first_name">Last name, First name</string>
-    <string name="enter_title">Enter title</string>
     <string name="subdivisions_clicked_in_countoff">Subdivisions clicked in countoff</string>
-    <string name="enter_number_of_subdivisions_in_primary_beat">Enter number of subdivisions in primary beat</string>
-    <string name="enter_number_of_subdivisions_in_count_off_click">Enter number of subdivisions in count off click</string>
-    <string name="enter_default_tempo">Enter default tempo</string>
-    <string name="enter_number_of_first_measure">Enter number of first measure</string>
-    <string name="enter_tempo_multiplier">Enter tempo multiplier</string>
     <string name="edit_existing_program">Edit existing program</string>
     <string name="there_are_no_current_favorite_programs">There are no current favorite programs.</string>
 
@@ -185,13 +176,16 @@
     <string name="select_composer">Select Composer</string>
 
     <!--Normal Metronome-->
-    <string name="vol_abbrev_colon" formatted="false">vol: %1$d</string>
+    <string name="vol_abbrev_colon" formatted="false">vol: %d</string>
 
     <!--Oddmeter Metronome-->
     <string name="pulse_equals">%1$d=</string>
     <string name="no_programs_currently_in_database">No programs currently in local database.</string>
-    <string name="unknown_error_occurred">Unknown error occurred…</string>
-    <string name="need_subdivs_to_click_subdivs">You must enter subdivisions to click subdivisions...</string>
+    <!--<string name="unknown_error_occurred">Unknown error occurred…</string>-->
+    <string name="need_subdivs_to_click_subdivs">You must enter subdivisions to click subdivisions…</string>
+    <string name="program_beats_content_description">program beats</string>
+    <string name="repeat_measure">repeat measure</string>
+    <string name="app_name_content_description">ms count metronome</string>
 
 
 </resources>

@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.view.GestureDetector;
@@ -72,15 +73,13 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
 
     private List<Integer> mSubdivisionsList;
     private List<View> mSubdivisionViews;
-    @BindView(R.id.subdivision_layout)
-    LinearLayout mSubdivisionLayout;
+    @BindView(R.id.subdivision_layout) LinearLayout mSubdivisionLayout;
 //    private LinearLayout mSubdivisionLayout;
 
     private GestureDetectorCompat mDetector;
 
     public static Fragment newInstance() {
-        OddMeterMetronomeFragment fragment = new OddMeterMetronomeFragment();
-        return fragment;
+        return new OddMeterMetronomeFragment();
     }
 
     @Override
@@ -225,10 +224,10 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     public void multiplierSelected() {
         if (mMultiplierSelected) {
             mMultiplierSelected = false;
-            mPulseMultiplierView.setBackground(getResources().getDrawable(R.drawable.roundcorner_light));
+            mPulseMultiplierView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_light));
             if (mOtherButtons.isShown()) mOtherButtons.setVisibility(View.GONE);
         } else {
-            mPulseMultiplierView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
+            mPulseMultiplierView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_accent));
             mMultiplierSelected = true;
         }
     }
@@ -268,7 +267,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
             prefs.remove(PREF_KEY_LIST + i);
             prefs.putInt(PREF_KEY_LIST + i, mSubdivisionsList.get(i));
         }
-        prefs.commit();
+        prefs.apply();
 
 
         super.onDestroy();
@@ -276,13 +275,10 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
 
     @OnClick(R.id.include_subdivisions_checkBox)
     public void subdivisionsOnOff() {
-        if (!mMetronome.isRunning()) {
-            return;
-        } else {
+        if (mMetronome.isRunning()) {
             metronomeStartStop();
             metronomeStartStop();
         }
-
     }
 
     @Override
@@ -325,7 +321,7 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         TextView view = new TextView(getContext());
         view.setText(Integer.toString(value));
         view.setTextSize(SUBDIVISION_DISPLAY_SIZE);
-        view.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
+        view.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_parchment));
         view.setPadding(MARGIN, 0, MARGIN, 0);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);

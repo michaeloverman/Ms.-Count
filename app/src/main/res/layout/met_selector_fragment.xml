@@ -9,7 +9,6 @@
 
     <Button
         android:text="@string/normal_metronome"
-        android:contentDescription="@string/large_yellow_circle_content_description"
         android:id="@+id/normal_metronome_button"
         android:background="@drawable/roundcorner_primary"
         android:layout_width="wrap_content"
@@ -42,6 +41,7 @@
 
     <Button
         android:text="@string/pre_programmed_metronome"
+        android:contentDescription="@string/app_name_content_description"
         android:id="@+id/preprogrammed_metronome_button"
         android:background="@drawable/roundcorner_accent"
         android:layout_width="wrap_content"
@@ -58,6 +58,7 @@
 
     <ImageView
         android:id="@+id/big_round_button"
+        tools:ignore="contentDescription"
         android:layout_width="177dp"
         android:layout_height="167dp"
         app:srcCompat="@drawable/large_round_button_expno"

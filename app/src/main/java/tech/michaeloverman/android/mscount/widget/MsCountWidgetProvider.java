@@ -46,12 +46,7 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.widget, pendingIntent);
 
-        // IF DROP MIN SDK THIS IS NEEDED, OTHERWISE, CAN DROP...
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            setRemoteAdapter(context, views, appWidgetId);
-        } else {
-            setRemoteAdapterV11(context, views, appWidgetId);
-        }
+        setRemoteAdapter(context, views, appWidgetId);
 
         Intent clickIntentTemplate = new Intent(context, ProgrammedMetronomeActivity.class);
 
@@ -106,11 +101,6 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         views.setRemoteAdapter(R.id.widget_list, intent);
     }
-    @SuppressWarnings("deprecation")
-    private void setRemoteAdapterV11(Context context, RemoteViews views, int widgetId) {
-        Intent intent = new Intent(context, WidgetRemoteViewsService.class);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-        views.setRemoteAdapter(0, R.id.widget_list, intent);
-    }
+
 }
 

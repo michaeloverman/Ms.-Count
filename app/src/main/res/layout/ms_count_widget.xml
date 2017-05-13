@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/widget_padding"
         android:background="@color/colorPrimaryDark"
-        android:contentDescription="@string/appwidget_text"
+        android:contentDescription="@string/app_name_content_description"
         android:text="@string/app_name"
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/widget_text_size"
@@ -24,7 +24,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/widget_header"
         android:dividerHeight="@dimen/widget_divider_height"
-        android:backgroundTint="@color/colorPrimary"
+        android:background="@color/colorPrimary"
         tools:listitem="@layout/widget_list_item">
 
     </ListView>

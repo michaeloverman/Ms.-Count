@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -180,8 +181,7 @@ public class MetaDataEntryFragment extends Fragment
                     try {
                         int tempo = Integer.parseInt(mDefaultTempoEntry.getText().toString());
                         if(tempo < Metronome.MIN_TEMPO || tempo > Metronome.MAX_TEMPO) {
-                            Toast.makeText(getContext(), String.format(
-                                    getString(R.string.tempo_between_min_max),
+                            Toast.makeText(getContext(), getString(R.string.tempo_between_min_max,
                                             Metronome.MIN_TEMPO, Metronome.MAX_TEMPO),
                                     Toast.LENGTH_SHORT).show();
                             mDefaultTempoEntry.setText("");
@@ -596,7 +596,7 @@ public class MetaDataEntryFragment extends Fragment
         AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
         dialog.setCancelable(false);
         dialog.setTitle("Overwrite Data?");
-        dialog.setMessage(String.format(getResources().getString(R.string.overwrite_data_confirmation), title, composer));
+        dialog.setMessage(getString(R.string.overwrite_data_confirmation, title, composer));
         dialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -779,9 +779,9 @@ public class MetaDataEntryFragment extends Fragment
             Timber.d("onBindViewHolder, position: " + position + " selected: " + (position == selectedPosition));
 
             if(selectedPosition == position) {
-                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
+                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_accent));
             } else {
-                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
+                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_parchment));
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

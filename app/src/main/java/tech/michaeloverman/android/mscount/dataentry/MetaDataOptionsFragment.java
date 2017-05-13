@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -188,9 +189,9 @@ public class MetaDataOptionsFragment extends Fragment {
             Timber.d("onBindViewHolder, position: " + position + " selected: " + (position == selectedPosition));
 
             if(selectedPosition == position) {
-                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
+                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_accent));
             } else {
-                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
+                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_parchment));
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

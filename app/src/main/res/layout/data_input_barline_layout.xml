@@ -8,6 +8,7 @@
               android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/actual_line_barline"
+        tools:ignore="contentDescription"
         android:layout_width="@dimen/data_entry_barline_image_width"
         android:layout_height="@dimen/data_entry_barline_image_height"
         android:paddingTop="@dimen/data_entry_barline_padding"

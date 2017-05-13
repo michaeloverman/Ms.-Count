@@ -22,16 +22,17 @@ public class Metronome {
     public static final int MIN_TEMPO = 15;
 
     /* Sounds and Such */
-    private SoundPool mSoundPool;
+    private final SoundPool mSoundPool;
     private int mDownBeatClickId, mInnerBeatClickId, mSubdivisionBeatClickId;
     private final float[] mClickVolumes;
-    private Context mContext;
+    private final Context mContext;
 
     /* Timer, clicker variables */
     private CountDownTimer mTimer;
     private long mDelay;
     private boolean mClicking;
 
+    @SuppressWarnings("FieldCanBeLocal") // TODO remove suppression once properly implemented
     private MetronomeStartStopListener mListener;
     private ProgrammedMetronomeListener mPListener;
 

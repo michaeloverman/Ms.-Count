@@ -129,6 +129,7 @@
 
     <ImageView
         android:id="@+id/primary_beat_length_image"
+        tools:ignore="contentDescription"
         android:layout_width="@dimen/pro_met_primary_beat_image_size"
         android:layout_height="@dimen/pro_met_primary_beat_image_size"
         app:srcCompat="@drawable/ic_dotted_4th"

@@ -23,14 +23,16 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="@dimen/data_entry_outside_margin"/>
+        android:layout_marginTop="@dimen/data_entry_outside_margin"
+        android:layout_marginBottom="@dimen/data_entry_outside_margin"
+        />
 
     <EditText
         android:id="@+id/measure_offset_entry"
-        android:contentDescription="@string/enter_number_of_first_measure"
         android:layout_width="@dimen/meta_data_edittext_width"
         android:layout_height="@dimen/metadata_edittext_height"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
+        android:layout_marginBottom="@dimen/data_entry_outside_margin"
         android:ems="6"
         android:gravity="center"
         android:hint="@string/fortytwo"
@@ -48,11 +50,12 @@
         app:layout_constraintTop_toBottomOf="@+id/measure_number_offset_label"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="@dimen/data_entry_outside_margin"
+        android:layout_marginBottom="@dimen/data_entry_outside_margin"
+        />
 
     <EditText
         android:id="@+id/tempo_multiplier_entry"
-        android:contentDescription="@string/enter_tempo_multiplier"
         android:layout_width="@dimen/meta_data_edittext_width"
         android:layout_height="@dimen/metadata_edittext_height"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
@@ -72,8 +75,9 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginEnd="@dimen/metadata_normal_horizontal_margin"
         app:layout_constraintTop_toBottomOf="@id/tempo_multiplier_label"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/generic_8dp_margin"
         app:layout_constraintLeft_toLeftOf="parent"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/display_rhythmic_value_recycler"
         android:layout_width="@dimen/rhythm_value_recycler_width"
@@ -83,11 +87,7 @@
         app:layout_constraintRight_toRightOf="@+id/baseline_display_value_label"
         app:layout_constraintLeft_toLeftOf="@+id/baseline_display_value_label"
         android:layout_marginStart="@dimen/metadata_normal_horizontal_margin"
-        android:layout_marginEnd="@dimen/metadata_normal_horizontal_margin"
-
-        >
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_marginEnd="@dimen/metadata_normal_horizontal_margin" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/options_cancel_button"

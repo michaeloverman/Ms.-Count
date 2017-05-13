@@ -28,6 +28,7 @@ public class ClickSounds {
 
     public static void loadSounds(Context context) {
         if(mSoundPool != null) return;
+        //noinspection deprecation  // TODO fix this properly with SoundPool.Builder
         mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         mAssets = context.getAssets();
         new LoadSoundsTask().execute();

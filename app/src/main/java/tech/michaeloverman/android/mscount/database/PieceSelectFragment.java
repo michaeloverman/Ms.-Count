@@ -2,6 +2,7 @@
 package tech.michaeloverman.android.mscount.database;
 
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -51,7 +52,7 @@ import timber.log.Timber;
  */
 public class PieceSelectFragment extends DatabaseAccessFragment
         implements WorksListAdapter.WorksListAdapterOnClickHandler,
-        ComposerSelectFragment.ComposerCallback,
+//        ComposerSelectFragment.ComposerCallback,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int ID_PROGRAM_LOADER = 432;
@@ -117,6 +118,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         Toast.makeText(mActivity, R.string.select_to_delete, Toast.LENGTH_SHORT).show();
     }
 
+    @SuppressLint("AlwaysShowAction")
     private void prepareProgramDelete() {
         mDeleteFlag = true;
         mDeleteCancelMenuItem.setTitle(R.string.cancel_delete);
@@ -185,7 +187,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     @OnClick( { R.id.select_composer_button, R.id.composers_name_label} )
     public void selectComposer() {
 //        mCurrentPiece = null;
-        Fragment fragment = ComposerSelectFragment.newInstance(this);
+        Fragment fragment = ComposerSelectFragment.newInstance();
 
 //        android.transition.ChangeBounds changeBounds = (android.transition.ChangeBounds) TransitionInflater.from(mActivity).inflateTransition(R.transition.change_bounds);
 //        fragment.setSharedElementEnterTransition(changeBounds);
@@ -314,13 +316,13 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         );
     }
 
-    @Override
-    public void newComposer(String name) {
-        mCurrentComposer = name;
-//        if(!mActivity.useFirebase) {
-//            mActivity.getSupportLoaderManager().restartLoader(ID_PROGRAM_LOADER, null, this);
-//        }
-    }
+//    @Override
+//    public void newComposer(String name) {
+//        mCurrentComposer = name;
+////        if(!mActivity.useFirebase) {
+////            mActivity.getSupportLoaderManager().restartLoader(ID_PROGRAM_LOADER, null, this);
+////        }
+//    }
 
     private void composerSelected() {
         progressSpinner(true);
@@ -437,7 +439,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         }
     }
 
-    class DeleteFromSqlTask extends AsyncTask {
+    class DeleteFromSqlTask extends AsyncTask<Void, Void, Void> {
         private final int _id;
         private final String mTitle;
         private final ProgressDialog dialog = new ProgressDialog(mActivity);
@@ -448,13 +450,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         }
 
         @Override
-        protected void onPreExecute() {
-            dialog.setMessage(getString(R.string.deleting_title, mTitle));
-            dialog.show();
-        }
-
-        @Override
-        protected Object doInBackground(Object[] params) {
+        protected Void doInBackground(Void... params) {
             Uri uri = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
             String whereClause = "_id=?";
             String[] args = new String[] { Integer.toString(_id) };
@@ -464,7 +460,13 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         }
 
         @Override
-        protected void onPostExecute(Object o) {
+        protected void onPreExecute() {
+            dialog.setMessage(getString(R.string.deleting_title, mTitle));
+            dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
             if(dialog.isShowing()) {
                 dialog.dismiss();
             }

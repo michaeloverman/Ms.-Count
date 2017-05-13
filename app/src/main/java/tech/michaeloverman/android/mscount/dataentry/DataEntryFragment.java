@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -306,8 +307,7 @@ public class DataEntryFragment extends Fragment {
     }
 
     private void getIntegerDialogResponse() {
-        View view = LayoutInflater.from(getContext())
-                .inflate(R.layout.get_integer_dialog_layout, null);
+        View view = View.inflate(getContext(), R.layout.get_integer_dialog_layout, null);
         final EditText editText = (EditText) view.findViewById(R.id.get_integer_edittext);
 
         AlertDialog dialog = new AlertDialog.Builder(getContext())
@@ -404,9 +404,9 @@ public class DataEntryFragment extends Fragment {
             }
 
             if(position == selectedPosition) {
-                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_accent));
+                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_accent));
             } else {
-                holder.itemView.setBackground(getResources().getDrawable(R.drawable.roundcorner_parchment));
+                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_parchment));
             }
 
             // select/deselect data items for edit

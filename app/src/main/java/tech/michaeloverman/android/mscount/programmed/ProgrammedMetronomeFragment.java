@@ -121,8 +121,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     private static Cursor mCursor;
 
     public static Fragment newInstance() {
-        ProgrammedMetronomeFragment fragment = new ProgrammedMetronomeFragment();
-        return fragment;
+        return new ProgrammedMetronomeFragment();
     }
 
     private void setUpMetronome() {
@@ -570,6 +569,31 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
     }
 
+    private String getBeatLengthContentDescription(int noteValue) {
+        switch(noteValue) {
+            case PieceOfMusic.SIXTEENTH:
+                return getString(R.string.sixteenth_content_description);
+            case PieceOfMusic.DOTTED_SIXTEENTH:
+                return getString(R.string.dotted_eighth_content_description);
+            case PieceOfMusic.EIGHTH:
+                return getString(R.string.eighth_content_description);
+            case PieceOfMusic.DOTTED_EIGHTH:
+                return getString(R.string.dotted_eighth_content_description);
+            case PieceOfMusic.QUARTER:
+                return getString(R.string.quarter_content_description);
+            case PieceOfMusic.DOTTED_QUARTER:
+                return getString(R.string.dotted_quarter_content_description);
+            case PieceOfMusic.HALF:
+                return getString(R.string.half_content_description);
+            case PieceOfMusic.DOTTED_HALF:
+                return getString(R.string.dotted_half_content_description);
+            case PieceOfMusic.WHOLE:
+                return getString(R.string.whole_content_description);
+            default:
+                return getString(R.string.quarter_content_description);
+        }
+    }
+
     private void updateVariables() {
         if(mCurrentPiece == null) {
             selectNewProgram();
@@ -602,6 +626,8 @@ public class ProgrammedMetronomeFragment extends Fragment
             mTVCurrentComposer.setText(mCurrentComposer);
             mBeatLengthImage.setImageResource(getNoteImageResource
                     (mCurrentPiece.getDisplayNoteValue()));
+            mBeatLengthImage.setContentDescription(getString(R.string.note_value_note_equals,
+                    getBeatLengthContentDescription(mCurrentPiece.getDisplayNoteValue())));
             mCurrentTempo = mCurrentPiece.getDefaultTempo();
             updateTempoView();
         }

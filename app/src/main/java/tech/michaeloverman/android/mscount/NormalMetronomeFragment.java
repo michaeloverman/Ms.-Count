@@ -103,8 +103,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
     private GestureDetectorCompat mDetector;
 
     public static Fragment newInstance() {
-        NormalMetronomeFragment fragment = new NormalMetronomeFragment();
-        return fragment;
+        return new NormalMetronomeFragment();
     }
 
     @Override
@@ -253,7 +252,7 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         prefs.putFloat(PREF_KEY_BPM, mBPM);
         prefs.putInt(PREF_KEY_SUBDIVISIONS, mNumSubdivisions);
         prefs.putBoolean(PREF_WHOLE_NUMBERS, mWholeNumbersSelected);
-        prefs.commit();
+        prefs.apply();
 
         if (mAdView != null) {
             mAdView.destroy();
@@ -467,7 +466,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
     }
 
     class MetronomeGestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final String TAG = "Gestures";
         private static final float MINIMUM_Y_FOR_FAST_CHANGE = 10;
 
         @Override

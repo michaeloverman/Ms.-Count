@@ -17,7 +17,7 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pound_sign"
+            android:text="@string/whole_num_format"
             android:contentDescription="@string/tempo_in_whole_numbers_radio_button"
             android:id="@+id/whole_numbers"
             app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +27,7 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pound_sign_point_pound_sign"
+            android:text="@string/tenths_num_format"
             android:contentDescription="@string/tempo_in_tenths_radio_button"
             android:id="@+id/decimals"
             app:layout_constraintLeft_toRightOf="@+id/whole_numbers"

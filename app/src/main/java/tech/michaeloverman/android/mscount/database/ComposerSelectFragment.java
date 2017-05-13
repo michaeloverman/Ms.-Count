@@ -50,25 +50,26 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
 //    private static Cursor mCursor;
     private LoadNewProgramActivity mActivity;
 
-    /** Listener for returning selection to PreprogrammedMetronomeFragment */
-    private static ComposerCallback sComposerCallback = null;
-
-    /** Interface for PreprogrammedMetronomeFragment to implement in order to
-     *  listen for selection.
-     */
-    interface ComposerCallback {
-        void newComposer(String name);
-    }
+//    /** Listener for returning selection to PreprogrammedMetronomeFragment */
+//    private static ComposerCallback sComposerCallback = null;
+//
+//    /** Interface for PreprogrammedMetronomeFragment to implement in order to
+//     *  listen for selection.
+//     */
+//    interface ComposerCallback {
+//        void newComposer(String name);
+//    }
 
     /**
      * Instance constructor accepts Communicator reference for callback.
-     * @param cc
+     *
      * @return
      */
-    public static Fragment newInstance(ComposerCallback cc) {
+//    public static Fragment newInstance(ComposerCallback cc) {
+    public static Fragment newInstance() {
         Timber.d("newInstance()");
 //        mCursor = c;
-        sComposerCallback = cc;
+//        sComposerCallback = cc;
         return new ComposerSelectFragment();
     }
 
@@ -118,12 +119,12 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
 
         return view;
     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        sComposerCallback = null;
-    }
+//
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        sComposerCallback = null;
+//    }
 
     /**
      * Contact Firebase Database, get all the composer's names, attach to adapter for
@@ -199,18 +200,18 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
 //        }
 //    }
 
-    private void updateEmptyView(int code) {
-        Timber.d("updateEmptyView(code = " + code);
-        String message;
-        switch(code) {
-            case NO_DATA_ERROR_CODE:
-                message = "No composers currently in database.";
-                break;
-            default:
-                message = "Unknown error occurred...";
-        }
-        mErrorView.setText(message);
-    }
+//    private void updateEmptyView(int code) {
+//        Timber.d("updateEmptyView(code = " + code);
+//        String message;
+//        switch(code) {
+//            case NO_DATA_ERROR_CODE:
+//                message = "No composers currently in database.";
+//                break;
+//            default:
+//                message = "Unknown error occurred...";
+//        }
+//        mErrorView.setText(message);
+//    }
 
 //    @Override
 //    public void onLoaderReset(Loader<Cursor> loader) {
@@ -231,7 +232,7 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
         @Override
         public ComposerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 //            Timber.d("onCreateViewHolder");
-            View item =LayoutInflater.from(mContext).inflate(R.layout.list_item_composer, parent, false);
+            View item = LayoutInflater.from(mContext).inflate(R.layout.list_item_composer, parent, false);
             return new ComposerViewHolder(item);
         }
 

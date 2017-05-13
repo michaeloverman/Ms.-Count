@@ -20,14 +20,13 @@
 
     <EditText
         android:id="@+id/composer_name_text_entry"
-        android:contentDescription="@string/enter_composer_last_name_first"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/data_entry_outside_margin"
         android:layout_marginEnd="@dimen/data_entry_outside_margin"
         android:layout_marginLeft="@dimen/data_entry_outside_margin"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
-        android:singleLine="true"
+        android:maxLines="1"
         android:inputType="textCapWords"
         android:imeOptions="actionNext"
         android:nextFocusDown="@+id/title_text_entry"
@@ -48,11 +47,10 @@
 
     <EditText
         android:id="@+id/title_text_entry"
-        android:contentDescription="@string/enter_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="textCapWords"
-        android:singleLine="true"
+        android:maxLines="1"
         android:imeOptions="actionNext"
         android:nextFocusForward="@+id/baseline_subdivision_entry"
         android:digits="@string/valid_characters_string"
@@ -87,7 +85,6 @@
 
     <EditText
         android:id="@+id/baseline_subdivision_entry"
-        android:contentDescription="@string/enter_number_of_subdivisions_in_primary_beat"
         android:layout_width="@dimen/meta_data_edittext_width"
         android:layout_height="@dimen/metadata_edittext_height"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
@@ -102,7 +99,6 @@
 
     <EditText
         android:id="@+id/countoff_subdivision_entry"
-        android:contentDescription="@string/enter_number_of_subdivisions_in_count_off_click"
         android:layout_width="@dimen/meta_data_edittext_width"
         android:layout_height="@dimen/metadata_edittext_height"
         android:ems="6"
@@ -137,7 +133,6 @@
 
     <EditText
         android:id="@+id/default_tempo_entry"
-        android:contentDescription="@string/enter_default_tempo"
         android:layout_width="@dimen/meta_data_short_edittext_width"
         android:layout_height="@dimen/metadata_edittext_height"
         android:layout_marginEnd="@dimen/metadata_normal_horizontal_margin"
@@ -178,6 +173,7 @@
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/enter_beats_button"
+        android:contentDescription="@string/program_beats_content_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/program_beats_2lines"

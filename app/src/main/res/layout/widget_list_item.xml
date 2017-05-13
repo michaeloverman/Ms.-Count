@@ -13,7 +13,7 @@
         android:paddingBottom="@dimen/widget_item_padding_top_bottom"
         android:paddingStart="@dimen/widget_item_padding_start"
         android:paddingEnd="@dimen/widget_item_padding_start"
-        android:backgroundTint="@color/colorPrimary"
+        android:background="@color/colorPrimary"
         android:fontFamily="sans-serif-condensed"
         android:textSize="@dimen/widget_item_font_size"
         android:textColor="@color/primaryText"

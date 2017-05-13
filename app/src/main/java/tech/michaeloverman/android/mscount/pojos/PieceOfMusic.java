@@ -41,6 +41,7 @@ public class PieceOfMusic implements Serializable {
     private int mSubdivision;
     private int[] mCountOff;
     private int mCountOffSubdivision;
+    @SuppressWarnings("FieldCanBeLocal") // remove suppression once thoroughly implemented
     private int mCountOffMeasureLength;
     private int mDefaultTempo;
     private double mTempoMultiplier;
@@ -250,7 +251,6 @@ public class PieceOfMusic implements Serializable {
         resaveToFirebase();
     }
 
-    @Deprecated
     private void resaveToFirebase() {
         Timber.d("SAVING FOR NEW RAW DATA!!! THIS SHOULD NOT BE HAPPENING ANYMORE");
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();

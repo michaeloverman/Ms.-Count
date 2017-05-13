@@ -50,6 +50,7 @@ public class ProgramProvider extends ContentProvider {
         return true;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
@@ -115,6 +116,7 @@ public class ProgramProvider extends ContentProvider {
         return null;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
@@ -129,8 +131,12 @@ public class ProgramProvider extends ContentProvider {
                 db.beginTransaction();
                 try {
                     int lineNumber = getLineNumberInDatabase(db,
-                            values.get(ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER).toString(),
-                            values.get(ProgramDatabaseSchema.MetProgram.COLUMN_TITLE).toString());
+                            values != null ? values.get(
+                                    ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER).toString()
+                                    : null,
+                            values != null ? values.get(
+                                    ProgramDatabaseSchema.MetProgram.COLUMN_TITLE).toString()
+                                    : null);
                     long _id;
                     if (lineNumber == -1) {
                         _id = db.insert(ProgramDatabaseSchema.MetProgram.TABLE_NAME,
@@ -165,6 +171,7 @@ public class ProgramProvider extends ContentProvider {
         return returnUri;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void sendUpdateIntent() {
         Timber.d("sending data_update intent!!!!");
         Intent dataUpdateIntent = new Intent(ACTION_DATA_UPDATED);

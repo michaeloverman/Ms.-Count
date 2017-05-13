@@ -333,7 +333,6 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     }
 
     class MetronomeGestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final String TAG = "Gestures";
         private static final float MINIMUM_Y_FOR_FAST_CHANGE = 10;
 
         @Override

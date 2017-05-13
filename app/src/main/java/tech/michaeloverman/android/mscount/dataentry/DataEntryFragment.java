@@ -329,6 +329,7 @@ public class DataEntryFragment extends Fragment {
 
         dialog.show();
         // force keyboard to show automatically
+        //noinspection ConstantConditions
         dialog.getWindow().setSoftInputMode(WindowManager
                 .LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }

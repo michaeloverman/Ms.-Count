@@ -28,6 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
         mValues = intent.getStringArrayExtra(MetronomeActivity.EXTRA_VALUES);
 
         setContentView(R.layout.settings_activity);
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }

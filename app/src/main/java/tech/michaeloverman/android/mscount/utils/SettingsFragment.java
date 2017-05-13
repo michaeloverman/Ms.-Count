@@ -44,8 +44,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     /**
      * Sets the summary description of the setting variable
-     * @param preference
-     * @param value
+     * @param preference the actual preference item to summarize
+     * @param value the summary itself
      */
     private void setPreferenceSummary(Preference preference, Object value) {
         String stringValue = value.toString();
@@ -63,7 +63,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     /**
      * Pulls list of available click sounds from SettingsActivity, inserts into settings item
-     * @param p
+     * @param p the preference to which entries and values is to be assigned
      */
     private void setEntriesAndValues(Preference p) {
         String[] entries = ((SettingsActivity)getActivity()).mEntries;

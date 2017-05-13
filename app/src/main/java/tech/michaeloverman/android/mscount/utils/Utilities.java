@@ -18,8 +18,8 @@ public class Utilities {
 
     /**
      * Used to turn beat length data, in List, from database, into int[] for actual use by metronome.
-     * @param integerList
-     * @return
+     * @param integerList List of integers
+     * @return array of ints
      */
     public static int[] integerListToArray(List<Integer> integerList) {
 //        if(integerList == null) return null;
@@ -43,14 +43,17 @@ public class Utilities {
 //        return list;
 //    }
 
-    public static void printArray(int[] array) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < array.length; i++) {
-            sb.append(array[i]).append(", ");
-        }
-        Timber.d(sb.toString());
-    }
+// --Commented out by Inspection START (5/13/2017 11:36 AM):
+//    public static void printArray(int[] array) {
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < array.length; i++) {
+//            sb.append(array[i]).append(", ");
+//        }
+//        Timber.d(sb.toString());
+//    }
+// --Commented out by Inspection STOP (5/13/2017 11:36 AM)
 
+    @SuppressWarnings("unused")
     public static int[] combine(int[] countoff, int[] beats) {
         Timber.d("combine() arrays...");
         int[] combination = new int[countoff.length + beats.length];
@@ -67,10 +70,11 @@ public class Utilities {
 //        return compound;
     }
 
+    @SuppressWarnings("unused")
     public static List<Integer> createBeatList(int[] downbeats, int subd) {
         List<Integer> beats = new ArrayList<>();
-        for (int i = 0; i < downbeats.length; i++) {
-            for(int j = 0; j < downbeats[i]; j++) {
+        for (int downbeat : downbeats) {
+            for (int j = 0; j < downbeat; j++) {
                 beats.add(subd);
             }
         }

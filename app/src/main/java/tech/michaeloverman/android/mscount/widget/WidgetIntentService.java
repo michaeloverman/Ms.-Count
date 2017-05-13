@@ -30,7 +30,7 @@ public class WidgetIntentService extends IntentService {
             ProgramDatabaseSchema.MetProgram._ID,
             ProgramDatabaseSchema.MetProgram.COLUMN_TITLE
     };
-    static final int INDEX_PROGRAM_ID = 0;
+    // --Commented out by Inspection (5/13/2017 11:37 AM):static final int INDEX_PROGRAM_ID = 0;
     private static final int INDEX_COLUMN_TITLE = 1;
 
     public WidgetIntentService() {
@@ -53,6 +53,7 @@ public class WidgetIntentService extends IntentService {
                 null,
                 null,
                 null);
+        assert data != null;
         data.moveToFirst();
 
         for(int widgetId : widgetIds) {

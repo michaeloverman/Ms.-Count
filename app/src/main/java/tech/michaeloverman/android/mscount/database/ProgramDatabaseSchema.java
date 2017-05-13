@@ -50,6 +50,7 @@ public class ProgramDatabaseSchema {
         public static final int POSITION_CREATOR_ID = 11;
         public static final int POSITION_DISPLAY_RHYTHM = 12;
 
+        @SuppressWarnings("unused")
         public static Uri buildUriWithComposer(String composer) {
             Timber.d("buildUriWithComposer");
             return CONTENT_URI.buildUpon()
@@ -57,6 +58,7 @@ public class ProgramDatabaseSchema {
                     .build();
         }
 
+        @SuppressWarnings("unused")
         public static Uri buildUriWithId(int id) {
             return CONTENT_URI.buildUpon()
                     .appendPath(Integer.toString(id))

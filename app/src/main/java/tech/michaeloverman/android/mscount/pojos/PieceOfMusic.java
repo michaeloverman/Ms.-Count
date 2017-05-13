@@ -160,7 +160,7 @@ public class PieceOfMusic implements Serializable {
      * Accepts array of the length of each beat, by number of primary subdivisions,
      * combines that with a generated count off measure, and saves the entire array.
      *
-     * @param beats
+     * @param beats a List of all beat lengths
      */
     public void setBeats(List<Integer> beats) {
 //        int[] countoff = buildCountoff(mSubdivision);
@@ -211,6 +211,7 @@ public class PieceOfMusic implements Serializable {
         Utilities.appendCountoff(mCountOff, mBeats, mDownBeats);
     }
 
+    @SuppressWarnings("unused")
     public int[] countOffArray() {
         return mCountOff;
     }
@@ -220,6 +221,7 @@ public class PieceOfMusic implements Serializable {
         return mDownBeats;
     }
 
+    @SuppressWarnings("unused")
     public void setDownBeats(List<Integer> downBeats) {
 //        int[] allDownBeats = new int[downBeats.length + 1];
 //        allDownBeats[0] = mCountOffMeasureLength;
@@ -393,8 +395,8 @@ public class PieceOfMusic implements Serializable {
         public Builder dataEntries(String data) {
             String[] entries = data.split("\\n");
             List<DataEntry> list = new ArrayList<>();
-            for (int i = 0; i < entries.length; i++) {
-                String[] entry = entries[i].split(";");
+            for (String entry1 : entries) {
+                String[] entry = entry1.split(";");
                 list.add(new DataEntry(Integer.parseInt(entry[0]), Boolean.parseBoolean(entry[1])));
             }
             return dataEntries(list);

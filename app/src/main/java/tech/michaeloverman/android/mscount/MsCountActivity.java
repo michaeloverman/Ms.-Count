@@ -19,13 +19,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import tech.michaeloverman.android.mscount.utils.ClickSounds;
-import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
 
 public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleFragmentActivity {
 
-    private Metronome mMetronome;
     private GoogleApiClient client;
     private static final long CONNECTION_TIME_OUT_MS = 3000;
 

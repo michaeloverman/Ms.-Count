@@ -159,6 +159,7 @@ public class MetaDataEntryFragment extends Fragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                //noinspection EmptyCatchBlock
                 try {
                     int primary = Integer.parseInt(mBaselineSubdivisionEntry.getText().toString());
                     int countoff = Integer.parseInt(s.toString());
@@ -168,7 +169,7 @@ public class MetaDataEntryFragment extends Fragment
                                 Toast.LENGTH_SHORT).show();
                     }
                 } catch (NumberFormatException n) {
-
+                    // not used: only integers can be entered
                 }
             }
         });
@@ -385,12 +386,14 @@ public class MetaDataEntryFragment extends Fragment
 
     @OnClick(R.id.save_program_button)
     public void saveProgram() {
-
+        Timber.d("checking data entries");
         if (!validateDataEntries()) return;
 
         // get all the metadata fields
+        Timber.d("checking metadata entries");
         if (!validateMetaDataEntries()) return;
 
+        Timber.d("building rest of mBuilder");
         mBuilder.firebaseId(mFirebaseId);
 
         mBuilder.creatorId(getFirebaseAuthId());
@@ -404,6 +407,7 @@ public class MetaDataEntryFragment extends Fragment
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private String getFirebaseAuthId() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if(auth != null) {
@@ -455,7 +459,8 @@ public class MetaDataEntryFragment extends Fragment
             subdInt = Integer.parseInt(subd);
             if(subdInt < 1 || subdInt > 24) {
                 Toast.makeText(getContext(), "Subdivisions out of range.", Toast.LENGTH_SHORT).show();
-            } else if (subdInt > 12) {
+            } else //noinspection StatementWithEmptyBody
+                if(subdInt > 12) {
                 //TODO dialog box to confirm unusually large baseline subdivision
             }
         } catch (NumberFormatException nfe) {
@@ -505,7 +510,7 @@ public class MetaDataEntryFragment extends Fragment
                     Toast.LENGTH_SHORT).show();
             return false;
         }
-//        mBuilder.dataEntries(mDataEntries);
+        mBuilder.dataEntries(mDataEntries);
         return true;
     }
 
@@ -589,8 +594,8 @@ public class MetaDataEntryFragment extends Fragment
      * Called prior to saving, if piece by same title already exists in database. If confirmed,
      * overwrites data, if canceled, does nothing.
      *
-     * @param title
-     * @param composer
+     * @param title - title of the piece
+     * @param composer - composer of the piece
      */
     private void overwriteFirebaseDataAlertDialog(final String title, final String composer) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
@@ -634,6 +639,10 @@ public class MetaDataEntryFragment extends Fragment
                         } else {
                             // push to create
                             key = mPiecesDatabaseReference.child("pieces").push().getKey();
+                        }
+
+                        if(p.getFirebaseId() == null) {
+                            p.setFirebaseId(key);
                         }
 
                         Map<String, Object> updates = new HashMap<>();

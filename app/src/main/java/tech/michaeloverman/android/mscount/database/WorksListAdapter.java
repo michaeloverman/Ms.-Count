@@ -29,10 +29,9 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
     private List<TitleKeyObject> mTitles;
     private final WorksListAdapterOnClickHandler mClickHandler;
 
-    public WorksListAdapter(@NonNull Context context, List<TitleKeyObject> titles,
-                            WorksListAdapterOnClickHandler handler) {
+    public WorksListAdapter(@NonNull Context context, WorksListAdapterOnClickHandler handler) {
         mContext = context;
-        mTitles = titles;
+//        mTitles = titles;
         mClickHandler = handler;
     }
 

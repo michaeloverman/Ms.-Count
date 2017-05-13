@@ -1,7 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="EntryPointsManager">
-    <entry_points version="2.0" />
+    <entry_points version="2.0">
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.DataEntry void setBarline(boolean is)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.DataEntry DataEntry()" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.DataEntry DataEntry(int data, boolean bar)" />
+      <entry_point TYPE="class" FQNAME="tech.michaeloverman.android.mscount.pojos.DataEntry" />
+      <entry_point TYPE="field" FQNAME="tech.michaeloverman.android.mscount.utils.MetronomeActivity mMetronome" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic.Builder tech.michaeloverman.android.mscount.pojos.PieceOfMusic.Builder downBeats(java.util.List&lt;java.lang.Integer&gt; downBeats)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic.Builder tech.michaeloverman.android.mscount.pojos.PieceOfMusic.Builder beats(java.util.List&lt;java.lang.Integer&gt; beats)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic.Builder Builder()" />
+      <entry_point TYPE="class" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic.Builder" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setDownBeats(java.util.List&lt;java.lang.Integer&gt; downBeats)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic int[] countOffArray()" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setRawData(java.util.List&lt;tech.michaeloverman.android.mscount.pojos.DataEntry&gt; data)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setBeats(java.util.List&lt;java.lang.Integer&gt; beats)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setMeasureCountOffset(int measureCountOffset)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setDisplayNoteValue(int displayNoteValue)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setBaselineNoteValue(int baselineNoteValue)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setTempoMultiplier(double tempoMultiplier)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setDefaultTempo(int defaultTempo)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setCountOffSubdivision(int countOffSubdivision)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setSubdivision(int subdivision)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setAuthor(java.lang.String author)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setTitle(java.lang.String title)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic void setCreatorId(java.lang.String id)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic PieceOfMusic(java.lang.String title)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic PieceOfMusic()" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic PieceOfMusic(tech.michaeloverman.android.mscount.pojos.PieceOfMusic.Builder builder)" />
+      <entry_point TYPE="class" FQNAME="tech.michaeloverman.android.mscount.pojos.PieceOfMusic" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.TitleKeyObject void setKey(java.lang.String key)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.TitleKeyObject void setTitle(java.lang.String title)" />
+      <entry_point TYPE="method" FQNAME="tech.michaeloverman.android.mscount.pojos.TitleKeyObject TitleKeyObject(java.lang.String title, java.lang.String key)" />
+      <entry_point TYPE="class" FQNAME="tech.michaeloverman.android.mscount.pojos.TitleKeyObject" />
+    </entry_points>
   </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />

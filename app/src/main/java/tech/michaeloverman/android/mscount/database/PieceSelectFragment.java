@@ -35,13 +35,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tech.michaeloverman.android.mscount.R;
-import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import tech.michaeloverman.android.mscount.pojos.TitleKeyObject;
 import timber.log.Timber;
 
@@ -56,7 +54,6 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int ID_PROGRAM_LOADER = 432;
-    private static final int NO_DATA_ERROR_CODE = 41;
 
     @BindView(R.id.piece_list_recycler_view) RecyclerView mRecyclerView;
     @BindView(R.id.composers_name_label) TextView mComposersNameView;
@@ -68,8 +65,6 @@ public class PieceSelectFragment extends DatabaseAccessFragment
 
     private String mCurrentComposer;
     private WorksListAdapter mAdapter;
-    private List<TitleKeyObject> mTitlesList;
-    private PieceOfMusic mPieceOfMusic;
     private boolean mDeleteFlag;
     private LoadNewProgramActivity mActivity;
 
@@ -147,7 +142,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
 
         LinearLayoutManager manager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(manager);
-        mAdapter = new WorksListAdapter(this.getContext(), mTitlesList, this);
+        mAdapter = new WorksListAdapter(getContext(), this);
         mRecyclerView.setAdapter(mAdapter);
 
         mCurrentComposer = mActivity.mCurrentComposer;
@@ -285,6 +280,7 @@ public class PieceSelectFragment extends DatabaseAccessFragment
 
     }
 
+    @SuppressWarnings("ConstantConditions")
     private String getFirebaseAuthId() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if(auth != null) {

@@ -16,9 +16,8 @@ import android.support.annotation.Nullable;
  * Created by Michael on 12/20/2016.
  */
 
+@SuppressWarnings("ConstantConditions")
 public class FavoritesProvider extends ContentProvider {
-    
-    public static final String TAG = FavoritesProvider.class.getSimpleName();
     
     private static final int CODE_FAVORITES = 222;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -76,7 +75,7 @@ public class FavoritesProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues value) {
         final SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        long _id = 0L;
+        long _id;
         
         switch(sUriMatcher.match(uri)) {
             case CODE_FAVORITES:

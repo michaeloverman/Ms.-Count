@@ -19,7 +19,7 @@ import timber.log.Timber;
 
 public class WearNotification {
 
-    private final String EXTRA_WEAR_INTENT_ID = "tech.michaeloverman.android.mscount.wearable.extra_message";
+    // --Commented out by Inspection (5/13/2017 11:36 AM):private final String EXTRA_WEAR_INTENT_ID = "tech.michaeloverman.android.mscount.wearable.extra_message";
 
     private final Context mContext;
     private boolean mPlaying;

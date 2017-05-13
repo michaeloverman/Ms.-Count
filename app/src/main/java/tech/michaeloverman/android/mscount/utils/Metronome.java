@@ -32,7 +32,8 @@ public class Metronome {
     private long mDelay;
     private boolean mClicking;
 
-    @SuppressWarnings("FieldCanBeLocal") // TODO remove suppression once properly implemented
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
+    // TODO remove suppression once properly implemented
     private MetronomeStartStopListener mListener;
     private ProgrammedMetronomeListener mPListener;
 
@@ -119,10 +120,10 @@ public class Metronome {
     }
 
     /**
-     * Click with number of subdivisions metronome start
-     * @param subs
+     * Click with number of beats metronome start
+     * @param numBeats - number of beats in 'measure'
      */
-    private void playMeasures(final int subs) {
+    private void playMeasures(final int numBeats) {
 //        logSubdivisionVolumes(subs);
 
         mTimer = new CountDownTimer(TWENTY_MINUTES, mDelay) {
@@ -135,7 +136,7 @@ public class Metronome {
                 } else {
                     mSoundPool.play(mInnerBeatClickId, mClickVolumes[subCount], mClickVolumes[subCount], 1, 0, 1.0f);
                 }
-                if(++subCount == subs) subCount = 0;
+                if(++subCount == numBeats) subCount = 0;
             }
 
             @Override
@@ -158,8 +159,8 @@ public class Metronome {
     /**
      * Programmed click, accepts a PieceOfMusic to define changing click patterns, and a
      * tempo marking.
-     * @param p
-     * @param tempo
+     * @param p - the piece/program
+     * @param tempo - tempo of playback
      */
     public void play(PieceOfMusic p, int tempo) {
         getClicksFromSharedPrefs();
@@ -230,8 +231,9 @@ public class Metronome {
 
     /**
      * Method accepts tempo and groupings, loops through groupings
-     * @param tempo
-     * @param groupings
+     * @param tempo - tempo of the playback
+     * @param groupings - listing of each click length
+     * @param includeSubs - whether or not to include the internal subdivision clicks
      */
     public void play(int tempo, List<Integer> groupings, final boolean includeSubs) {
         getClicksFromSharedPrefs();

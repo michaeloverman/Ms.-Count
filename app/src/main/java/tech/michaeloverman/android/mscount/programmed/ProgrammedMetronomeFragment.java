@@ -439,19 +439,26 @@ public class ProgrammedMetronomeFragment extends Fragment
 
     private void checkKeyFormat() {
         Timber.d("Firebase: " + mActivity.useFirebase + " :: key: " + mCurrentPieceKey.charAt(0));
-        if(mActivity.useFirebase) {
-            try {
-                Integer.parseInt(mCurrentPieceKey);
-            } catch (NumberFormatException nfe) {
-                mActivity.useFirebase = false;
-                PrefUtils.saveFirebaseStatus(mActivity, mActivity.useFirebase);
-            }
+
+        if(mCurrentPieceKey.charAt(0) == '-') {
+            mActivity.useFirebase = true;
+            PrefUtils.saveFirebaseStatus(mActivity, true);
         } else {
-            if(mCurrentPieceKey.charAt(0) == '-') {
-                mActivity.useFirebase = true;
-                PrefUtils.saveFirebaseStatus(mActivity, mActivity.useFirebase);
-            }
+            mActivity.useFirebase = false;
+            PrefUtils.saveFirebaseStatus(mActivity, false);
         }
+
+//        if(mActivity.useFirebase) {
+//            try {
+//                Integer.parseInt(mCurrentPieceKey);
+//            } catch (NumberFormatException nfe) {
+//
+//            }
+//        } else {
+//            if(mCurrentPieceKey.charAt(0) == '-') {
+//
+//            }
+//        }
     }
 
     private void getPieceFromKey() {
@@ -612,8 +619,11 @@ public class ProgrammedMetronomeFragment extends Fragment
         Timber.d("calling updateWearNotif()");
         updateWearNotif();
 
-        if(mCurrentPiece.getFirebaseId() != null) {
+        Timber.d("About to check if favorite: " + mCurrentPiece.getFirebaseId());
+        if(mCurrentPiece.getFirebaseId() != null ) {
             new CheckIfFavoriteTask().execute(mCurrentPiece.getFirebaseId());
+        } else {
+            new CheckIfFavoriteTask().execute(mCurrentPieceKey);
         }
     }
 
@@ -714,6 +724,10 @@ public class ProgrammedMetronomeFragment extends Fragment
         @Override
         protected Boolean doInBackground(String... params) {
             Timber.d("CheckIfFavoriteTask running in background!!");
+            if(params[0] == null) {
+                Timber.d("...no id to check against favorites db");
+                return false;
+            }
             SQLiteDatabase db = new FavoritesDBHelper(mActivity).getReadableDatabase();
             Cursor cursor = db.query(FavoritesContract.FavoriteEntry.TABLE_NAME,
                     null,

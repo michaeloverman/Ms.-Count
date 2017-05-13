@@ -90,20 +90,22 @@ public class MetaDataOptionsFragment extends Fragment {
     @OnClick(R.id.save_options_button)
     public void save() {
         String temp = mMeasureOffsetEntry.getText().toString();
+        //noinspection EmptyCatchBlock
         try {
             int offset = Integer.parseInt(temp);
             mBuilder.firstMeasureNumber(offset);
         } catch (NumberFormatException nfe) {
-
+            // not used - only integers can be entered
         }
 
         temp = mTempoMultiplierEntry.getText().toString();
+        //noinspection EmptyCatchBlock
         try {
             float multiplier = Float.parseFloat(temp);
             mBuilder.tempoMultiplier(multiplier);
             Timber.d("mBuilder should have 0.5 multiplier...");
         } catch (NumberFormatException nfe) {
-
+            // not used - only integers can be entered
         }
 
         int display = mDisplayValueAdapter.getSelectedRhythm();

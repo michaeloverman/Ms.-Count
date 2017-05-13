@@ -14,7 +14,6 @@ import timber.log.Timber;
 
 public final class PrefUtils {
 
-    public static final String PREF_FAVORITE_PROGRAM = "favorite";
     private static final String PREF_DOWNBEAT_CLICK_DEFAULT = "4";
     private static final String PREF_INNERBEAT_CLICK_DEFAULT = "2";
     private static final String PREF_SUBDIVISION_CLICK_DEFAULT = "6";

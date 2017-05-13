@@ -13,8 +13,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class FavoritesDBHelper extends SQLiteOpenHelper {
     
-    public static final String TAG = FavoritesDBHelper.class.getSimpleName();
-    
     private static final String DATABASE_NAME = "favorite_pieces.db";
     private static final int DATABASE_VERSION = 1;
     

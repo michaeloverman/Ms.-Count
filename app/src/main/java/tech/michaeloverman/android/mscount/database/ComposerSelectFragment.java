@@ -40,36 +40,16 @@ import timber.log.Timber;
 
 public class ComposerSelectFragment extends DatabaseAccessFragment {
 
-//    private static final int COMPOSER_LOADER_ID = 99;
-    private static final int NO_DATA_ERROR_CODE = 42;
+//    private static final int NO_DATA_ERROR_CODE = 42;
 
     @BindView(R.id.composer_recycler_view) RecyclerView mRecyclerView;
     @BindView(R.id.composer_select_progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.empty_data_view) TextView mErrorView;
     private ComposerListAdapter mAdapter;
-//    private static Cursor mCursor;
     private LoadNewProgramActivity mActivity;
 
-//    /** Listener for returning selection to PreprogrammedMetronomeFragment */
-//    private static ComposerCallback sComposerCallback = null;
-//
-//    /** Interface for PreprogrammedMetronomeFragment to implement in order to
-//     *  listen for selection.
-//     */
-//    interface ComposerCallback {
-//        void newComposer(String name);
-//    }
-
-    /**
-     * Instance constructor accepts Communicator reference for callback.
-     *
-     * @return
-     */
-//    public static Fragment newInstance(ComposerCallback cc) {
     public static Fragment newInstance() {
         Timber.d("newInstance()");
-//        mCursor = c;
-//        sComposerCallback = cc;
         return new ComposerSelectFragment();
     }
 

@@ -1,6 +1,7 @@
 /* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount.dataentry;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -376,9 +377,9 @@ public class MetaDataEntryFragment extends Fragment
     private void updateGUI() {
         mComposerEntry.setText(mPieceOfMusic.getAuthor());
         mTitleEntry.setText(mPieceOfMusic.getTitle());
-        mBaselineSubdivisionEntry.setText(Integer.toString(mPieceOfMusic.getSubdivision()));
-        mCountoffSubdivisionEntry.setText(Integer.toString(mPieceOfMusic.getCountOffSubdivision()));
-        mDefaultTempoEntry.setText(Integer.toString(mPieceOfMusic.getDefaultTempo()));
+        mBaselineSubdivisionEntry.setText(String.format("%d", mPieceOfMusic.getSubdivision()));
+        mCountoffSubdivisionEntry.setText(String.format("%d", mPieceOfMusic.getCountOffSubdivision()));
+        mDefaultTempoEntry.setText(String.format("%d", mPieceOfMusic.getDefaultTempo()));
         mBaselineRhythmicValueAdapter.setSelectedPosition(mPieceOfMusic.getBaselineNoteValue());
         mBaselineRhythmicValueAdapter.notifyDataSetChanged();
         mDataEntries = mPieceOfMusic.getRawData();
@@ -782,6 +783,7 @@ public class MetaDataEntryFragment extends Fragment
             return new NoteViewHolder(item);
         }
 
+        @SuppressLint("RecyclerView")
         @Override
         public void onBindViewHolder(NoteViewHolder holder, final int position) {
             holder.image.setImageDrawable(noteValueImages.getDrawable(position));

@@ -1,5 +1,6 @@
 package tech.michaeloverman.android.mscount.dataentry;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -185,6 +186,7 @@ public class MetaDataOptionsFragment extends Fragment {
             return new NoteViewHolder(item);
         }
 
+        @SuppressLint("RecyclerView")
         @Override
         public void onBindViewHolder(NoteViewHolder holder, final int position) {
             holder.image.setImageDrawable(noteValueImages.getDrawable(position));

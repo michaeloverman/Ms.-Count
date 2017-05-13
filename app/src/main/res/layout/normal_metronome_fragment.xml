@@ -61,7 +61,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/normal_start_stop_fab"
-        app:layout_constraintBottom_toTopOf="@+id/subdivisions_frame"/>
+        app:layout_constraintBottom_toTopOf="@+id/subdivisions_frame"
+        tools:ignore="SpUsage"/>
 
     <LinearLayout
         android:id="@+id/tempo_button_layout"

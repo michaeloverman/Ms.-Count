@@ -398,7 +398,7 @@ public class DataEntryFragment extends Fragment {
         public void onBindViewHolder(final DataViewHolder holder, int position) {
             int data = mDataList.get(position).getData();
 
-            holder.dataEntry.setText(Integer.toString(data));
+            holder.dataEntry.setText(String.format("%d", data));
             if(mDataList.get(position).isBarline()) {
                 holder.itemView.setContentDescription(getString(
                         R.string.barline_content_description, data));

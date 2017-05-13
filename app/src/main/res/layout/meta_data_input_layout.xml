@@ -22,19 +22,19 @@
         android:id="@+id/composer_name_text_entry"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/data_entry_outside_margin"
         android:layout_marginEnd="@dimen/data_entry_outside_margin"
-        android:layout_marginLeft="@dimen/data_entry_outside_margin"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
-        android:maxLines="1"
         android:inputType="textCapWords"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
         android:imeOptions="actionNext"
         android:nextFocusDown="@+id/title_text_entry"
         android:digits="@string/valid_characters_string"
         android:hint="@string/last_name_first_name"
         app:layout_constraintTop_toBottomOf="@+id/composer_label_view"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="Deprecated"/>
 
     <TextView
         android:id="@+id/title_label_view"
@@ -50,18 +50,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="textCapWords"
-        android:maxLines="1"
+        android:singleLine="true"
         android:imeOptions="actionNext"
         android:nextFocusForward="@+id/baseline_subdivision_entry"
         android:digits="@string/valid_characters_string"
         android:hint="@string/title_hint_string"
         app:layout_constraintTop_toBottomOf="@+id/title_label_view"
-        android:layout_marginLeft="@dimen/data_entry_outside_margin"
         android:layout_marginStart="@dimen/data_entry_outside_margin"
-        android:layout_marginRight="@dimen/data_entry_outside_margin"
         android:layout_marginEnd="@dimen/data_entry_outside_margin"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="Deprecated"/>
 
     <TextView
         android:id="@+id/baseline_subdivision_label"

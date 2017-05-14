@@ -37,7 +37,7 @@ public class WearNotification {
         Timber.d("sendStartStop()");
         int notifId = 3435;
         Intent wearIntent = new Intent(Metronome.ACTION_METRONOME_START_STOP);
-//        wearIntent.putExtra(EXTRA_WEAR_INTENT_ID, 42);
+
         PendingIntent wearPendingIntent = PendingIntent.getBroadcast(
                 mContext, notifId, wearIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Timber.d("Pending Intent created");

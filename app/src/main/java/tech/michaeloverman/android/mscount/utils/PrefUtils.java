@@ -79,9 +79,7 @@ public final class PrefUtils {
 
     public static boolean usingFirebase(Context context) {
         SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean firebase = shp.getBoolean(PREF_USE_FIREBASE, true);
-        Timber.d("checking useFirebase: " + firebase);
-        return firebase;
+        return shp.getBoolean(PREF_USE_FIREBASE, true);
     }
 
     public static void saveWearStatus(Context context, boolean status) {
@@ -92,12 +90,7 @@ public final class PrefUtils {
     }
 
     public static boolean wearPresent(Context context) {
-        try {
-            SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
-            return shp.getBoolean(PREF_WEAR_STATUS_KEY, false);
-        } catch (NullPointerException npe) {
-            Timber.d("Here's a problem ... what's going to happen next?");
-            return false;
-        }
+        SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(context);
+        return shp.getBoolean(PREF_WEAR_STATUS_KEY, false);
     }
 }

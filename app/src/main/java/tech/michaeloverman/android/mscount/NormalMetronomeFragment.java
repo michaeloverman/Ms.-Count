@@ -279,16 +279,17 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
     @OnClick({R.id.add_subdivisions_fab, R.id.expanded_add_subdivisions_fab})
     public void addASubdivision() {
-//        if(mMetronomeRunning) return;
         boolean restart = false;
         if (mMetronomeRunning) {
             metronomeStartStop();
             restart = true;
         }
+
         if (mNumSubdivisions == 1) {
             expandFabs();
         } else if (mNumSubdivisions == MAX_SUBDIVISIONS) {
-            Toast.makeText(getActivity(), R.string.too_many_subdivisions, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.too_many_subdivisions,
+                    Toast.LENGTH_SHORT).show();
             return;
         }
         mSubdivisionIndicators[mNumSubdivisions].setVisibility(View.VISIBLE);
@@ -327,7 +328,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         mSubtractSubFab.startAnimation(collapsingSubFabAnim);
         mSubtractSubFab.setVisibility(View.INVISIBLE);
         mExpandedAddSubFab.setVisibility(View.INVISIBLE);
-//        mAddSubdivisionFAB.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -374,15 +374,11 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
 
     @OnClick(R.id.tempo_down_button)
     public void onDownButtonClick() {
-//        mBPM -= 0.1f;
-//        updateDisplay();
         changeTempo(-0.1f);
     }
 
     @OnClick(R.id.tempo_up_button)
     public void onUpButtonClick() {
-//        mBPM += 0.1f;
-//        updateDisplay();
         changeTempo(0.1f);
     }
 
@@ -391,15 +387,14 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         if (mBPM > MAX_TEMPO_BPM_INT) mBPM = MAX_TEMPO_BPM_FLOAT;
         else if (mBPM < MIN_TEMPO_BPM_INT) mBPM = MIN_TEMPO_BPM_FLOAT;
         updateDisplay();
-
     }
 
     private void updateDisplay() {
 
         if (mWholeNumbersSelected) {
-            mTempoSetting.setText(Integer.toString((int) mBPM));
+            mTempoSetting.setText(String.valueOf((int) mBPM));
         } else {
-            mTempoSetting.setText(Float.toString((float) ((int) (mBPM * 10)) / 10));
+            mTempoSetting.setText(String.valueOf((float) ((int) (mBPM * 10)) / 10));
         }
         updateWearNotif();
     }

@@ -106,12 +106,12 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     private void updateWearNotif() {
         if (mHasWearDevice) {
             mWearNotification = new WearNotification(getContext(),
-                    getString(R.string.unformatted_bpm, (int) mBPM), getGroupingString());
+                    getString(R.string.unformatted_bpm, (int) mBPM), getSubdivisionsListAsString());
             mWearNotification.sendStartStop();
         }
     }
 
-    private String getGroupingString() {
+    private String getSubdivisionsListAsString() {
         StringBuilder sb = new StringBuilder();
         for(Integer i : mSubdivisionsList) {
             sb.append(i).append("   ");
@@ -177,10 +177,10 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         return view;
     }
 
-    @OnClick({R.id.one_subs_button, R.id.two_subs_button, R.id.three_subs_button,
+    @OnClick( {R.id.one_subs_button, R.id.two_subs_button, R.id.three_subs_button,
             R.id.four_subs_button, R.id.five_subs_button, R.id.six_subs_button,
             R.id.seven_subs_button, R.id.eight_subs_button, R.id.nine_subs_button,
-            R.id.ten_subs_button,})
+            R.id.ten_subs_button} )
     public void addSubdivision(TextView button) {
         boolean wasRunning = false;
         if (mMetronomeRunning) {
@@ -277,7 +277,6 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
         }
         prefs.apply();
 
-
         super.onDestroy();
     }
 
@@ -320,19 +319,20 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     }
 
     private void updateTempoDisplay() {
-        mTempoSetting.setText(Integer.toString((int) mBPM));
+        mTempoSetting.setText(String.valueOf((int) mBPM));
         mPulseMultiplierView.setText(getString(R.string.pulse_equals, mMultiplier));
         updateWearNotif();
     }
 
     private View getNewSubdivisionView(int value) {
         TextView view = new TextView(getContext());
-        view.setText(Integer.toString(value));
+        view.setText(String.valueOf(value));
         view.setTextSize(SUBDIVISION_DISPLAY_SIZE);
-        view.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_parchment));
+        view.setBackground(ContextCompat.getDrawable(getActivity(),
+                R.drawable.roundcorner_parchment));
         view.setPadding(MARGIN, 0, MARGIN, 0);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN);
 
         view.setLayoutParams(params);

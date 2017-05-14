@@ -362,7 +362,7 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private void programNotFoundError(int id) {
-        Toast.makeText(mActivity, "Program with id " + id + " is not found in the database.",
+        Toast.makeText(mActivity, getString(R.string.id_not_found, id),
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -377,9 +377,9 @@ public class MetaDataEntryFragment extends Fragment
     private void updateGUI() {
         mComposerEntry.setText(mPieceOfMusic.getAuthor());
         mTitleEntry.setText(mPieceOfMusic.getTitle());
-        mBaselineSubdivisionEntry.setText(String.format("%d", mPieceOfMusic.getSubdivision()));
-        mCountoffSubdivisionEntry.setText(String.format("%d", mPieceOfMusic.getCountOffSubdivision()));
-        mDefaultTempoEntry.setText(String.format("%d", mPieceOfMusic.getDefaultTempo()));
+        mBaselineSubdivisionEntry.setText(String.valueOf(mPieceOfMusic.getSubdivision()));
+        mCountoffSubdivisionEntry.setText(String.valueOf(mPieceOfMusic.getCountOffSubdivision()));
+        mDefaultTempoEntry.setText(String.valueOf(mPieceOfMusic.getDefaultTempo()));
         mBaselineRhythmicValueAdapter.setSelectedPosition(mPieceOfMusic.getBaselineNoteValue());
         mBaselineRhythmicValueAdapter.notifyDataSetChanged();
         mDataEntries = mPieceOfMusic.getRawData();
@@ -459,13 +459,13 @@ public class MetaDataEntryFragment extends Fragment
         try {
             subdInt = Integer.parseInt(subd);
             if(subdInt < 1 || subdInt > 24) {
-                Toast.makeText(getContext(), "Subdivisions out of range.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.subdivs_out_of_range, Toast.LENGTH_SHORT).show();
             } else //noinspection StatementWithEmptyBody
                 if(subdInt > 12) {
                 //TODO dialog box to confirm unusually large baseline subdivision
             }
         } catch (NumberFormatException nfe) {
-            Toast.makeText(getContext(), "Please enter only numbers for subdivisions.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.enter_only_number_subdivs, Toast.LENGTH_SHORT).show();
             mBaselineSubdivisionEntry.requestFocus();
             return false;
         }
@@ -473,14 +473,14 @@ public class MetaDataEntryFragment extends Fragment
         try {
             countoffInt = Integer.parseInt(countoff);
             if(countoffInt > subdInt || countoffInt == 0) {
-                Toast.makeText(getContext(),
-                        "Countoff subdivisions must be an even divisor of the baseline subdivisions.",
+                Toast.makeText(getContext(), R.string.countoff_must_be_even_divisor,
                         Toast.LENGTH_SHORT).show();
                 mCountoffSubdivisionEntry.requestFocus();
                 return false;
             }
         } catch (NumberFormatException nfe) {
-            Toast.makeText(getContext(), "Please enter only numbers for countoff.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.please_enter_only_numbers_countoff,
+                    Toast.LENGTH_SHORT).show();
             mBaselineSubdivisionEntry.requestFocus();
             return false;
         }
@@ -563,7 +563,7 @@ public class MetaDataEntryFragment extends Fragment
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getContext(), "Error: Database problem. Save canceled.",
+                        Toast.makeText(getContext(), R.string.database_error_save_cancelled,
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -577,7 +577,8 @@ public class MetaDataEntryFragment extends Fragment
                         PieceOfMusic pieceFromFirebase = dataSnapshot.getValue(PieceOfMusic.class);
 
                         if(pieceFromFirebase.getCreatorId().equals(mPieceOfMusic.getCreatorId())) {
-                            overwriteFirebaseDataAlertDialog(mPieceOfMusic.getTitle(), mPieceOfMusic.getAuthor());
+                            overwriteFirebaseDataAlertDialog(mPieceOfMusic.getTitle(),
+                                    mPieceOfMusic.getAuthor());
                         } else {
                             Toast.makeText(mActivity, R.string.not_authorized_save_local,
                                     Toast.LENGTH_SHORT).show();
@@ -612,7 +613,7 @@ public class MetaDataEntryFragment extends Fragment
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Action for "Cancel".
+                        dialog.dismiss();
                     }
                 });
 

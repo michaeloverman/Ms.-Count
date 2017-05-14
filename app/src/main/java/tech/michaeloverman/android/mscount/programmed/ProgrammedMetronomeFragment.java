@@ -196,26 +196,6 @@ public class ProgrammedMetronomeFragment extends Fragment
         View view = inflater.inflate(R.layout.programmed_fragment, container, false);
         ButterKnife.bind(this, view);
 
-//        if(mActivity == null) {
-//            Timber.d("mActivity is null....");
-//            Intent i = new Intent(getActivity(), MsCountActivity.class);
-//            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(i);
-//            mActivity.finish();
-
-            //send this all back in onActivityCreated()
-//            viewcreated = false;
-//            tempInflater = inflater;
-//            tempViewGroup = container;
-//            tempSavedInstanceState = savedInstanceState;
-//            return null;
-
-//            Timber.d("shouldn't have gotten this far...");
-//        }
-
-//        mActivity.setTitle(R.string.app_name);
-//        Timber.d("using firebase? " + mActivity.useFirebase);
-
         mInterstitialAd = new InterstitialAd(mActivity);
         mInterstitialAd.setAdUnitId(getString(R.string.programmed_interstitial_unit_id));
         AdRequest.Builder adBuilder = new AdRequest.Builder();
@@ -303,12 +283,9 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void onResume() {
         Timber.d("onResume()");
         super.onResume();
-//        if(mAdView != null) {
-//            mAdView.resume();
-//        }
-//        if(mMetronomeBroadcastReceiver == null) {
+
         createAndRegisterBroadcastReceiver();
-//        }
+
         if(mCurrentPiece != null) {
             updateWearNotif();
         }
@@ -317,8 +294,6 @@ public class ProgrammedMetronomeFragment extends Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if(mCurrentPiece != null) {
-//            Timber.d("onSaveInstanceState() " + mCurrentPiece.getTitle() + " by " + mCurrentComposer);
-//            Timber.d("..... Current Tempo: " + mCurrentTempo);
             outState.putString(CURRENT_PIECE_TITLE_KEY, mCurrentPiece.getTitle());
             outState.putString(CURRENT_PIECE_KEY_KEY, mCurrentPieceKey);
             outState.putInt(CURRENT_TEMPO_KEY, mCurrentTempo);
@@ -346,7 +321,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         super.onActivityResult(requestCode, resultCode, data);
         Timber.d("FRAGMENT: onActivityResult()");
         if(resultCode != RESULT_OK) {
-            Toast.makeText(mActivity, "Problem with return result", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, R.string.return_result_problem, Toast.LENGTH_SHORT).show();
             return;
         }
         switch(requestCode) {
@@ -394,9 +369,7 @@ public class ProgrammedMetronomeFragment extends Fragment
         Intent intent = new Intent(mActivity, LoadNewProgramActivity.class)
                 .putExtra(EXTRA_COMPOSER_NAME, mCurrentComposer)
                 .putExtra(EXTRA_USE_FIREBASE, mActivity.useFirebase);
-//        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                mActivity, new Pair<View, String>(mTVCurrentComposer, getString(R.string.transition_composer_name_view)) );
-//        startActivityForResult(intent, REQUEST_NEW_PROGRAM, activityOptions.toBundle());
+
         startActivityForResult(intent, REQUEST_NEW_PROGRAM);
     }
 
@@ -404,7 +377,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     public void metronomeStartStop() {
 
         if(mCurrentPiece == null) {
-            Toast.makeText(mActivity, "Please select a program before starting metronome.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, R.string.select_program_first, Toast.LENGTH_SHORT).show();
             return;
         }
         if(mMetronomeRunning) {
@@ -412,7 +385,7 @@ public class ProgrammedMetronomeFragment extends Fragment
             mMetronome.stop();
             mMetronomeRunning = false;
             mStartStopButton.setImageResource(android.R.drawable.ic_media_play);
-            mCurrentMeasureNumber.setText("--");
+            mCurrentMeasureNumber.setText(R.string.double_dash_no_measure_number);
         } else {
             Timber.d("metronomeStart() " + mCurrentPiece.getTitle());
             mMetronomeRunning = true;
@@ -448,23 +421,11 @@ public class ProgrammedMetronomeFragment extends Fragment
             PrefUtils.saveFirebaseStatus(mActivity, false);
         }
 
-//        if(mActivity.useFirebase) {
-//            try {
-//                Integer.parseInt(mCurrentPieceKey);
-//            } catch (NumberFormatException nfe) {
-//
-//            }
-//        } else {
-//            if(mCurrentPieceKey.charAt(0) == '-') {
-//
-//            }
-//        }
     }
 
     private void getPieceFromKey() {
         Timber.d("getPieceFromKey() " + mCurrentPieceKey);
-//        Timber.d("activity's useFirebase: " + mActivity.useFirebase);
-//        boolean firebase = PrefUtils.usingFirebase(mActivity);
+
         if(mCurrentPieceKey.charAt(0) == '-') {
             getPieceFromFirebase();
         } else {
@@ -490,7 +451,7 @@ public class ProgrammedMetronomeFragment extends Fragment
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getContext(), "A database error occurred. Please try again.",
+                        Toast.makeText(getContext(), R.string.database_error_try_again,
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -527,7 +488,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void programNotFoundError(int id) {
-        Toast.makeText(mActivity, "Program with id " + id + " is not found in the database.",
+        Toast.makeText(mActivity, getString(R.string.id_not_found, id),
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -548,7 +509,7 @@ public class ProgrammedMetronomeFragment extends Fragment
     }
 
     private void updateTempoView() {
-        mTVCurrentTempo.setText(Integer.toString(mCurrentTempo));
+        mTVCurrentTempo.setText(String.valueOf(mCurrentTempo));
     }
 
     private int getNoteImageResource(int noteValue) {
@@ -616,10 +577,9 @@ public class ProgrammedMetronomeFragment extends Fragment
         }
 
         updateGUI();
-        Timber.d("calling updateWearNotif()");
+
         updateWearNotif();
 
-        Timber.d("About to check if favorite: " + mCurrentPiece.getFirebaseId());
         if(mCurrentPiece.getFirebaseId() != null ) {
             new CheckIfFavoriteTask().execute(mCurrentPiece.getFirebaseId());
         } else {

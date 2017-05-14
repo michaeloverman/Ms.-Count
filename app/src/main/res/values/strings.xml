@@ -1,8 +1,8 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Ms. Count</string>
     <string name="start">Start</string>
     <!--<string name="bpm">BPM</string>-->
-    <string name="unformatted_bpm" formatted="false">%1$d bpm</string>
+    <string name="unformatted_bpm">%1$d bpm</string>
     <!--<string name="stop">Stop</string>-->
     <!--<string name="programmed_metronome">Programmed Metronome</string>-->
     <!--<string name="choose_etude">Select an etude</string>-->
@@ -22,7 +22,7 @@
     <string name="no_internet_connection">Connect to internet, and sign again.</string>
     <string name="unknown_error">An error has occurred signing in to the database. Please try again.</string>
     <string name="unknown_sign_in_response">A response from the database has come back that we don\'t understand. Not sure if you\'re signed in or not…</string>
-    <string name="overwrite_data_confirmation" formatted="false">%1$s by %2$s already exists in the database. Are you sure you want to overwrite with new data?</string>
+    <string name="overwrite_data_confirmation">%1$s by %2$s already exists in the database. Are you sure you want to overwrite with new data?</string>
     <string name="title_of_the_piece_dummy_data">Title Of the Piece</string>
     <string name="save">Save</string>
     <!--<string name="no_program_selected_instruction_toast">Select a program for metronome</string>-->
@@ -44,7 +44,7 @@
     <string name="not_authorized_save_local">You are not authorized to overwrite this program. Switch to local database to save.</string>
     <string name="problem_loading">Problem loading program.</string>
     <string name="countoff_must_fit_subdivisions">Countoff subdivisions must divide evenly into baseline subdivisions.</string>
-    <string name="tempo_between_min_max" formatted="false">Tempo must be between %1$d and %2$d</string>
+    <string name="tempo_between_min_max" tools:ignore="PluralsCandidate">Tempo must be between %1$d and %2$d</string>
     <string name="tempo_must_be_integer">Tempo must be an integer.</string>
     <string name="enter_data_before_saving">Error: Please Click \"Program Beats\" to enter your program.</string>
     <string name="error_no_composer_message">Error: Please enter a composer\'s name.</string>
@@ -57,9 +57,9 @@
     <string name="cancel_delete">Cancel delete</string>
     <string name="select_to_delete">Select Program to Delete…</string>
     <string name="cancel">Cancel</string>
-    <string name="delete_confirmation_question" formatted="false">Are you sure you want to delete %1$s from the database?</string>
+    <string name="delete_confirmation_question">Are you sure you want to delete %1$s from the database?</string>
     <string name="delete_program_dialog_title">Delete Program?</string>
-    <string name="deleting_title" formatted="false">Deleting %1$s…</string>
+    <string name="deleting_title">Deleting %1$s…</string>
     <string name="no_composer_empty_space"/>
     <string name="select_a_program">select a program…</string>
     <string name="transition_composer_name_view">transition_composer_name_view</string>
@@ -127,9 +127,9 @@
     <string name="add_beat_of_eight_subdivisions">add beat of eight subdivisions</string>
     <string name="add_beat_of_nine_subdivisions">add beat of nine subdivisions</string>
     <string name="add_beat_of_ten_subdivisions">add beat of ten subdivisions</string>
-    <string name="barline_content_description" formatted="false">barline, measure number %1$d</string>
+    <string name="barline_content_description">barline, measure number %1$d</string>
     <string name="add_barline_button_content_description">add barline button</string>
-    <string name="note_value_note_equals" formatted="false">%1$s equals</string>
+    <string name="note_value_note_equals">%1$s equals</string>
 
     <!--Data Input Layout Buttons-->
     <string name="barline_character">|</string>
@@ -173,7 +173,7 @@
     <string name="select_composer">Select Composer</string>
 
     <!--Normal Metronome-->
-    <string name="vol_abbrev_colon" formatted="false">vol: %1$d</string>
+    <string name="vol_abbrev_colon">vol: %1$d</string>
 
     <!--Oddmeter Metronome-->
     <string name="pulse_equals">%1$d=</string>
@@ -184,6 +184,16 @@
     <string name="repeat_measure">repeat measure</string>
     <string name="app_name_content_description">ms count metronome</string>
     <string name="programmed_interstitial_unit_id">ca-app-pub-9915736656105375/9963638641</string>
+    <string name="double_dash_no_measure_number">--</string>
+    <string name="database_error_save_cancelled">Error: Database problem. Save canceled.</string>
+    <string name="please_enter_only_numbers_countoff">Please enter only numbers for countoff.</string>
+    <string name="countoff_must_be_even_divisor">Countoff subdivisions must be an even divisor of the baseline subdivisions.</string>
+    <string name="enter_only_number_subdivs">Please enter only numbers for subdivisions.</string>
+    <string name="subdivs_out_of_range">Subdivisions out of range.</string>
+    <string name="id_not_found">Program with id %1$d is not found in the database.</string>
+    <string name="select_program_first">Please select a program before starting metronome.</string>
+    <string name="database_error_try_again">A database error occurred. Please try again.</string>
+    <string name="return_result_problem">Problem with return result</string>
 
 
 </resources>

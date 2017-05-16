@@ -327,7 +327,7 @@ public class MetaDataEntryFragment extends Fragment
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getContext(), "A database error occurred. Please try again.",
+                        Toast.makeText(getContext(), getString(R.string.database_error_try_again),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -515,20 +515,6 @@ public class MetaDataEntryFragment extends Fragment
         return true;
     }
 
-    /**
-     * Checks database for existence same title by same composer. If it doesn't exist,
-     * goes ahead and saves. If it does exists, call on a dialog to confirm before saving.
-     */
-//    private void checkFirebaseForExistingData() {
-//
-////        if(mActivity.useFirebase) {
-//        if(true) {
-//            checkFirebaseForExistence();
-//        } else {
-//            saveToSqlDatabase();
-//        }
-//    }
-
     private void saveToSqlDatabase() {
         Timber.d("this where it should be saving to sql");
         ContentValues contentValues = Utilities.getContentValuesFromPiece(mPieceOfMusic);
@@ -663,13 +649,12 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private void databaseSaveErrorStayHere() {
-        Toast.makeText(getContext(), "Error: Save to database cancelled.",
+        Toast.makeText(getContext(), R.string.error_save_canceled,
                 Toast.LENGTH_SHORT).show();
     }
 
     private void toastError() {
-        Toast.makeText(this.getContext(),
-                "Please enter a composer name and title before continuing.",
+        Toast.makeText(this.getContext(), R.string.enter_composer_name_and_title,
                 Toast.LENGTH_SHORT).show();
     }
 

@@ -196,6 +196,8 @@
     <string name="return_result_problem">Problem with return result</string>
     <string name="cant_evenly_divide">Can\'t evenly divide values.</string>
     <string name="enter_subdivision_value">Enter a subdivision value...</string>
+    <string name="error_save_canceled">Error: Save to database cancelled.</string>
+    <string name="enter_composer_name_and_title">Please enter a composer name and title before continuing.</string>
 
 
 </resources>

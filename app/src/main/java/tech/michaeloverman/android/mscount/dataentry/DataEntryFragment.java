@@ -113,16 +113,20 @@ public class DataEntryFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.double_data_values:
-                doubleValues();
+//                doubleValues();
+                multiplyValues(2);
                 break;
             case R.id.halve_data_values:
-                halveValues();
+//                halveValues();
+                divideValues(2);
                 break;
             case R.id.triple_data_values:
-                tripleValues();
+                multiplyValues(3);
+//                tripleValues();
                 break;
             case R.id.third_data_values:
-                thirdValues();
+//                thirdValues();
+                divideValues(3);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -142,6 +146,15 @@ public class DataEntryFragment extends Fragment {
         mMultiplier *= 2f;
     }
 
+    private void multiplyValues(int multiplier) {
+        for (DataEntry entry: mDataList) {
+            if(!entry.isBarline()) {
+                entry.setData(entry.getData() * multiplier);
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+        mMultiplier *= (float) multiplier;
+    }
     private void tripleValues() {
         for (int i = 0; i < mDataList.size(); i++) {
             DataEntry entry = mDataList.get(i);
@@ -170,7 +183,20 @@ public class DataEntryFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
         mMultiplier *= 0.5f;
     }
-
+    private void divideValues(int divider) {
+        List<DataEntry> tempList = new ArrayList<>();
+        for (DataEntry entry : mDataList) {
+            if(!entry.isBarline() && entry.getData() % divider != 0) {
+                cantDivideError();
+                return;
+            } else {
+                tempList.add(new DataEntry(entry.getData() / divider, entry.isBarline()));
+            }
+        }
+        mDataList = tempList;
+        mAdapter.notifyDataSetChanged();
+        mMultiplier /= divider;
+    }
     private void thirdValues() {
         for (int i = 0; i < mDataList.size(); i++) {
             DataEntry entry = mDataList.get(i);

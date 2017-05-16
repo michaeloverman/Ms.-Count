@@ -26,4 +26,13 @@
         <item name="android:textSize">@dimen/odd_met_subdiv_button_font_size</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="DataEntryButtonStyle" parent="AppTheme.Main">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/data_entry_sub_button_text_size</item>
+        <item name="android:background">@drawable/roundcorner_primary</item>
+        <item name="android:paddingStart">@dimen/data_entry_usual_padding</item>
+        <item name="android:paddingEnd">@dimen/data_entry_usual_padding</item>
+    </style>
 </resources>

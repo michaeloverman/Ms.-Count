@@ -285,13 +285,12 @@ public class DataEntryFragment extends Fragment {
         final EditText editText = (EditText) view.findViewById(R.id.get_integer_edittext);
 
         AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle("Enter a subdivision value...")
+                .setTitle(R.string.enter_subdivision_value)
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         addDataEntry(editText.getText().toString(), BEAT);
-//                        onDialogPositiveClick(value);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

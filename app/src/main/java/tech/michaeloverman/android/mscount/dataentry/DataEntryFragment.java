@@ -113,19 +113,15 @@ public class DataEntryFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.double_data_values:
-//                doubleValues();
                 multiplyValues(2);
                 break;
             case R.id.halve_data_values:
-//                halveValues();
                 divideValues(2);
                 break;
             case R.id.triple_data_values:
                 multiplyValues(3);
-//                tripleValues();
                 break;
             case R.id.third_data_values:
-//                thirdValues();
                 divideValues(3);
                 break;
             default:
@@ -133,17 +129,6 @@ public class DataEntryFragment extends Fragment {
         }
         mBuilder.tempoMultiplier(mMultiplier);
         return true;
-    }
-
-    private void doubleValues() {
-        for (int i = 0; i < mDataList.size(); i++) {
-            DataEntry entry = mDataList.get(i);
-            if(!entry.isBarline()) {
-                entry.setData(entry.getData() * 2);
-            }
-        }
-        mAdapter.notifyDataSetChanged();
-        mMultiplier *= 2f;
     }
 
     private void multiplyValues(int multiplier) {
@@ -155,34 +140,7 @@ public class DataEntryFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
         mMultiplier *= (float) multiplier;
     }
-    private void tripleValues() {
-        for (int i = 0; i < mDataList.size(); i++) {
-            DataEntry entry = mDataList.get(i);
-            if(!entry.isBarline()) {
-                entry.setData(entry.getData() * 3);
-            }
-        }
-        mAdapter.notifyDataSetChanged();
-        mMultiplier *= 3f;
-    }
 
-    private void halveValues() {
-        for (int i = 0; i < mDataList.size(); i++) {
-            DataEntry entry = mDataList.get(i);
-            if(!entry.isBarline() && entry.getData() % 2 == 1) {
-                cantDivideError();
-                return;
-            }
-        }
-        for (int i = 0; i < mDataList.size(); i++) {
-            DataEntry entry = mDataList.get(i);
-            if(!entry.isBarline()) {
-                entry.setData(entry.getData() / 2);
-            }
-        }
-        mAdapter.notifyDataSetChanged();
-        mMultiplier *= 0.5f;
-    }
     private void divideValues(int divider) {
         List<DataEntry> tempList = new ArrayList<>();
         for (DataEntry entry : mDataList) {
@@ -197,25 +155,9 @@ public class DataEntryFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
         mMultiplier /= divider;
     }
-    private void thirdValues() {
-        for (int i = 0; i < mDataList.size(); i++) {
-            DataEntry entry = mDataList.get(i);
-            if(!entry.isBarline() && entry.getData() % 3 != 0) {
-                cantDivideError();
-                return;
-            }
-        }
-        for (int i = 0; i < mDataList.size(); i++) {
-            DataEntry entry = mDataList.get(i);
-            if(!entry.isBarline()) {
-                entry.setData(entry.getData() / 3);
-            }
-        }
-        mAdapter.notifyDataSetChanged();
-        mMultiplier *= 0.333f;
-    }
+
     private void cantDivideError() {
-        Toast.makeText(getContext(), "Can't evenly divide values.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.cant_evenly_divide, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -291,6 +233,12 @@ public class DataEntryFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getFragmentManager().popBackStackImmediate();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
                 })
                 .show();

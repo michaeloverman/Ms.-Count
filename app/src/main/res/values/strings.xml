@@ -194,6 +194,7 @@
     <string name="select_program_first">Please select a program before starting metronome.</string>
     <string name="database_error_try_again">A database error occurred. Please try again.</string>
     <string name="return_result_problem">Problem with return result</string>
+    <string name="cant_evenly_divide">Can\'t evenly divide values.</string>
 
 
 </resources>

@@ -18,6 +18,7 @@ import timber.log.Timber;
 import static tech.michaeloverman.android.mscount.favorites.FavoritesProvider.ACTION_DATA_UPDATED;
 
 /**
+ * Handles database actions: query, insert, delete
  * Created by Michael on 3/27/2017.
  */
 

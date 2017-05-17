@@ -10,6 +10,8 @@ import timber.log.Timber;
 import static tech.michaeloverman.android.mscount.database.ProgramDatabaseSchema.MetProgram;
 
 /**
+ * Extension of SQLiteOpenHelper, creating and setting up database of local program storage.
+ *
  * Created by Michael on 3/27/2017.
  */
 
@@ -57,6 +59,5 @@ class ProgramDatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(SQL_STRING);
         }
 
-//        onCreate(db);
     }
 }

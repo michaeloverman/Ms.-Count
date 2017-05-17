@@ -20,6 +20,7 @@ import tech.michaeloverman.android.mscount.pojos.TitleKeyObject;
 import timber.log.Timber;
 
 /**
+ * Adapter for supplying recycler view with proper data.
  * Created by Michael on 2/25/2017.
  */
 

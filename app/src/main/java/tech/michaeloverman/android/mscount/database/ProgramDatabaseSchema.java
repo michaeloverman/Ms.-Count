@@ -7,6 +7,7 @@ import android.provider.BaseColumns;
 import timber.log.Timber;
 
 /**
+ * The table definitions for SQLite database of local program data storage.
  * Created by Michael on 3/27/2017.
  */
 

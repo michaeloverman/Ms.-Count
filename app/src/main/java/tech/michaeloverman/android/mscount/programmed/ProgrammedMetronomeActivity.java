@@ -231,7 +231,6 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         Timber.d(m);
     }
 
-
     private void losingDataAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.erase_data)

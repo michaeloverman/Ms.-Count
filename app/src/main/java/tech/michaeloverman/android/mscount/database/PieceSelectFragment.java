@@ -1,7 +1,6 @@
 /* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount.database;
 
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -47,10 +46,11 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  * Use the {@link PieceSelectFragment#newInstance} factory method to
  * create an instance of this fragment.
+ *
+ * Handles display and click handling of programs in the database.
  */
 public class PieceSelectFragment extends DatabaseAccessFragment
         implements WorksListAdapter.WorksListAdapterOnClickHandler,
-//        ComposerSelectFragment.ComposerCallback,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int ID_PROGRAM_LOADER = 432;
@@ -83,13 +83,45 @@ public class PieceSelectFragment extends DatabaseAccessFragment
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.program_select_fragment, container, false);
+        ButterKnife.bind(this, view);
+
+        Timber.d("onCreateView useFirebase: " + mActivity.useFirebase);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this.getActivity());
+        mRecyclerView.setLayoutManager(manager);
+        mAdapter = new WorksListAdapter(getContext(), this);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mCurrentComposer = mActivity.mCurrentComposer;
+        Timber.d("onCreate() Composer: " + mCurrentComposer);
+
+        if(mActivity.useFirebase) {
+            mActivity.setTitle(getString(R.string.select_piece_by));
+        } else {
+            mActivity.setTitle(getString(R.string.select_a_piece));
+            makeComposerRelatedViewsInvisible();
+        }
+
+        if (mActivity.useFirebase && mCurrentComposer == null) {
+            selectComposer();
+        } else {
+            composerSelected();
+        }
+
+        Timber.d("Returning completed view....!!!");
+        return view;
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Timber.d("onCreateOptionsMenu");
         inflater.inflate(R.menu.delete_menu_item, menu);
         super.onCreateOptionsMenu(menu, inflater);
         mDeleteCancelMenuItem = menu.findItem(R.id.delete_program_menu_item);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -128,60 +160,9 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         progressSpinner(false);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.program_select_fragment, container, false);
-        ButterKnife.bind(this, view);
-
-        Timber.d("onCreateView useFirebase: " + mActivity.useFirebase);
-
-//        if(mCursor != null) {
-//            mActivity.getSupportLoaderManager().restartLoader(WORKS_LOADER_ID, null, this);
-//        }
-
-        LinearLayoutManager manager = new LinearLayoutManager(this.getActivity());
-        mRecyclerView.setLayoutManager(manager);
-        mAdapter = new WorksListAdapter(getContext(), this);
-        mRecyclerView.setAdapter(mAdapter);
-
-        mCurrentComposer = mActivity.mCurrentComposer;
-        Timber.d("onCreate() Composer: " + mCurrentComposer);
-
-        if(mActivity.useFirebase) {
-            mActivity.setTitle(getString(R.string.select_piece_by));
-        } else {
-            mActivity.setTitle(getString(R.string.select_a_piece));
-            makeComposerRelatedViewsInvisible();
-        }
-
-        if (mActivity.useFirebase && mCurrentComposer == null) {
-            selectComposer();
-        } else {
-            composerSelected();
-        }
-
-        Timber.d("Returning completed view....!!!");
-        return view;
-    }
-
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        Timber.d("onViewCreated() - transition should go now");
-//        super.onViewCreated(view, savedInstanceState);
-//        mActivity.supportStartPostponedEnterTransition();
-//    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Timber.d("ProgramSelectFragment detaching - this is where sProgramCallback may be nullified...");
-//        sProgramCallback = null;
-    }
-
     @OnClick( { R.id.select_composer_button, R.id.composers_name_label} )
     public void selectComposer() {
-//        mCurrentPiece = null;
+
         Fragment fragment = ComposerSelectFragment.newInstance();
 
 //        android.transition.ChangeBounds changeBounds = (android.transition.ChangeBounds) TransitionInflater.from(mActivity).inflateTransition(R.transition.change_bounds);
@@ -200,17 +181,8 @@ public class PieceSelectFragment extends DatabaseAccessFragment
         progressSpinner(true);
 
         if(!mDeleteFlag) {
-//            PrefUtils.saveFirebaseStatus(mActivity, mActivity.useFirebase);
-//            if(!mActivity.useFirebase) {
-//                pieceId = Integer.toString(sqlId);
-//            }
             mActivity.setProgramResult(pieceId);
             mActivity.finish();
-//            if(mActivity.useFirebase) {
-//                getPieceFromFirebase(pieceId);
-//            } else {
-//                getPieceFromSql(position);
-//            }
         } else {
             dialogDeleteConfirmation(pieceId, title);
         }
@@ -311,14 +283,6 @@ public class PieceSelectFragment extends DatabaseAccessFragment
                 }
         );
     }
-
-//    @Override
-//    public void newComposer(String name) {
-//        mCurrentComposer = name;
-////        if(!mActivity.useFirebase) {
-////            mActivity.getSupportLoaderManager().restartLoader(ID_PROGRAM_LOADER, null, this);
-////        }
-//    }
 
     private void composerSelected() {
         progressSpinner(true);

@@ -8,8 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -65,28 +63,12 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
         setHasOptionsMenu(true);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Timber.d("onCreateOptionsMenu");
-//        inflater.inflate(R.menu.metadata_entry_menu, menu);
-//        menu.removeItem(R.id.create_new_program_option);
-//        MenuItem item = menu.findItem(R.id.firebase_local_database);
-//        Timber.d("useFirebase = " + ((ProgrammedMetronomeActivity)getActivity()).useFirebase);
-//
-//        item.setTitle(((ProgrammedMetronomeActivity)getActivity()).useFirebase ?
-//                R.string.use_local_database : R.string.use_cloud_database);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Timber.d("onCreateView()");
         View view = inflater.inflate(R.layout.select_composer_layout, container, false);
         ButterKnife.bind(this, view);
-
-//        if(mCursor != null) {
-//            mActivity.getSupportLoaderManager().restartLoader(COMPOSER_LOADER_ID, null, this);
-//        }
 
         mActivity.setTitle(getString(R.string.select_a_composer));
 
@@ -99,12 +81,6 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
 
         return view;
     }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        sComposerCallback = null;
-//    }
 
     /**
      * Contact Firebase Database, get all the composer's names, attach to adapter for
@@ -113,29 +89,26 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
     private void loadComposers() {
         Timber.d("loadComposers()");
         progressSpinner(true);
-//        if(mActivity.useFirebase) {
-            FirebaseDatabase.getInstance().getReference().child("composers")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
-                            List<String> list = new ArrayList<>();
-                            for (DataSnapshot snap : iterable) {
-                                list.add(snap.getKey());
-                            }
-                            Collections.sort(list);
-                            mAdapter.setComposers(list);
-                            progressSpinner(false);
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
+        FirebaseDatabase.getInstance().getReference().child("composers")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
+                        List<String> list = new ArrayList<>();
+                        for (DataSnapshot snap : iterable) {
+                            list.add(snap.getKey());
                         }
-                    });
-//        } else {
-//            mActivity.getSupportLoaderManager().initLoader(COMPOSER_LOADER_ID, null, this);
-//        }
+                        Collections.sort(list);
+                        mAdapter.setComposers(list);
+                        progressSpinner(false);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
     }
 
@@ -145,58 +118,6 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
         loadComposers();
     }
 
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-////        String[] projection = new String[] {ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER };
-//
-//        switch(id) {
-//            case COMPOSER_LOADER_ID:
-//                Uri queryUri = ProgramDatabaseSchema.MetProgram.CONTENT_URI;
-//                String sortOrder = ProgramDatabaseSchema.MetProgram.COLUMN_COMPOSER + " ASC";
-//
-//                return new CursorLoader(getContext(),
-//                        queryUri,
-////                        projection,
-//                        null,
-//                        null,
-//                        null,
-//                        sortOrder);
-//
-//            default:
-//                throw new RuntimeException("Loader not Implemented: " + id);
-//        }
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//        progressSpinner(false);
-//        if(data == null || data.getCount() == 0) {
-//            mErrorView.setVisibility(View.VISIBLE);
-//            updateEmptyView(NO_DATA_ERROR_CODE);
-//        } else {
-//            mCursor = data;
-//            mErrorView.setVisibility(View.GONE);
-//            mAdapter.newCursor(mCursor);
-//        }
-//    }
-
-//    private void updateEmptyView(int code) {
-//        Timber.d("updateEmptyView(code = " + code);
-//        String message;
-//        switch(code) {
-//            case NO_DATA_ERROR_CODE:
-//                message = "No composers currently in database.";
-//                break;
-//            default:
-//                message = "Unknown error occurred...";
-//        }
-//        mErrorView.setText(message);
-//    }
-
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> loader) {
-//        mAdapter.newCursor(null);
-//    }
     /**
      * Adapter class to handle recycler view, listing composer names
      */
@@ -231,26 +152,6 @@ public class ComposerSelectFragment extends DatabaseAccessFragment {
             composers = list;
             notifyDataSetChanged();
         }
-
-//        public void newCursor(Cursor data) {
-//            List<String> list = new ArrayList<>();
-//            if(data == null) {
-//                composers = list;
-//                return;
-//            }
-//
-//            try {
-//                data.moveToFirst();
-//                while (!data.isAfterLast()) {
-//                    list.add(data.getString(ProgramDatabaseSchema.MetProgram.POSITION_COMPOSER));
-//                    data.moveToNext();
-//                }
-//            } finally {
-//                data.close();
-//            }
-//
-//            setComposers(list);
-//        }
 
         class ComposerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             @BindView(R.id.composer_name_tv)

@@ -25,6 +25,9 @@ import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
 
 /**
+ * This activity manages the fragments which lead a user through program selection and/or
+ * deletion.
+ *
  * Created by Michael on 3/31/2017.
  */
 
@@ -37,7 +40,6 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     boolean useFirebase;
     String mCurrentComposer;
-
 
     @Override
     protected Fragment createFragment() {
@@ -82,17 +84,6 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         if(mAuth.getCurrentUser() == null) {
             signInToFirebase();
         }
-    }
-
-    void setProgramResult(String pieceId) {
-        if(pieceId == null) {
-            Timber.d("null piece recieved to return");
-        } else {
-            Timber.d("setting new program on result intent: " + pieceId);
-        }
-        Intent data = new Intent();
-        data.putExtra(EXTRA_NEW_PROGRAM, pieceId);
-        setResult(RESULT_OK, data);
     }
 
     @Override
@@ -143,6 +134,17 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         }
     }
 
+    void setProgramResult(String pieceId) {
+        if(pieceId == null) {
+            Timber.d("null piece recieved to return");
+        } else {
+            Timber.d("setting new program on result intent: " + pieceId);
+        }
+        Intent data = new Intent();
+        data.putExtra(EXTRA_NEW_PROGRAM, pieceId);
+        setResult(RESULT_OK, data);
+    }
+
     private void updateData() {
         DatabaseAccessFragment f = (DatabaseAccessFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
@@ -173,8 +175,6 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
 
             // Successfully signed in
             if (resultCode == ResultCodes.OK) {
-//                startActivity(SignedInActivity.createIntent(this, response));
-//                finish();
                 Timber.d("signed into Firebase");
                 return;
             } else {
@@ -199,31 +199,5 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
             Toast.makeText(this, R.string.unknown_sign_in_response, Toast.LENGTH_SHORT).show();
         }
     }
-//TODO this method is needed when by the save data method someplace else
-    // MAYBE NOT anymore - using userId to validate specific program access
-//    private void checkAdmin() {
-//        FirebaseDatabase.getInstance().getReference().child("admin")
-//                .child(mAuth.getCurrentUser().getUid())
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        if(dataSnapshot == null) {
-//                            Timber.d("user is NOT admin");
-//                            userIsAdmin = false;
-//                        } else {
-//                            Timber.d("user IS admin");
-//                            userIsAdmin = true;
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                });
-//    }
-//    public boolean isUserAdmin() {
-//        return userIsAdmin;
-//    }
 
 }

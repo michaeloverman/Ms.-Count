@@ -17,6 +17,8 @@ import tech.michaeloverman.android.mscount.utils.Utilities;
 import timber.log.Timber;
 
 /**
+ * Class to hold a program for the programmable metronome.
+ *
  * Created by Michael on 2/20/2017.
  */
 

@@ -4,6 +4,8 @@ package tech.michaeloverman.android.mscount.pojos;
 import java.io.Serializable;
 
 /**
+ * POJO for a single piece of data: an integer value and a boolean. Boolean whether it is a barline
+ * or not, value is the measure number for barlines, and the number of subdivisions otherwise.
  * Created by Michael on 3/13/2017.
  */
 
@@ -38,13 +40,6 @@ public class DataEntry implements Serializable {
     public void setData(int data) {
         mData = data;
     }
-//
-//    public void decreaseMeasureNumber() {
-//        if(isBarline) mData--;
-//    }
-//    public void increaseMeasureNumber() {
-//        if(isBarline) mData++;
-//    }
 
     @Override
     public String toString() {

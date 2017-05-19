@@ -28,7 +28,7 @@ import timber.log.Timber;
  * creation/editing.
  *
  * TODO: double check that it actually loads correct values when editing an existing work
- * 
+ *
  * Created by Michael on 5/7/2017.
  */
 

@@ -7,6 +7,9 @@ import timber.log.Timber;
 
 
 /**
+ * Very simple POJO for pairing a program title and its Firebase key. Used primarily by
+ * the Favorites database.
+ *
  * Created by Michael on 2/25/2017.
  */
 

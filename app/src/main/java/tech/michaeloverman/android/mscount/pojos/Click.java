@@ -2,6 +2,7 @@
 package tech.michaeloverman.android.mscount.pojos;
 
 /**
+ * POJO to handle aspects of the sound files for clicks
  * Created by Michael on 10/6/2016.
  */
 

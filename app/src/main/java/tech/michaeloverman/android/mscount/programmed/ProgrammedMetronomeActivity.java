@@ -34,7 +34,7 @@ import timber.log.Timber;
 /**
  * This activity manages the various frgaments involved in the programmed metronome. Particularly
  * the local vs cloud database options menu item, and Firebase signin.
- * 
+ *
  * Created by Michael on 3/24/2017.
  */
 

@@ -13,6 +13,7 @@ import tech.michaeloverman.android.mscount.SingleFragmentActivity;
 import tech.michaeloverman.android.mscount.pojos.Click;
 
 /**
+ * Abstract parent class for various metronomes. Handles click sound settings.
  * Created by Michael on 4/5/2017.
  */
 

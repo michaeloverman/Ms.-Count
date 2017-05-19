@@ -112,7 +112,7 @@ public class Metronome {
             @Override
             public void onFinish() {
                 mClicking = false;
-//                mListener.metronomeStartStop(); Do something to change UI on listener end...
+                mListener.metronomeStartStop(); // Do something to change UI on listener end...
             }
         };
         mClicking = true;
@@ -142,6 +142,7 @@ public class Metronome {
             @Override
             public void onFinish() {
                 mClicking = false;
+                mListener.metronomeStartStop();
             }
         };
         mClicking = true;
@@ -277,6 +278,7 @@ public class Metronome {
             public void onFinish() {
                 this.cancel();
                 mClicking = false;
+                mListener.metronomeStartStop();
             }
         };
         mClicking = true;

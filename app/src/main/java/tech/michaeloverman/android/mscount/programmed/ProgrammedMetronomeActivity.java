@@ -32,6 +32,9 @@ import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
 
 /**
+ * This activity manages the various frgaments involved in the programmed metronome. Particularly
+ * the local vs cloud database options menu item, and Firebase signin.
+ * 
  * Created by Michael on 3/24/2017.
  */
 
@@ -42,6 +45,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     public boolean useFirebase;
+    private MenuItem databaseMenuItem;
     public static final String PROGRAM_ID_EXTRA = "program_id_extra_from_widget";
 
     @Override
@@ -71,7 +75,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
                 } else {
                     // User is signed out
                     Timber.d("onAuthStateChanged:signed_out");
-                    useFirebase = false;
+                    goLocal();
                 }
                 // ...
             }
@@ -89,8 +93,6 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
             signInToFirebase();
         }
 
-//        mLocalDatabase = new ProgramDatabaseHelper(this).getWritableDatabase();
-
     }
 
     @Override
@@ -99,8 +101,8 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.programmed_global_menu, menu);
-        MenuItem item = menu.findItem(R.id.firebase_local_database);
-        item.setTitle(useFirebase ? R.string.use_local_database : R.string.use_cloud_database);
+        databaseMenuItem = menu.findItem(R.id.firebase_local_database);
+        updateDatabaseOptionMenuItem();
         return true;
     }
 
@@ -114,6 +116,9 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     protected void onResume() {
         super.onResume();
         useFirebase = PrefUtils.usingFirebase(this);
+        if(databaseMenuItem != null) {
+            updateDatabaseOptionMenuItem();
+        }
         Timber.d("onResume() - firebase: " + useFirebase);
     }
 
@@ -131,16 +136,12 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
         switch (item.getItemId()) {
             case R.id.firebase_local_database:
                 useFirebase = !useFirebase;
-                PrefUtils.saveFirebaseStatus(this, useFirebase);
                 if (useFirebase) {
-                    item.setTitle(R.string.use_local_database);
                     if (mAuth.getCurrentUser() == null) {
                         signInToFirebase();
                     }
-                } else {
-                    item.setTitle(R.string.use_cloud_database);
                 }
-//                updateData();
+                updateDatabaseOptionMenuItem();
                 return true;
 
             default:
@@ -207,22 +208,28 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
                 if (response == null) {
                     // User pressed back button
                     showToast(R.string.sign_in_cancelled);
-                    return;
-                }
-
-                if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                } else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                     showToast(R.string.no_internet_connection);
-                    return;
-                }
-
-                if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                } else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                     showToast(R.string.unknown_error);
-                    return;
+                } else {
+                    showToast(R.string.unknown_sign_in_response);
                 }
+                goLocal();
             }
 
-            showToast(R.string.unknown_sign_in_response);
         }
+    }
+
+    private void updateDatabaseOptionMenuItem() {
+        PrefUtils.saveFirebaseStatus(this, useFirebase);
+        databaseMenuItem.setTitle(useFirebase ?
+                R.string.use_local_database : R.string.use_cloud_database);
+    }
+
+    private void goLocal() {
+        useFirebase = false;
+        updateDatabaseOptionMenuItem();
     }
 
     private void showToast(int message) {

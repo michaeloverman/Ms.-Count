@@ -62,7 +62,9 @@ import timber.log.Timber;
 import static android.app.Activity.RESULT_OK;
 
 /**
- *
+ * This fragment manages the UI and handles the logic for all metadata surrounding a program,
+ * such as title, composer, foundational data, etc. Opens MetaDataOptionsFragment for optional
+ * items of metadata.
  */
 public class MetaDataEntryFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -111,6 +113,8 @@ public class MetaDataEntryFragment extends Fragment
 
     }
 
+//    This method was used to make changes to the structure of the Firebase Database. It is not
+//    used or needed anymore, but is being left here for the sake of posterity.
 //    private void rewriteAllProgramsWithCreatorId() {
 //        final DatabaseReference dRef = FirebaseDatabase.getInstance().getReference();
 //        dRef.child("pieces")
@@ -221,11 +225,6 @@ public class MetaDataEntryFragment extends Fragment
     @OnClick(R.id.enter_beats_button)
     public void enterBeatsClicked() {
         Timber.d("enterBeatsClicked()");
-//        String composer = mComposerEntry.getText().toString();
-//        if(composer.equals("")) {
-//            toastError();
-//            return;
-//        }
 
         String title = mTitleEntry.getText().toString();
         if(title.equals("")) {
@@ -698,6 +697,9 @@ public class MetaDataEntryFragment extends Fragment
         mCursor = null;
     }
 
+    /**
+     * Adapter class handles the recycler view which provides options for baseline rhythmic values.
+     */
     class NoteValuesAdapter extends RecyclerView.Adapter<NoteValuesAdapter.NoteViewHolder> {
 
         final TypedArray noteValueImages;
@@ -706,10 +708,7 @@ public class MetaDataEntryFragment extends Fragment
                 .getStringArray(R.array.note_value_content_descriptions);
 
         public NoteValuesAdapter(TypedArray images) {
-//            Timber.d("NoteValuesAdapter CREATED!!!");
-//            Timber.d("TypedArray: " + images.toString());
             noteValueImages = images;
-//            Timber.d("Index count: " + noteValueImages.length());
         }
 
         public int getSelectedRhythm() {

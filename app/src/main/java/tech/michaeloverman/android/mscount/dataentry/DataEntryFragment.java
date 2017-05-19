@@ -32,6 +32,9 @@ import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import timber.log.Timber;
 
 /**
+ * This fragment handles the UI and the logic for entering program data in the Programmed
+ * Metronome activity.
+ *
  * Created by Michael on 3/12/2017.
  */
 
@@ -337,8 +340,8 @@ public class DataEntryFragment extends Fragment {
     }
 
     /**
-     * Adapter for displaying data as it is entered. Also keeps track if an item is selected for
-     * editing.
+     * Adapter for displaying data as it is entered in the recycler view. Also keeps track
+     * if an item is selected for editing.
      */
     public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataViewHolder> {
 

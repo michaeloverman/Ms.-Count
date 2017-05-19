@@ -24,6 +24,11 @@ import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import timber.log.Timber;
 
 /**
+ * Fragment which handles UI and logic surrounding optional metadata variables of program
+ * creation/editing.
+ *
+ * TODO: double check that it actually loads correct values when editing an existing work
+ * 
  * Created by Michael on 5/7/2017.
  */
 
@@ -115,6 +120,12 @@ public class MetaDataOptionsFragment extends Fragment {
         getFragmentManager().popBackStackImmediate();
     }
 
+    /**
+     * Adapter class to handle the recycler view with display rhythmic values.
+     *
+     * TODO refactor this out into it's own class, to be used by both this fragment, and the
+     * metadata entry fragment.
+     */
     class DisplayNoteValuesAdapter extends RecyclerView.Adapter<DisplayNoteValuesAdapter.NoteViewHolder> {
 
         final TypedArray noteValueImages;

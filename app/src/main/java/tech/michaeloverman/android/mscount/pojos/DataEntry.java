@@ -10,17 +10,13 @@ import java.io.Serializable;
  */
 
 public class DataEntry implements Serializable {
-    private static int measureNumberCount;
+
     private int mData;
     private boolean isBarline;
 
     public DataEntry(int data, boolean bar) {
+        mData = data;
         isBarline = bar;
-        if(isBarline) {
-            mData = measureNumberCount++;
-        } else {
-            mData = data;
-        }
     }
 
     public DataEntry() { }

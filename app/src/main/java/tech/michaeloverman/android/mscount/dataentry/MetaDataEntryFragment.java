@@ -505,13 +505,14 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private boolean validateDataEntries() {
-        if(mDataEntries == null || mDataEntries.size() == 0) {
+        if(mBuilder.hasData()) {
+            return true;
+        } else {
             Toast.makeText(getContext(), R.string.enter_data_before_saving,
                     Toast.LENGTH_SHORT).show();
             return false;
         }
-        mBuilder.dataEntries(mDataEntries);
-        return true;
+//        mBuilder.dataEntries(mDataEntries);
     }
 
     private void saveToSqlDatabase() {

@@ -61,10 +61,13 @@ public class DataEntryFragment extends Fragment {
     }
     public static Fragment newInstance(String title, PieceOfMusic.Builder builder,
                                        List<DataEntry> data) {
+        Timber.d("newInstance of a DataEntry Fragment!!");
         DataEntryFragment fragment = new DataEntryFragment();
         fragment.mTitle = title;
         fragment.mBuilder = builder;
         fragment.mDataList = data;
+
+//        Timber.d("mDataList(0): " + fragment.mDataList.get(0).getData());
         return fragment;
 
     }
@@ -75,14 +78,24 @@ public class DataEntryFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
+        Timber.d("setting mMeasureNumber to 0...");
+        mMeasureNumber = 0;
+        Timber.d("mMeasureNumber = " + mMeasureNumber);
+
         // set up measure numbers - add opening barline, if necessary
-        if(mDataList.size() == 0) {
-            mMeasureNumber = 0;
-            mDataList.add(new DataEntry(++mMeasureNumber, BARLINE));
-        } else {
+        if(mDataList.size() > 0) {
+            Timber.d("data exists... resetting mMeasureNumber...");
             mMeasureNumber = mDataList.get(mDataList.size() - 1).getData();
+            Timber.d("existing data, new mMeasureNumber: " + mMeasureNumber);
+        } else {
+            Timber.d("about to add initial barline. mMeasureNumber = " + mMeasureNumber);
+            Timber.d("mDataList.size() = " + mDataList.size());
+            mDataList.add(new DataEntry(++mMeasureNumber, BARLINE));
+            Timber.d("new data added, first entry data: " + mDataList.get(0).getData());
+            Timber.d("mMeasureNumber = " + mMeasureNumber);
         }
 
+        Timber.d(" starting Measure Number: " + mMeasureNumber);
     }
 
     @Nullable
@@ -99,10 +112,8 @@ public class DataEntryFragment extends Fragment {
         mAdapter = new DataListAdapter();
         mEnteredDataRecycler.setAdapter(mAdapter);
 
-        if(mDataList.size() > 0) {
-            mAdapter.notifyDataSetChanged();
-            mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
-        }
+        mAdapter.notifyDataSetChanged();
+        mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
 
         return view;
     }
@@ -253,7 +264,7 @@ public class DataEntryFragment extends Fragment {
         String value = view.getText().toString();
         switch(value) {
             case "|":
-                if(mDataList.get(mDataList.size() - 1).isBarline()) return;
+                if(!mDataItemSelected && mDataList.get(mDataList.size() - 1).isBarline()) return;
                 else addDataEntry(null, BARLINE);
                 break;
             case "?":
@@ -268,19 +279,29 @@ public class DataEntryFragment extends Fragment {
 
     private void addDataEntry(String valueString, boolean beatOrBarline) {
         int value;
+        Timber.d("before adding data, mMeasureNumber = " + mMeasureNumber);
         if(beatOrBarline) {
             value = ++mMeasureNumber;
         } else {
             value = Integer.parseInt(valueString);
         }
 
+        Timber.d("value being added to data = " + value);
+
         if(mDataItemSelected) {
             mDataList.add(mAdapter.selectedPosition++, new DataEntry(value, beatOrBarline));
         } else {
             mDataList.add(new DataEntry(value, beatOrBarline));
+        }
+
+        mAdapter.notifyDataSetChanged();
+
+        if(mDataItemSelected) {
+            mEnteredDataRecycler.scrollToPosition(mAdapter.selectedPosition);
+        } else {
             mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
         }
-        mAdapter.notifyDataSetChanged();
+        Timber.d("after adding data, mMeasureNumber = " + mMeasureNumber);
     }
 
     private void getIntegerDialogResponse() {
@@ -319,7 +340,7 @@ public class DataEntryFragment extends Fragment {
         int lastIndex = mDataList.size() - 1;
         // if it's not a barline at the end, add it....
         if(!mDataList.get(lastIndex).isBarline()) {
-            mDataList.add(new DataEntry(++mMeasureNumber, true));
+            mDataList.add(new DataEntry(++mMeasureNumber, BARLINE));
             lastIndex++;
         }
         int i;
@@ -329,11 +350,11 @@ public class DataEntryFragment extends Fragment {
         }
         // follow back to the end, copying beats
         for (++i; i < lastIndex; i++) {
-            mDataList.add(mDataList.get(i));
+            mDataList.add(new DataEntry(mDataList.get(i).getData(), BEAT));
         }
 
         // add barline at end
-        mDataList.add(new DataEntry(++mMeasureNumber, true));
+        mDataList.add(new DataEntry(++mMeasureNumber, BARLINE));
 
         mAdapter.notifyDataSetChanged();
         mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
@@ -381,9 +402,11 @@ public class DataEntryFragment extends Fragment {
             }
 
             if(position == selectedPosition) {
-                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_accent));
+                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(),
+                        R.drawable.roundcorner_accent));
             } else {
-                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_parchment));
+                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(),
+                        R.drawable.roundcorner_parchment));
             }
 
             // select/deselect data items for edit

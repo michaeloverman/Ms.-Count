@@ -404,6 +404,10 @@ public class PieceOfMusic implements Serializable {
             return dataEntries(list);
         }
 
+        public boolean hasData() {
+            return !(this.rawData == null);
+        }
+
         public Builder firebaseId(String id) {
             this.firebaseId = id;
             return this;

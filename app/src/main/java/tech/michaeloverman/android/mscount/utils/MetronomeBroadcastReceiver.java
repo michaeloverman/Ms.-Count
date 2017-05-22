@@ -8,6 +8,7 @@ import android.content.Intent;
 import timber.log.Timber;
 
 /**
+ * Interface for wear related broadcasts
  * Created by Michael on 4/29/2017.
  */
 

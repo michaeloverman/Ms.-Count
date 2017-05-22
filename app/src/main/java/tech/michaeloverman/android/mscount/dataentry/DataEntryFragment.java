@@ -61,13 +61,12 @@ public class DataEntryFragment extends Fragment {
     }
     public static Fragment newInstance(String title, PieceOfMusic.Builder builder,
                                        List<DataEntry> data) {
-        Timber.d("newInstance of a DataEntry Fragment!!");
+
         DataEntryFragment fragment = new DataEntryFragment();
         fragment.mTitle = title;
         fragment.mBuilder = builder;
         fragment.mDataList = data;
 
-//        Timber.d("mDataList(0): " + fragment.mDataList.get(0).getData());
         return fragment;
 
     }
@@ -78,24 +77,15 @@ public class DataEntryFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        Timber.d("setting mMeasureNumber to 0...");
         mMeasureNumber = 0;
-        Timber.d("mMeasureNumber = " + mMeasureNumber);
 
         // set up measure numbers - add opening barline, if necessary
         if(mDataList.size() > 0) {
-            Timber.d("data exists... resetting mMeasureNumber...");
             mMeasureNumber = mDataList.get(mDataList.size() - 1).getData();
-            Timber.d("existing data, new mMeasureNumber: " + mMeasureNumber);
         } else {
-            Timber.d("about to add initial barline. mMeasureNumber = " + mMeasureNumber);
-            Timber.d("mDataList.size() = " + mDataList.size());
             mDataList.add(new DataEntry(++mMeasureNumber, BARLINE));
-            Timber.d("new data added, first entry data: " + mDataList.get(0).getData());
-            Timber.d("mMeasureNumber = " + mMeasureNumber);
         }
 
-        Timber.d(" starting Measure Number: " + mMeasureNumber);
     }
 
     @Nullable
@@ -222,7 +212,6 @@ public class DataEntryFragment extends Fragment {
             mDataList.add(new DataEntry(++mMeasureNumber, true));
         }
         mBuilder.dataEntries(mDataList);
-//        sDataEntryMultiplierCallback.returnMultiplier(mMultiplier);
         getFragmentManager().popBackStackImmediate();
     }
 
@@ -279,14 +268,11 @@ public class DataEntryFragment extends Fragment {
 
     private void addDataEntry(String valueString, boolean beatOrBarline) {
         int value;
-        Timber.d("before adding data, mMeasureNumber = " + mMeasureNumber);
         if(beatOrBarline) {
             value = ++mMeasureNumber;
         } else {
             value = Integer.parseInt(valueString);
         }
-
-        Timber.d("value being added to data = " + value);
 
         if(mDataItemSelected) {
             mDataList.add(mAdapter.selectedPosition++, new DataEntry(value, beatOrBarline));
@@ -301,7 +287,7 @@ public class DataEntryFragment extends Fragment {
         } else {
             mEnteredDataRecycler.scrollToPosition(mDataList.size() - 1);
         }
-        Timber.d("after adding data, mMeasureNumber = " + mMeasureNumber);
+
     }
 
     private void getIntegerDialogResponse() {

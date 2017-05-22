@@ -2,6 +2,9 @@
 package tech.michaeloverman.android.mscount.utils;
 
 /**
+ * Any class which instantiates a Metronome, should implement this interface, in order for
+ * the Metronome to communicate back to the instatiating class.
+ *
  * Created by Michael on 2/28/2017.
  */
 

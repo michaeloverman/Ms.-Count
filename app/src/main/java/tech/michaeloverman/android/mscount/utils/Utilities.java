@@ -11,6 +11,9 @@ import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import timber.log.Timber;
 
 /**
+ * Various utility methods - rather generic in what they do, though used in some fairly
+ * specific manners throughout program.
+ *
  * Created by Michael on 2/26/2017.
  */
 

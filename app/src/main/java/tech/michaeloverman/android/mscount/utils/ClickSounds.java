@@ -15,6 +15,9 @@ import tech.michaeloverman.android.mscount.pojos.Click;
 import timber.log.Timber;
 
 /**
+ * This class holds the click sounds for the SoundPool. It loads the sounds in an asyncTask
+ * when first initialized.
+ *
  * Created by Michael on 5/12/2017.
  */
 

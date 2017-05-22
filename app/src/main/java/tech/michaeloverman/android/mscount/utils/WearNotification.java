@@ -14,6 +14,8 @@ import tech.michaeloverman.android.mscount.R;
 import timber.log.Timber;
 
 /**
+ * Handles everything regarding the start and stop notifications on any available wear device.
+ *
  * Created by Michael on 4/29/2017.
  */
 

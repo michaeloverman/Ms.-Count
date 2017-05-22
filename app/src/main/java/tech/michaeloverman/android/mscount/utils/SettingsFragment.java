@@ -11,6 +11,9 @@ import android.support.v7.preference.PreferenceScreen;
 import tech.michaeloverman.android.mscount.R;
 
 /**
+ * Handles click option settings - get's list of clicks available, assigns selected options
+ * to appropriate SharedPref.
+ *
  * Created by Michael on 4/4/2017.
  */
 

@@ -11,6 +11,9 @@ import tech.michaeloverman.android.mscount.pojos.PieceOfMusic;
 import timber.log.Timber;
 
 /**
+ * The meat and potatoes and asparagus of the app. This runs the met. Accepts the details
+ * needed to click: tempo, odd-meter groupings, program, whatever.
+ *
  * Created by Michael on 10/6/2016.
  */
 

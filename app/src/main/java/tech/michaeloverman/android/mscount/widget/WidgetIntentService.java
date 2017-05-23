@@ -74,17 +74,5 @@ public class WidgetIntentService extends IntentService {
         data.close();
     }
 
-//    private int getWidgetWidth(AppWidgetManager manager, int id) {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-//            return getResources().getDimensionPixelSize(R.dimen.widget_default_width);
-//        }
-//        Bundle options = manager.getAppWidgetOptions(id);
-//        if (options.containsKey(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)) {
-//            int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-//            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-//            return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, minWidth, displayMetrics);
-//        }
-//        return getResources().getDimensionPixelSize(R.dimen.widget_default_width);
-//    }
 }
 

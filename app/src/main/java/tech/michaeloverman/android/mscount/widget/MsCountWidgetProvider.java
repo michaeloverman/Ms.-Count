@@ -37,10 +37,8 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
                                 int appWidgetId) {
 
         Timber.d("updateAppWidget");
-//        CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ms_count_widget);
-//        views.setTextViewText(R.id.widget_header, widgetText);
 
         Intent intent = new Intent(context, MsCountActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
@@ -54,6 +52,7 @@ public class MsCountWidgetProvider extends AppWidgetProvider {
 
         PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                 .addNextIntent(clickIntentTemplate)
+                .addParentStack(MsCountActivity.class)
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
         Timber.d("PendingIntent set");

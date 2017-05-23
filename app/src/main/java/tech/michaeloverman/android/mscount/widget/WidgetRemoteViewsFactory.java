@@ -36,13 +36,7 @@ class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory 
         Timber.d("WidgetRemoteViewsFactory");
         mContext = context;
 
-//        if(intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID)) {
-//            Timber.d("EXXXXXXXXXXXXXXXXXtra found: ");
-//            Timber.d("   int found: " + intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-//                    AppWidgetManager.INVALID_APPWIDGET_ID));
-//        }
     }
-
 
     @Override
     public void onCreate() {

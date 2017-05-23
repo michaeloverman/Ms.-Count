@@ -276,6 +276,9 @@ public class DataEntryFragment extends Fragment {
 
         if(mDataItemSelected) {
             mDataList.add(mAdapter.selectedPosition++, new DataEntry(value, beatOrBarline));
+            if(beatOrBarline) {
+                resetMeasureNumbers();
+            }
         } else {
             mDataList.add(new DataEntry(value, beatOrBarline));
         }

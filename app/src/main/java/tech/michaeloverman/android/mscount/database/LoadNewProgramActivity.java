@@ -58,10 +58,11 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
         } else {
             mCurrentComposer = null;
         }
-        if(intent.hasExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE)) {
-            useFirebase = intent.getBooleanExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE, true);
-            Timber.d("useFirebase received from intent: " + useFirebase);
-        }
+//        if(intent.hasExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE)) {
+//            useFirebase = intent.getBooleanExtra(ProgrammedMetronomeFragment.EXTRA_USE_FIREBASE, true);
+//            Timber.d("useFirebase received from intent: " + useFirebase);
+//        }
+        useFirebase = PrefUtils.usingFirebase(this);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -81,7 +82,7 @@ public class LoadNewProgramActivity extends SingleFragmentActivity {
             }
         };
 
-        if(mAuth.getCurrentUser() == null) {
+        if(mAuth.getCurrentUser() == null && useFirebase) {
             signInToFirebase();
         }
     }

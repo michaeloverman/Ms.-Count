@@ -22,6 +22,10 @@ import tech.michaeloverman.android.mscount.utils.ClickSounds;
 import tech.michaeloverman.android.mscount.utils.PrefUtils;
 import timber.log.Timber;
 
+/**
+ * Activity that handles the 'global' app issues (API Client for wear) and the MetSelect Fragment
+ */
+
 public class MsCountActivity extends tech.michaeloverman.android.mscount.SingleFragmentActivity {
 
     private GoogleApiClient client;

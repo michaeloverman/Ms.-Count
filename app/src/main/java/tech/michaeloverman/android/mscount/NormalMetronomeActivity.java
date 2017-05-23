@@ -12,6 +12,8 @@ import android.transition.TransitionInflater;
 import tech.michaeloverman.android.mscount.utils.MetronomeActivity;
 
 /**
+ * Activity to handle the Normal Met Fragment
+ *
  * Created by Michael on 3/24/2017.
  */
 

@@ -19,6 +19,7 @@ import butterknife.Unbinder;
 import tech.michaeloverman.android.mscount.programmed.ProgrammedMetronomeActivity;
 
 /**
+ * Fragment handles selection of transition to the different metronomes.
  * Created by Michael on 2/24/2017.
  */
 

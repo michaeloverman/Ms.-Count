@@ -13,6 +13,7 @@ import tech.michaeloverman.android.mscount.utils.Metronome;
 import tech.michaeloverman.android.mscount.utils.MetronomeActivity;
 
 /**
+ * Activity to handle the Odd-Met Fragment
  * Created by Michael on 3/24/2017.
  */
 

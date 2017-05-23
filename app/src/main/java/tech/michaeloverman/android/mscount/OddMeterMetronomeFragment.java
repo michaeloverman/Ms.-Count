@@ -39,6 +39,7 @@ import tech.michaeloverman.android.mscount.utils.WearNotification;
 import timber.log.Timber;
 
 /**
+ * Odd-Meter metronome fragment. Handles UI, input, etc
  * Created by Michael on 3/14/2017.
  */
 

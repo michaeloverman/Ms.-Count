@@ -40,6 +40,8 @@ import timber.log.Timber;
 import static android.view.MotionEvent.ACTION_UP;
 
 /**
+ * Normal metronome. Handle UI, input, etc. Requests clicks from a Metoronome.
+ *
  * Created by Michael on 2/24/2017.
  */
 

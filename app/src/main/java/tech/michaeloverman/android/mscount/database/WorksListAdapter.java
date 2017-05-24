@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,8 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
     public void onBindViewHolder(WorksViewHolder holder, int position) {
 //        Timber.d("onBindViewHolder()");
         holder.title.setText(mTitles.get(position).getTitle());
+        holder.title.setHorizontallyScrolling(true);
+        holder.title.setEllipsize(TextUtils.TruncateAt.MIDDLE);
 //        ViewCompat.setTransitionName(holder.title, "titleViewTrans" + position);
     }
 

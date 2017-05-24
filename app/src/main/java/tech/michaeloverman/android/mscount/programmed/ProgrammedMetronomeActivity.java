@@ -202,7 +202,6 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
 //                startActivity(SignedInActivity.createIntent(this, response));
 //                finish();
                 Timber.d("signed into Firebase");
-                return;
             } else {
                 // Sign in failed
                 if (response == null) {

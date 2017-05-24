@@ -1,20 +1,17 @@
 /* Copyright (C) 2017 Michael Overman - All Rights Reserved */
 package tech.michaeloverman.android.mscount.dataentry;
 
-import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -31,7 +28,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,7 +76,7 @@ public class MetaDataEntryFragment extends Fragment
     @BindView(R.id.options_button) Button mMetaDataOptionsButton;
     @BindView(R.id.enter_beats_button) Button mEnterBeatsButton;
     @BindView(R.id.baseline_rhythmic_value_recycler) RecyclerView mBaselineRhythmicValueEntry;
-    private NoteValuesAdapter mBaselineRhythmicValueAdapter;
+    private NoteValueAdapter mBaselineRhythmicValueAdapter;
     private int mTemporaryBaselineRhythm = 4;
 
     private PieceOfMusic mPieceOfMusic;
@@ -202,8 +198,9 @@ public class MetaDataEntryFragment extends Fragment
         RecyclerView.LayoutManager manager = new LinearLayoutManager(mActivity,
                 LinearLayoutManager.HORIZONTAL, false);
         mBaselineRhythmicValueEntry.setLayoutManager(manager);
-        mBaselineRhythmicValueAdapter = new NoteValuesAdapter(
-                getResources().obtainTypedArray(R.array.note_values));
+        mBaselineRhythmicValueAdapter = new NoteValueAdapter(mActivity,
+                getResources().obtainTypedArray(R.array.note_values),
+                getResources().getStringArray(R.array.note_value_content_descriptions));
         mBaselineRhythmicValueEntry.setAdapter(mBaselineRhythmicValueAdapter);
         mBaselineRhythmicValueAdapter.setSelectedPosition(mTemporaryBaselineRhythm);
 
@@ -698,114 +695,5 @@ public class MetaDataEntryFragment extends Fragment
         mCursor = null;
     }
 
-    /**
-     * Adapter class handles the recycler view which provides options for baseline rhythmic values.
-     */
-    class NoteValuesAdapter extends RecyclerView.Adapter<NoteValuesAdapter.NoteViewHolder> {
 
-        final TypedArray noteValueImages;
-        private int selectedPosition;
-        private final String[] descriptions = getResources()
-                .getStringArray(R.array.note_value_content_descriptions);
-
-        public NoteValuesAdapter(TypedArray images) {
-            noteValueImages = images;
-        }
-
-        public int getSelectedRhythm() {
-            switch(selectedPosition) {
-                case 0: return PieceOfMusic.SIXTEENTH;
-                case 1: return PieceOfMusic.DOTTED_SIXTEENTH;
-                case 2: return PieceOfMusic.EIGHTH;
-                case 3: return PieceOfMusic.DOTTED_EIGHTH;
-                case 4: return PieceOfMusic.QUARTER;
-                case 5: return PieceOfMusic.DOTTED_QUARTER;
-                case 6: return PieceOfMusic.HALF;
-                case 7: return PieceOfMusic.DOTTED_HALF;
-                case 8: return PieceOfMusic.WHOLE;
-                default: return PieceOfMusic.QUARTER;
-            }
-        }
-
-        public void setSelectedPosition(int rhythm) {
-            Timber.d("setting selected rhythmic value..." + rhythm);
-            switch(rhythm) {
-                case PieceOfMusic.SIXTEENTH:
-                    selectedPosition = 0;
-                    break;
-                case PieceOfMusic.DOTTED_SIXTEENTH:
-                    selectedPosition = 1;
-                    break;
-                case PieceOfMusic.EIGHTH:
-                    selectedPosition = 2;
-                    break;
-                case PieceOfMusic.DOTTED_EIGHTH:
-                    selectedPosition = 3;
-                    break;
-                case PieceOfMusic.QUARTER:
-                    selectedPosition = 4;
-                    break;
-                case PieceOfMusic.DOTTED_QUARTER:
-                    selectedPosition = 5;
-                    break;
-                case PieceOfMusic.HALF:
-                    selectedPosition = 6;
-                    break;
-                case PieceOfMusic.DOTTED_HALF:
-                    selectedPosition = 7;
-                    break;
-                case PieceOfMusic.WHOLE:
-                    selectedPosition = 8;
-                    break;
-                default: selectedPosition = 4;
-            }
-            Timber.d("selectedPosition = " + selectedPosition);
-        }
-
-        @Override
-        public NoteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View item = LayoutInflater.from(getContext())
-                    .inflate(R.layout.note_value_image_view, parent, false);
-            return new NoteViewHolder(item);
-        }
-
-        @SuppressLint("RecyclerView")
-        @Override
-        public void onBindViewHolder(NoteViewHolder holder, final int position) {
-            holder.image.setImageDrawable(noteValueImages.getDrawable(position));
-            Timber.d("onBindViewHolder, position: " + position + " selected: " + (position == selectedPosition));
-
-            if(selectedPosition == position) {
-                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_accent));
-            } else {
-                holder.itemView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.roundcorner_parchment));
-            }
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    notifyItemChanged(selectedPosition);
-                    selectedPosition = position;
-                    notifyItemChanged(selectedPosition);
-                }
-            });
-
-            holder.itemView.setContentDescription(descriptions[position]);
-        }
-
-        @Override
-        public int getItemCount() {
-            return noteValueImages.length();
-        }
-
-        class NoteViewHolder extends RecyclerView.ViewHolder {
-            final ImageView image;
-
-            public NoteViewHolder(View itemView) {
-                super(itemView);
-                image = (ImageView) itemView.findViewById(R.id.note_value_image);
-                Timber.d("NoteViewHolder created, image: ");
-            }
-        }
-    }
 }

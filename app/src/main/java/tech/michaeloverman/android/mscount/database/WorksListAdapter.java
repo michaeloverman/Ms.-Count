@@ -12,12 +12,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import tech.michaeloverman.android.mscount.R;
 import tech.michaeloverman.android.mscount.pojos.TitleKeyObject;
+import tech.michaeloverman.android.mscount.utils.AlphanumComparator;
 import timber.log.Timber;
 
 /**
@@ -64,6 +66,7 @@ public class WorksListAdapter extends RecyclerView.Adapter<WorksListAdapter.Work
 
     public void setTitles(List<TitleKeyObject> titles) {
         mTitles = titles;
+        Collections.sort(mTitles, new AlphanumComparator());
         Timber.d("setTitles() - " + mTitles.size() + " titles...");
         notifyDataSetChanged();
     }

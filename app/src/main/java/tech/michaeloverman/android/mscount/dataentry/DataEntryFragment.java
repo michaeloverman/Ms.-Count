@@ -51,21 +51,29 @@ public class DataEntryFragment extends Fragment {
 
     private String mTitle;
     private List<DataEntry> mDataList;
-    private float mMultiplier = 1.0f;
+    private float mDataMultipliedBy = 1.0f;
+    private DataMultipliedListener mDataMultipliedListener;
     private int mMeasureNumber;
     private DataListAdapter mAdapter;
     private boolean mDataItemSelected;
 
-    public static Fragment newInstance(String title, PieceOfMusic.Builder builder) {
-        return newInstance(title, builder, new ArrayList<DataEntry>());
+    public interface DataMultipliedListener {
+        void dataValuesMultipliedBy(float multiplier);
     }
+
     public static Fragment newInstance(String title, PieceOfMusic.Builder builder,
-                                       List<DataEntry> data) {
+                                       DataMultipliedListener dml) {
+        return newInstance(title, builder, new ArrayList<DataEntry>(), dml);
+    }
+
+    public static Fragment newInstance(String title, PieceOfMusic.Builder builder,
+                                       List<DataEntry> data, DataMultipliedListener dml) {
 
         DataEntryFragment fragment = new DataEntryFragment();
         fragment.mTitle = title;
         fragment.mBuilder = builder;
         fragment.mDataList = data;
+        fragment.mDataMultipliedListener = dml;
 
         return fragment;
 
@@ -131,7 +139,7 @@ public class DataEntryFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-        mBuilder.tempoMultiplier(mMultiplier);
+//        mBuilder.tempoMultiplier(mDataMultipliedBy);
         return true;
     }
 
@@ -142,7 +150,7 @@ public class DataEntryFragment extends Fragment {
             }
         }
         mAdapter.notifyDataSetChanged();
-        mMultiplier *= (float) multiplier;
+        mDataMultipliedBy *= (float) multiplier;
     }
 
     private void divideValues(int divider) {
@@ -157,7 +165,7 @@ public class DataEntryFragment extends Fragment {
         }
         mDataList = tempList;
         mAdapter.notifyDataSetChanged();
-        mMultiplier /= divider;
+        mDataMultipliedBy /= divider;
     }
 
     private void cantDivideError() {
@@ -212,6 +220,7 @@ public class DataEntryFragment extends Fragment {
             mDataList.add(new DataEntry(++mMeasureNumber, true));
         }
         mBuilder.dataEntries(mDataList);
+        mDataMultipliedListener.dataValuesMultipliedBy(mDataMultipliedBy);
         getFragmentManager().popBackStackImmediate();
     }
 

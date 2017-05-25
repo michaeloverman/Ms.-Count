@@ -63,7 +63,7 @@ import static android.app.Activity.RESULT_OK;
  * items of metadata.
  */
 public class MetaDataEntryFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, DataEntryFragment.DataMultipliedListener {
 
     private static final int REQUEST_NEW_PROGRAM = 1984;
 
@@ -84,6 +84,7 @@ public class MetaDataEntryFragment extends Fragment
     private String mCurrentPieceKey;
     private String mFirebaseId;
     private List<DataEntry> mDataEntries;
+    private float mDataMultiplier = 1.0f;
     private List<Integer> mDownBeats;
 
     private static ProgrammedMetronomeActivity mActivity;
@@ -216,7 +217,20 @@ public class MetaDataEntryFragment extends Fragment
             }
         });
 
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(mDataMultiplier != 1.0f) {
+            int currentBaseline = Integer.valueOf(mBaselineSubdivisionEntry.getText().toString());
+            currentBaseline *= mDataMultiplier;
+            mBaselineSubdivisionEntry.setText(String.valueOf(currentBaseline));
+            mDataMultiplier = 1.0f;
+        }
     }
 
     @OnClick(R.id.enter_beats_button)
@@ -239,9 +253,9 @@ public class MetaDataEntryFragment extends Fragment
     private void gotoDataEntryFragment(String title) {
         Fragment fragment;
         if(mDataEntries == null) {
-            fragment = DataEntryFragment.newInstance(title, mBuilder);
+            fragment = DataEntryFragment.newInstance(title, mBuilder, this);
         } else {
-            fragment = DataEntryFragment.newInstance(title, mBuilder, mDataEntries);
+            fragment = DataEntryFragment.newInstance(title, mBuilder, mDataEntries, this);
         }
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
@@ -371,6 +385,7 @@ public class MetaDataEntryFragment extends Fragment
     }
 
     private void updateGUI() {
+        Timber.d("updating the GUI");
         mComposerEntry.setText(mPieceOfMusic.getAuthor());
         mTitleEntry.setText(mPieceOfMusic.getTitle());
         mBaselineSubdivisionEntry.setText(String.valueOf(mPieceOfMusic.getSubdivision()));
@@ -379,6 +394,13 @@ public class MetaDataEntryFragment extends Fragment
         mBaselineRhythmicValueAdapter.setSelectedPosition(mPieceOfMusic.getBaselineNoteValue());
         mBaselineRhythmicValueAdapter.notifyDataSetChanged();
         mDataEntries = mPieceOfMusic.getRawData();
+    }
+
+    @Override
+    public void dataValuesMultipliedBy(float multiplier) {
+
+
+        mDataMultiplier *= multiplier;
     }
 
     @OnClick(R.id.save_program_button)

@@ -19,6 +19,10 @@ import timber.log.Timber;
 
 public class Utilities {
 
+    // Suppress default constructor for noninstantiability
+    private Utilities() {
+        throw new AssertionError();
+    }
     /**
      * Used to turn beat length data, in List, from database, into int[] for actual use by metronome.
      * @param integerList List of integers

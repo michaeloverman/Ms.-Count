@@ -29,6 +29,7 @@ public abstract class MetronomeActivity extends SingleFragmentActivity {
         inflater.inflate(R.menu.global_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {

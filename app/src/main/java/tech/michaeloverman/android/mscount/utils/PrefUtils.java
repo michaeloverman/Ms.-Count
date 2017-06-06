@@ -22,6 +22,7 @@ public final class PrefUtils {
     private static final String PREF_PIECE_KEY = "programmable_piece_id";
     private static final String PREF_WEAR_STATUS_KEY = "pref_wear_status";
 
+    // Suppress default constructor for noninstantiability
     private PrefUtils() {
     }
 

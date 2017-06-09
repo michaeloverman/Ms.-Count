@@ -295,4 +295,15 @@
         android:layout_height="wrap_content">
     </com.google.android.gms.ads.AdView>
 
+    <FrameLayout
+        android:id="@+id/help_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+        <include layout="@layout/normal_metronome_instructions"
+                 android:layout_height="match_parent"
+                 android:layout_width="match_parent"
+                 />
+    </FrameLayout>
+
 </android.support.constraint.ConstraintLayout>

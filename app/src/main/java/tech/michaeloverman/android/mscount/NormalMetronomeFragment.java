@@ -279,7 +279,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
     }
 
     private void makeInstructionsVisible() {
-        Timber.d("making Instructions Visible... maybe.?");
         mInstructionsLayout.setVisibility(View.VISIBLE);
     }
 

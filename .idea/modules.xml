@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Ms. Count.iml" filepath="$PROJECT_DIR$/Ms. Count.iml" />
-      <module fileurl="file://M:\AndroidStudioProjects\Ms. Count\Ms.-Count.iml" filepath="M:\AndroidStudioProjects\Ms. Count\Ms.-Count.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Ms.-Count.iml" filepath="$PROJECT_DIR$/Ms.-Count.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

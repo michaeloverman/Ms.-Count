@@ -35,4 +35,19 @@
         <item name="android:paddingStart">@dimen/data_entry_usual_padding</item>
         <item name="android:paddingEnd">@dimen/data_entry_usual_padding</item>
     </style>
+    <style name="NormalMetSubdivisionFabStyle" parent="AppTheme.Main">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/subdivision_fab_margin</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="app:backgroundTint">@color/colorSubdivisionIndicator10</item>
+        <item name="app:fabSize">normal</item>
+        <item name="app:elevation">@dimen/fab_elevation</item>
+    </style>
+    <style name="InstructionOverlayTextStyle" parent="AppTheme.Main">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+    </style>
+
 </resources>

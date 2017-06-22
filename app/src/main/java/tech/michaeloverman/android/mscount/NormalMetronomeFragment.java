@@ -14,11 +14,13 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -86,6 +88,8 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
     @BindView(R.id.subdivision_indicator9) FloatingActionButton sub9;
     @BindView(R.id.subdivision_indicator10) FloatingActionButton sub10;
     @BindView(R.id.normal_adView) AdView mAdView;
+
+    @BindView(R.id.help_overlay) FrameLayout mInstructionsLayout;
 
     private FloatingActionButton[] mSubdivisionIndicators;
     private int[] mSubdivisionFabColors;
@@ -216,7 +220,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         return view;
     }
 
-
     @Override
     public void onPause() {
         if (mAdView != null) {
@@ -261,6 +264,27 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
         }
 
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.d("menu item caught: " + item.getTitle());
+        switch (item.getItemId()) {
+            case R.id.help_menu_item:
+                makeInstructionsVisible();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void makeInstructionsVisible() {
+        mInstructionsLayout.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.help_cancel_button)
+    public void instructionsCancelled() {
+        mInstructionsLayout.setVisibility(View.INVISIBLE);
     }
 
     private void updateWearNotif() {
@@ -392,7 +416,6 @@ public class NormalMetronomeFragment extends Fragment implements MetronomeStartS
     }
 
     private void updateDisplay() {
-
         if (mWholeNumbersSelected) {
             mTempoSetting.setText(String.valueOf((int) mBPM));
         } else {

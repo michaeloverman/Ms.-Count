@@ -122,6 +122,7 @@
             style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator2"
+            android:visibility="gone"
             style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator3"
@@ -235,11 +236,10 @@
 
     <FrameLayout
         android:id="@+id/help_overlay"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="visible"
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp">
+        android:background="@color/transparentBlack">
         <include layout="@layout/normal_metronome_instructions"
                  android:layout_height="match_parent"
                  android:layout_width="match_parent"

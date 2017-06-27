@@ -189,7 +189,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5"
-        />
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="192dp" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/expanded_add_subdivisions_fab"
         android:contentDescription="@string/add_a_subdivision"
@@ -197,14 +198,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/normal_met_subdiv_plus_minus_bottom_margin"
         app:layout_constraintBottom_toTopOf="@+id/normal_adView"
-        app:layout_constraintLeft_toRightOf="@+id/guideline"
         app:layout_constraintRight_toRightOf="parent"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:backgroundTint="@color/colorPrimaryDark"
         android:visibility="invisible"
         android:rotation="45"
         app:fabSize="normal"
-        app:elevation="@dimen/fab_elevation"/>
+        app:elevation="@dimen/fab_elevation"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/expanded_subtract_subdivisions_fab"
         android:contentDescription="@string/subtract_a_subdivision"
@@ -234,9 +235,11 @@
 
     <FrameLayout
         android:id="@+id/help_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
         <include layout="@layout/normal_metronome_instructions"
                  android:layout_height="match_parent"
                  android:layout_width="match_parent"

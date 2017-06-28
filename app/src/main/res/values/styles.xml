@@ -13,9 +13,27 @@
     <style name="AppTheme.Main" parent="@style/AppTheme"/>
     <style name="AppTheme.SelectProgram" parent="@style/AppTheme"/>
 
+    <style name="AppTheme.FirebaseSignIn" parent = "@style/AppTheme">
+        <item name="colorAccent">@color/colorSubdivisionIndicator10</item>
+    </style>
+
     <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="popupTheme">@style/Theme.AppCompat.Light</item>
+    </style>
+
+    <style name="MetSelectorButtonStyle" parent="AppTheme.Main">
+        <item name="android:background">@drawable/horz_button_exp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/home_screen_button_height</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingLeft">@dimen/button_padding_rl</item>
+        <item name="android:paddingRight">@dimen/button_padding_rl</item>
+        <item name="android:paddingStart">@dimen/button_padding_rl</item>
+        <item name="android:paddingEnd">@dimen/button_padding_rl</item>
+        <item name="android:layout_marginTop">@dimen/home_screen_button_margin</item>
+        <item name="android:layout_marginLeft">@dimen/home_screen_button_margin</item>
+        <item name="android:layout_marginRight">@dimen/home_screen_button_margin</item>
     </style>
 
     <style name="OddmeterButtonStyle" parent="AppTheme.Main">

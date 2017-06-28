@@ -109,17 +109,18 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     @Override
     public void onStart() {
         super.onStart();
+        Timber.d("onStart()");
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Timber.d("onResume() - firebase: " + useFirebase);
         useFirebase = PrefUtils.usingFirebase(this);
         if(databaseMenuItem != null) {
             updateDatabaseOptionMenuItem();
         }
-        Timber.d("onResume() - firebase: " + useFirebase);
     }
 
     @Override
@@ -184,7 +185,7 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                        .setTheme(R.style.AppTheme)
+                        .setTheme(R.style.AppTheme_FirebaseSignIn)
                         .build(),
                 FIREBASE_SIGN_IN);
     }
@@ -221,9 +222,12 @@ public class ProgrammedMetronomeActivity extends MetronomeActivity {
     }
 
     private void updateDatabaseOptionMenuItem() {
+        Timber.d("updateDatabaseOptionMenuItem");
         PrefUtils.saveFirebaseStatus(this, useFirebase);
-        databaseMenuItem.setTitle(useFirebase ?
-                R.string.use_local_database : R.string.use_cloud_database);
+        if(databaseMenuItem != null) {
+            databaseMenuItem.setTitle(useFirebase ?
+                    R.string.use_local_database : R.string.use_cloud_database);
+        }
     }
 
     private void goLocal() {

@@ -199,5 +199,8 @@
     <string name="error_save_canceled">Error: Save to database cancelled.</string>
     <string name="enter_composer_name_and_title">Please enter a composer name and title before continuing.</string>
 
+    <string name="help">Help</string>
+    <string name="okay">Got it!</string>
+
 
 </resources>

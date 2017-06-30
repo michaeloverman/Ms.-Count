@@ -119,54 +119,23 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
-
+            style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
+            style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
+            style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
+            style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
+            style="@style/NormalMetSubdivisionFabStyle"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/subdivisions_frame_2"
@@ -181,55 +150,24 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
-
+            style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
+            style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
+            style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
+            style="@style/NormalMetSubdivisionFabStyle"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/subdivision_indicator10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/subdivision_fab_margin"
-            android:layout_gravity="center"
             android:visibility="gone"
-            app:backgroundTint="@color/colorSubdivisionIndicator10"
-            app:fabSize="normal"
-            app:elevation="@dimen/fab_elevation"/>
+            style="@style/NormalMetSubdivisionFabStyle"/>
     </LinearLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_subdivisions_fab"
@@ -252,7 +190,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5"
-        />
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="192dp" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/expanded_add_subdivisions_fab"
         android:contentDescription="@string/add_a_subdivision"
@@ -260,14 +199,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/normal_met_subdiv_plus_minus_bottom_margin"
         app:layout_constraintBottom_toTopOf="@+id/normal_adView"
-        app:layout_constraintLeft_toRightOf="@+id/guideline"
         app:layout_constraintRight_toRightOf="parent"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:backgroundTint="@color/colorPrimaryDark"
         android:visibility="invisible"
         android:rotation="45"
         app:fabSize="normal"
-        app:elevation="@dimen/fab_elevation"/>
+        app:elevation="@dimen/fab_elevation"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/expanded_subtract_subdivisions_fab"
         android:contentDescription="@string/subtract_a_subdivision"
@@ -294,5 +233,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </com.google.android.gms.ads.AdView>
+
+    <FrameLayout
+        android:id="@+id/help_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:background="@color/transparentBlack"
+        android:elevation="12dp">
+        <include layout="@layout/normal_metronome_instructions"
+                 android:layout_height="match_parent"
+                 android:layout_width="match_parent"
+                 />
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

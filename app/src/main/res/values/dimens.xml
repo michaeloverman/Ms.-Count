@@ -87,6 +87,11 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="select_comoser_button_bottom_margin">16dp</dimen>
     <dimen name="widget_min_height">110dp</dimen>
     <dimen name="widget_min_width">180dp</dimen>
+
     <dimen name="big_round_button_size">177dp</dimen>
     <dimen name="top_met_select_button_margin">38dp</dimen>
+
+    <dimen name="instruction_text_default_margin">8dp</dimen>
+    <dimen name="instruction_text_default_textSize">20sp</dimen>
+
 </resources>

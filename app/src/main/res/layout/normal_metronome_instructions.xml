@@ -44,7 +44,7 @@
         />
     <TextView
         android:id="@+id/subdivision_volume_instruction"
-        android:text="Click and hold button, slide up and down to adjust individual beat volume."
+        android:text="Click and hold orange buttons, slide up and down to adjust individual beat volume."
         style="@style/InstructionOverlayTextStyle"
         app:layout_constraintBottom_toTopOf="@+id/subdivision_instruction"
         app:layout_constraintTop_toBottomOf="@+id/tempo_instruction"
@@ -53,7 +53,7 @@
         />
     <TextView
         android:id="@+id/subdivision_instruction"
-        android:text="Click '+' to add 'x' to subtract beats to the measure."
+        android:text="Click \'+\' to add \'x\' to subtract beats to the measure."
         style="@style/InstructionOverlayTextStyle"
         app:layout_constraintBottom_toTopOf="@+id/help_cancel_button"
         app:layout_constraintTop_toBottomOf="@+id/subdivision_volume_instruction"

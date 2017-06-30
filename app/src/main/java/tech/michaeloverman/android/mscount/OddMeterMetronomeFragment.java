@@ -14,10 +14,12 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +78,8 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
     private List<View> mSubdivisionViews;
     @BindView(R.id.subdivision_layout) LinearLayout mSubdivisionLayout;
 //    private LinearLayout mSubdivisionLayout;
+
+    @BindView(R.id.help_overlay) FrameLayout mInstructionsLayout;
 
     private GestureDetectorCompat mDetector;
 
@@ -176,6 +180,27 @@ public class OddMeterMetronomeFragment extends Fragment implements MetronomeStar
 
         updateTempoDisplay();
         return view;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.d("menu item caught: " + item.getTitle());
+        switch (item.getItemId()) {
+            case R.id.help_menu_item:
+                makeInstructionsVisible();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void makeInstructionsVisible() {
+        mInstructionsLayout.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.help_cancel_button)
+    public void makeInstructionsInvisible() {
+        mInstructionsLayout.setVisibility(View.INVISIBLE);
     }
 
     @OnClick( {R.id.one_subs_button, R.id.two_subs_button, R.id.three_subs_button,

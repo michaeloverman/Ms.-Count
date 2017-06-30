@@ -153,4 +153,16 @@
         android:layout_marginStart="@dimen/pro_met_equal_sign_margin"
         tools:ignore="SpUsage"/>
 
+    <FrameLayout
+        android:id="@+id/help_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:background="@color/transparentBlack"
+        android:elevation="12dp">
+        <include layout="@layout/programmed_metronome_instructions"
+                 android:layout_height="match_parent"
+                 android:layout_width="match_parent"
+            />
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>

@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -104,6 +105,8 @@ public class ProgrammedMetronomeFragment extends Fragment
     @BindView(R.id.tempo_up_button) ImageButton mTempoUpButton;
     @BindView(R.id.tempo_down_button) ImageButton mTempoDownButton;
     @BindView(R.id.current_measure_number) TextView mCurrentMeasureNumber;
+
+    @BindView(R.id.help_overlay) FrameLayout mInstructionsLayout;
 
     private InterstitialAd mInterstitialAd;
 
@@ -358,10 +361,23 @@ public class ProgrammedMetronomeFragment extends Fragment
                     makePieceUnfavorite();
                 }
                 return true;
+            case R.id.help_menu_item:
+                makeInstructionsVisible();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private void makeInstructionsVisible() {
+        mInstructionsLayout.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.help_cancel_button)
+    public void instructionsCancelled() {
+        mInstructionsLayout.setVisibility(View.INVISIBLE);
+    }
+
 
     @OnClick( { R.id.current_composer_name, R.id.current_program_title } )
     public void selectNewProgram() {

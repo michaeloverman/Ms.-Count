@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +77,9 @@ public class MetaDataEntryFragment extends Fragment
     @BindView(R.id.options_button) Button mMetaDataOptionsButton;
     @BindView(R.id.enter_beats_button) Button mEnterBeatsButton;
     @BindView(R.id.baseline_rhythmic_value_recycler) RecyclerView mBaselineRhythmicValueEntry;
+
+    @BindView(R.id.help_overlay) FrameLayout mInstructionsLayout;
+
     private NoteValueAdapter mBaselineRhythmicValueAdapter;
     private int mTemporaryBaselineRhythm = 4;
 
@@ -282,9 +286,21 @@ public class MetaDataEntryFragment extends Fragment
             case R.id.edit_existing_program_option:
                 loadProgram();
                 return true;
+            case R.id.help_menu_item:
+                makeInstructionsVisible();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void makeInstructionsVisible() {
+        mInstructionsLayout.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.help_cancel_button)
+    public void instructionsCancelled() {
+        mInstructionsLayout.setVisibility(View.INVISIBLE);
     }
 
     private void loadProgram() {

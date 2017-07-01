@@ -14,7 +14,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5"/>
     <TextView
-        android:id="@+id/program_select_instruction"
+        android:id="@+id/meta_data_entry_instruction"
         android:text="Tap title to select new program. Local/Cloud databases can be toggled from the options menu."
         style="@style/InstructionOverlayTextStyle"
         android:gravity="center"
@@ -27,8 +27,8 @@
         android:id="@+id/startstop_instruction"
         android:text="Start and stop the metronome"
         style="@style/InstructionOverlayTextStyle"
-        android:gravity="right"
-        app:layout_constraintTop_toBottomOf="@+id/program_select_instruction"
+        android:gravity="end"
+        app:layout_constraintTop_toBottomOf="@+id/meta_data_entry_instruction"
         android:layout_marginTop="20dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/centerline"
@@ -46,7 +46,7 @@
 
     <TextView
         android:id="@+id/other_instructions"
-        android:text="Pencil takes you program creation/editing.\nHeart marks program as favorite, and includes it in widget for launching from homescreen."
+        android:text="Pencil takes you program creation/editing.\nHeart marks program as favorite, and includes it in widget for launch direct from homescreen."
         style="@style/InstructionOverlayTextStyle"
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/help_cancel_button"

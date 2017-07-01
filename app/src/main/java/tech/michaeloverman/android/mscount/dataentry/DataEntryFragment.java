@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,8 @@ public class DataEntryFragment extends Fragment {
 
     @BindView(R.id.data_title_view) TextView mTitleView;
     @BindView(R.id.entered_data_recycler_view) RecyclerView mEnteredDataRecycler;
+    @BindView(R.id.help_overlay) FrameLayout mInstructionsLayout;
+
 
     private String mTitle;
     private List<DataEntry> mDataList;
@@ -136,6 +139,9 @@ public class DataEntryFragment extends Fragment {
             case R.id.third_data_values:
                 divideValues(3);
                 break;
+            case R.id.help_menu_item:
+                makeInstructionsVisible();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -170,6 +176,15 @@ public class DataEntryFragment extends Fragment {
 
     private void cantDivideError() {
         Toast.makeText(getContext(), R.string.cant_evenly_divide, Toast.LENGTH_SHORT).show();
+    }
+
+    private void makeInstructionsVisible() {
+        mInstructionsLayout.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.help_cancel_button)
+    public void instructionsCancelled() {
+        mInstructionsLayout.setVisibility(View.INVISIBLE);
     }
 
     /**

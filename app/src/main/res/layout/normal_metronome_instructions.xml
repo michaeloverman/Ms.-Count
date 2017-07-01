@@ -26,7 +26,7 @@
         android:id="@+id/startstop_instruction"
         android:text="Start and stop the metronome"
         style="@style/InstructionOverlayTextStyle"
-        android:gravity="right"
+        android:gravity="end"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="20dp"
         app:layout_constraintRight_toRightOf="parent"

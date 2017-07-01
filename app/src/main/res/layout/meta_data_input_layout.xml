@@ -209,18 +209,17 @@
         app:layout_constraintTop_toTopOf="@+id/enter_beats_button"
         />
 
-    <!--<Button-->
-        <!--android:id="@+id/load_program_button"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Load Program to Edit"-->
-        <!--android:backgroundTint="@color/colorPrimaryDark"-->
-        <!--android:layout_marginRight="8dp"-->
-        <!--app:layout_constraintRight_toRightOf="@+id/save_program_button"-->
-        <!--android:layout_marginLeft="8dp"-->
-        <!--app:layout_constraintLeft_toLeftOf="@+id/save_program_button"-->
-        <!--android:layout_marginBottom="0dp"-->
-        <!--app:layout_constraintBottom_toTopOf="@+id/save_program_button"-->
-        <!--app:layout_constraintHorizontal_bias="0.48"/>-->
+    <FrameLayout
+        android:id="@+id/help_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:background="@color/transparentBlack"
+        android:elevation="12dp">
+        <include layout="@layout/meta_data_input_instructions"
+                 android:layout_height="match_parent"
+                 android:layout_width="match_parent"
+            />
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

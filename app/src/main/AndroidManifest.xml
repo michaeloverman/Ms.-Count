@@ -10,11 +10,12 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MsCountActivity"
-            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:configChanges="orientation"
+			android:label="@string/app_name"
             android:theme="@style/AppTheme.Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -23,20 +24,28 @@
             </intent-filter>
         </activity>
         <activity android:name=".NormalMetronomeActivity"
-            android:parentActivityName=".MsCountActivity">
+            android:screenOrientation="portrait"
+			android:configChanges="orientation"
+			android:parentActivityName=".MsCountActivity">
 
         </activity>
         <activity android:name=".OddMeterMetronomeActivity"
-            android:parentActivityName=".MsCountActivity">
+            android:screenOrientation="portrait"
+			android:configChanges="orientation"
+			android:parentActivityName=".MsCountActivity">
 
         </activity>
         <activity android:name=".programmed.ProgrammedMetronomeActivity"
-            android:parentActivityName=".MsCountActivity">
+            android:screenOrientation="portrait"
+			android:configChanges="orientation"
+			android:parentActivityName=".MsCountActivity">
 
         </activity>
         <activity android:name=".database.LoadNewProgramActivity"
             android:parentActivityName=".programmed.ProgrammedMetronomeActivity"
-            android:theme="@style/AppTheme.SelectProgram">
+            android:screenOrientation="portrait"
+			android:configChanges="orientation"
+			android:theme="@style/AppTheme.SelectProgram">
         </activity>
 
         <provider
@@ -50,7 +59,9 @@
 
         <activity
             android:name=".utils.SettingsActivity"
-            android:label="@string/title_activity_settings">
+            android:screenOrientation="portrait"
+			android:configChanges="orientation"
+			android:label="@string/title_activity_settings">
         </activity>
 
         <receiver android:name="tech.michaeloverman.android.mscount.widget.MsCountWidgetProvider"
